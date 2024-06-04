@@ -4,4 +4,4 @@ This Git repository contains all the concepts required for the HashiCorp Certifi
 
 Link of the Course: - https://www.udemy.com/course/terraform-beginner-to-advanced/learn/lecture/36688962?start=1#overview
 
-And You can also take reference from this repository : https://github.com/sahdevgrover/terraform-basic-to-advanced-resources
+You can also take reference from this repository: https://github.com/sahdevgrover/terraform-basic-to-advanced-resources
