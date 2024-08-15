@@ -4,7 +4,7 @@ Let's first understand what Infrastructure as a Code means.
 
 So, Let's get started!
 
-# 📌 Infrastructure as a Code:
+# 📌 Infrastructure as a Code: - 
 
 Infrastructure as a Code is a game-changing approach in IT infrastructure management, where the provisioning of infrastructure is accomplished through Automation (by Writing Code) instead of the manual process.
 
