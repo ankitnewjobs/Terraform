@@ -22,7 +22,7 @@ It enables users to create, provision, and configure infrastructure resources ac
 
 # 🔖 Challenges that Terraform Allows us to Solve:
 - Create reusable Code: - Deploy Identical set of Infrastructure
-- 
+  
 - ![image](https://github.com/ankitnewjobs/Terraform-basic-to-advanced-learning/assets/154872782/00d54ebf-f5db-4a92-ae22-ee18b3822c0b)
 
 - Support thousands of providers like AWS, Azure, Kubernetes, Oracle, etc.
@@ -47,8 +47,11 @@ B) Automation
 
 # 📌 Benefits: - 
 A) Speed of Infrastructure management
+
 B) Low risk of Human resources
+
 C) Version Control 
+
 D) Easy Collaboration with Teams
 
 # 📌 Choosing the Right Tools: - 
@@ -63,12 +66,13 @@ D) Easy Collaboration with Teams
 
 ![image](https://github.com/ankitnewjobs/Terraform-basic-to-advanced-learning/assets/154872782/5cd7082a-c15c-44db-a5b9-0de612059910)
 
-
-
 # 📌 How to Choose IAC Tool: 
 1) Is your Infra going to vendor Specific in the long term - AWS, Azure
+
 2) Planning to have Multi/Hybrid Cloud-based?
+
 3) How will your IAC tool configure with Configuration management tools
+
 4) Price and Support
 
 ![image](https://github.com/ankitnewjobs/Terraform-basic-to-advanced-learning/assets/154872782/9794cb47-35c6-46e5-abcb-950624a18838)
@@ -81,11 +85,13 @@ D) Easy Collaboration with Teams
 
 ✅ Scalability & Flexibility: Easily scale resources up or down to handle changing demands and manage complex environments.
 
-✅ Disaster Recovery & Reproducibility: Recreate entire infrastructure from code to recover quickly from failures and ensure reproducibility.
+✅ Disaster Recovery & Reproducibility: Recreate the entire infrastructure from code to recover quickly from failures and ensure reproducibility.
 
 ✅ Multi-Cloud Support: Terraform supports multiple cloud providers.
 
 # 📌 In conclusion, Infrastructure as a code powered by tools like Terraform, empowers organizations to build, modify, and share infrastructure with ease.
+
+# Questions
 
 ![image](https://github.com/ankitnewjobs/Terraform-basic-to-advanced-learning/assets/154872782/bfe3a3bf-831f-4090-8810-3ca9a4cb20f0)
 
