@@ -1,6 +1,6 @@
 # 🔖Day 1 of learning Terraform :- Infrastructure as a Code - IaaC
 
-Let's first understand what Infrastructure as a Code means.
+Before we understand Terraform, let's first understand what Infrastructure as a Code means.
 
 So, Let's get started!
 
