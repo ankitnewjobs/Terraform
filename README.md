@@ -16,4 +16,4 @@ Feel free to connect with me on LinkedIn through this profile:
 https://www.linkedin.com/in/ankit-ranjan05/
 
 ## Terraform Learning Days                                                
-- [Day 01](1_Day1)
+- [Day 01](https://github.com/ankitnewjobs/Terraform-basic-to-advanced-learning/blob/main/Day%3A%2001%20(Module%201)/Concept.md)
