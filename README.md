@@ -17,3 +17,9 @@ https://www.linkedin.com/in/ankit-ranjan05/
 
 ## Terraform Learning Days                                                
 - [Day 01](https://github.com/ankitnewjobs/Terraform-basic-to-advanced-learning/blob/main/Day%3A%2001%20(Module%201)/Concept.md)
+
+# Project Maintainers & Contributors
+
+![1](https://github.com/ankitnewjobs/Azure-Practices-Examples/assets/154872782/0eb590e7-50e0-49f0-9439-77537cde2b8b)
+
+**Ankit Ranjan**
