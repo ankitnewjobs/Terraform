@@ -67,9 +67,6 @@ https://www.linkedin.com/in/ankit-ranjan05/
 
 **Ankit Ranjan**
 
----------------------------------------------------
-
-
-- To learn how to contribute to the Terraform documentation in this repository, refer to the [Terraform Documentation README](/website/README.md).
+------------------------------------------------------------
 
 
