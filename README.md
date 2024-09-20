@@ -1,4 +1,4 @@
-# terraform-basic-to-advanced-resources
+# Terraform-basic-to-advanced-resources
 Welcome to the Terraform Basic to Advanced Resources repository!
 
 **This Git repository contains all the concepts required for the HashiCorp Certified Terraform Associate.**
