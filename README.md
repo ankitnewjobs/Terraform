@@ -1,5 +1,5 @@
 
-# Terraform-basic-to-advanced-resources
+# Terraform-Basic-to-Advanced-Resources
 Welcome to the Terraform Basic to Advanced Resources repository!
 
 -------------------------------------------------------------------------------------------------------
