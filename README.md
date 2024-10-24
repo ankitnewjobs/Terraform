@@ -22,6 +22,10 @@ Terraform is a tool for building, changing, and versioning infrastructure safely
 -------------------------------------------------------------------------------------------------------
 # Architecture
 
+# Terraform Request Flow
+
+- The following diagram shows an approximation of how a user command is executed in Terraform:
+
 ![Terraform Architecture](https://github.com/user-attachments/assets/7206cd1b-f4b2-47ed-b89f-e6136f76fa3c)
   
 
