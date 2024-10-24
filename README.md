@@ -28,12 +28,25 @@ Terraform is a tool for building, changing, and versioning infrastructure safely
 
 ![Terraform Architecture](https://github.com/user-attachments/assets/7206cd1b-f4b2-47ed-b89f-e6136f76fa3c)
   
+# CLI (command package)
+
+Each time a user runs the terraform program, aside from some initial bootstrapping in the root package (not shown in the diagram) execution transfers immediately into one of the "command" implementations in the command package. The mapping between the user-facing command names and their corresponding command package types can be found in the commands.go file in the root of the repository.
+
+The full flow illustrated above does not actually apply to all commands, but it applies to the main Terraform workflow commands terraform plan and terraform apply, along with a few others.
+
+For these commands, the role of the command implementation is to read and parse any command line arguments, command line options, and environment variables that are needed for the given command and use them to produce a backend.Operation object that describes an action to be taken.
+
+# Backends
+
+A backend determines where Terraform should store its state snapshots.
+
+As described above, the local backend also executes operations on behalf of most other backends. It uses a state manager (either statemgr.Filesystem if the local backend is being used directly, or an implementation provided by whatever backend is being wrapped) to retrieve the current state for the workspace specified in the operation, then uses the config loader to load and do initial processing/validation of the configuration specified in the operation. It then uses these, along with the other settings given in the operation, to construct a terraform.Context, which is the main object that actually performs Terraform operations.
 
 # The key features of Terraform are:
 
- **Infrastructure as Code**: Infrastructure is described using a high-level configuration syntax. This allows a blueprint of your datacenter to be versioned and treated as you would any other code. Additionally, infrastructure can be shared and re-used.
+ **Infrastructure as Code**: Infrastructure is described using a high-level configuration syntax. This allows a blueprint of your data center to be versioned and treated as you would any other code. Additionally, infrastructure can be shared and re-used.
 
- **Execution Plans**: Terraform has a "planning" step where it generates an execution plan. The execution plan shows what Terraform will do when you call apply. This lets you avoid any surprises when Terraform manipulates infrastructure.
+ **Execution Plans**: Terraform has a "planning" step where it generates an execution plan. The execution plan shows what Terraform will do when you call to apply. This lets you avoid any surprises when Terraform manipulates infrastructure.
 
  **Resource Graph**: Terraform builds a graph of all your resources, and parallelizes the creation and modification of any non-dependent resources. Because of this, Terraform builds infrastructure as efficiently as possible, and operators get insight into dependencies in their infrastructure.
 
