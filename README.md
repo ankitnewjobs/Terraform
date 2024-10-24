@@ -20,6 +20,9 @@ Terraform Complete Hands-On Guides.
 Terraform is a tool for building, changing, and versioning infrastructure safely and efficiently. Terraform can manage existing and popular service providers as well as custom in-house solutions.
 
 -------------------------------------------------------------------------------------------------------
+# Architecture
+
+![Terraform Architecture]("C:\Users\Hp\Downloads\architecture-overview.png")  
 
 # The key features of Terraform are:
 
