@@ -22,7 +22,7 @@ Terraform is a tool for building, changing, and versioning infrastructure safely
 -------------------------------------------------------------------------------------------------------
 # Architecture
 
-![Terraform Architecture](C:\Users\Hp\Downloads\architecture-overview.png)  
+![Terraform Architecture](./images\architecture-overview.png)  
 
 # The key features of Terraform are:
 
