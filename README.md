@@ -107,7 +107,7 @@ https://www.linkedin.com/in/ankit-ranjan05/
 
 ## Project Maintainers & Contributors  
 
-![1](https://github.com/ankitnewjobs/Azure-Practices-Examples/assets/154872782/0eb590e7-50e0-49f0-9439-77537cde2b8b)
+![1](https://github.com/ankitnewjobs/Azure-Practices-Examples/assets/154872782/0eb590e7-50e0-49f0-9439-77537cde2b8b)width="100px;" alt=""/><br /><sub><b>Anvesh Muppeda</b></sub>
 
 **Ankit Ranjan**
 
