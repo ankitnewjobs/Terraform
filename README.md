@@ -107,8 +107,11 @@ https://www.linkedin.com/in/ankit-ranjan05/
 
 # Project Maintainers & Contributors
 
-![1](https://github.com/ankitnewjobs/Azure-Practices-Examples/assets/154872782/0eb590e7-50e0-49f0-9439-77537cde2b8b)
-
-**Ankit Ranjan**
+## Project Maintainers & Contributors  
+<table>
+  <tr>
+    <td align="center"><a href="https://.github.io/profile/"><img src="https://avatars.githubusercontent.com/u/115966808?v=4" width="100px;" alt=""/><br /><sub><b>Ankit Ranjan</b></sub></a></td>
+  </tr>
+</table> 
 
 ------------------------------------------------------------
