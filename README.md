@@ -111,9 +111,8 @@ https://www.linkedin.com/in/ankit-ranjan05/
 
 <table>
   <tr>
-    <td align="center"><a href="https://github.com/ankitnewjobs"><img src="![1](https://github.com/ankitnewjobs/Azure-Practices-Examples/assets/154872782/0eb590e7-50e0-49f0-9439-77537cde2b8b)" width="100px;" alt=""/><br /><sub><b>Ankit Ranjan</b></sub></a></td>
-    <td align="center"><a href="https://github.com/saimanasak"><img src="https://avatars.githubusercontent.com/u/47205414?v=4" width="100px;" alt=""/><br /><sub><b>Sai Manasa Kota</b></sub></a></td> 
-  </tr>
+    <td align="center"><a href="https://github.com/ankitnewjobs">![1](https://github.com/ankitnewjobs/Azure-Practices-Examples/assets/154872782/0eb590e7-50e0-49f0-9439-77537cde2b8b) width="100px;" alt=""/><br /><sub><b>Ankit Ranjan</b></sub></a></td>
+    
 </table> 
 ![1](https://github.com/ankitnewjobs/Azure-Practices-Examples/assets/154872782/0eb590e7-50e0-49f0-9439-77537cde2b8b)
 
