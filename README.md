@@ -81,7 +81,7 @@ To learn more about how we handle bug reports, refer to the [bug triage guide](.
 
 **This Git repository contains all the concepts required for the HashiCorp Certified Terraform Associate.**
 
-Link of the Course: - https://www.udemy.com/course/terraform-beginner-to-advanced/learn/lecture/36688962?start=1#overview
+Link of the Course: - https://www.udemy.com/course/hashicorp-certified-terraform-associate-on-azure-cloud/?couponCode=KEEPLEARNING
 
 You can also take reference from this repository: https://github.com/sahdevgrover/terraform-basic-to-advanced-resources
 
