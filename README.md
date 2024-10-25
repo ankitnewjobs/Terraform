@@ -71,7 +71,7 @@ Show off your Terraform knowledge by passing a certification exam. Visit the [ce
 
 ## Developing Terraform
 
-This repository contains only Terraform core, which includes the command line interface and the main graph engine. Providers are implemented as plugins, and Terraform can automatically download providers that are published on [the Terraform Registry](https://registry.terraform.io). HashiCorp develops some providers, and others are developed by other organizations. For more information, see [Extending Terraform](https://www.terraform.io/docs/extend/index.html).
+This repository contains only the Terraform core, which includes the command line interface and the main graph engine. Providers are implemented as plugins, and Terraform can automatically download providers that are published on [the Terraform Registry](https://registry.terraform.io). HashiCorp develops some providers, and others are developed by other organizations. For more information, see [Extending Terraform](https://www.terraform.io/docs/extend/index.html).
 
 To learn more about compiling Terraform and contributing suggested changes, refer to [the contributing guide](.github/CONTRIBUTING.md).
 
@@ -79,10 +79,13 @@ To learn more about how we handle bug reports, refer to the [bug triage guide](.
 
 ----------------------------------------------------------------------------------------------------
 
-**This Git repository contains all the concepts required for the HashiCorp Certified Terraform Associate.**
+**These courses contain all the concepts required for the HashiCorp Certified Terraform Associate.**
 
-Link of the Course: - https://www.udemy.com/course/hashicorp-certified-terraform-associate-on-azure-cloud/?couponCode=KEEPLEARNING
+- Link of the Course: - https://www.udemy.com/course/hashicorp-certified-terraform-associate-on-azure-cloud/?couponCode=KEEPLEARNING
 
+- Link of the Course: - https://www.udemy.com/course/hashicorp-certified-terraform-associate-step-by-step/?couponCode=KEEPLEARNING
+
+- Link of the Course: - https://www.udemy.com/course/terraform-on-azure-with-iac-azure-devops-sre-real-world-25-demos/?couponCode=KEEPLEARNING 
 You can also take reference from this repository: https://github.com/sahdevgrover/terraform-basic-to-advanced-resources
 
 ------------------------------------------------------------------------------------------------------
