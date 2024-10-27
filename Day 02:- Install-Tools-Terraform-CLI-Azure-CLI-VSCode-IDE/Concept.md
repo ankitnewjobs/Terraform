@@ -8,9 +8,7 @@
 - Install [HashiCorp Terraform plugin for VS Code](https://marketplace.visualstudio.com/items?itemName=HashiCorp.terraform)
 - Install [Git Client](https://git-scm.com/downloads)
 
-[![Image](https://stacksimplify.com/course-images/azure-terraform-install-1.png "HashiCorp Certified: Terraform Associate on Azure")](https://stacksimplify.com/course-images/azure-terraform-install-1.png)
-
-## Step-02: MACOS: Terraform Install
+# Step-02: MACOS: Terraform Install
 
 - [Download Terraform MAC](https://www.terraform.io/downloads.html)
 - [Install CLI](https://learn.hashicorp.com/tutorials/terraform/install-cli)
@@ -74,15 +72,6 @@ az upgrade
 az --version
 ```
 
-[![Image](https://stacksimplify.com/course-images/xcode-install-1.png "HashiCorp Certified: Terraform Associate on Azure")](https://stacksimplify.com/course-images/xcode-install-1.png)
-
-[![Image](https://stacksimplify.com/course-images/xcode-install-2.png "HashiCorp Certified: Terraform Associate on Azure")](https://stacksimplify.com/course-images/xcode-install-2.png)
-
-[![Image](https://stacksimplify.com/course-images/xcode-install-3.png "HashiCorp Certified: Terraform Associate on Azure")](https://stacksimplify.com/course-images/xcode-install-3.png)
-
-[![Image](https://stacksimplify.com/course-images/xcode-install-4.png "HashiCorp Certified: Terraform Associate on Azure")](https://stacksimplify.com/course-images/xcode-install-4.png)
-
-
 ## Step-05: Terraform - Authenticating using the Azure CLI
 
 - [Azure Provider: Authenticating using the Azure CLI](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/guides/azure_cli)
@@ -113,6 +102,7 @@ az account set --subscription="SUBSCRIPTION_ID"
 ### Step-07-01: Install Git Client
 
 - [Download Git Client](https://git-scm.com/downloads)
+
 - This is required when we are working with `Terraform Modules`
 
 ### Step-07-02: Install Azure CLI
