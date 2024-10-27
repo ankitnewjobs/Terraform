@@ -102,6 +102,12 @@ az account set --subscription="SUBSCRIPTION_ID"
 - [Download Git Client](https://git-scm.com/downloads)
 - This is required when we are working with `Terraform Modules`
 
+![{5D7046F2-AC72-4DD2-872F-077242E4D2D3}](https://github.com/user-attachments/assets/1c3c37d7-86ff-456f-aa61-f792deb89c33)
+
+![{23030C56-488D-41E4-94B9-B2E5A34DEAD3}](https://github.com/user-attachments/assets/d0b95b05-c092-4737-b115-7883e7850232)
+
+![{F0CFD3B5-CAE9-4AE7-8758-1E379489CBF1}](https://github.com/user-attachments/assets/06668007-d0f0-4617-9bd0-9a71248d1c62)
+
 ## Step-07: WindowsOS: Terraform & Azure CLI Install
 
 ### Step-07-01: Install Git Client
@@ -112,7 +118,12 @@ az account set --subscription="SUBSCRIPTION_ID"
 ### Step-07-02: Install Azure CLI
 
 - Install [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli-windows?tabs=azure-cli)
-- `Step-05:Terraform - Authenticating using the Azure CLI` is going to be same for WindowsOS too. 
+
+![{056A45F7-26E2-4F11-A7CE-F2C1475FE416}](https://github.com/user-attachments/assets/9c62450c-2456-4de5-92e0-58bcd838d00b)
+
+![{C463AE66-1830-4209-A7F5-2B4F2CFA2136}](https://github.com/user-attachments/assets/8be50a5c-9e71-441b-b29b-ca2c38aa8f39)
+
+- `Step-05:Terraform - Authenticating using the Azure CLI` will be the same for WindowsOS too. 
 ```t
 # Azure CLI Login
 az login
