@@ -2,9 +2,7 @@
 # Terraform Complete Hands-On Guides 
 Terraform Complete Hands-On Guides.
 
-![TerraformAssociate00320241028-26-8m16kg_page-0001](https://github.com/user-attachments/assets/617ee4e7-1b87-4c2e-9023-abce9eafd2b7)
-
-![hashicorp-certified-terraform-associate-003](https://github.com/user-attachments/assets/4244a8d3-64d3-4730-89a0-edb1f38fc91d)
+![TerraformAssociate00320241028-26-8m16kg_page-0001](https://github.com/user-attachments/assets/617ee4e7-1b87-4c2e-9023-abce9eafd2b7) ![hashicorp-certified-terraform-associate-003](https://github.com/user-attachments/assets/4244a8d3-64d3-4730-89a0-edb1f38fc91d)
 
 -------------------------------------------------------------------------------------------------------
 
