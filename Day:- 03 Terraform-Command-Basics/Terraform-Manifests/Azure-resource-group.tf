@@ -22,7 +22,7 @@ resource "azurerm_resource_group" "my_demo_rg1" {
 
 ----------------------------------------------------------------------
 
-Here's a breakdown of your Terraform code for GitHub:
+# Here's a breakdown of your Terraform code for :
 
 ### Terraform Settings Block
 ```hcl
