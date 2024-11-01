@@ -2,8 +2,8 @@
 # Terraform Complete Hands-On Guides 
 Terraform Complete Hands-On Guides.
 
-![TerraformAssociate00320241028-26-8m16kg_page-0001](https://github.com/user-attachments/assets/617ee4e7-1b87-4c2e-9023-abce9eafd2b7) 
-![My Badge](Downloads/image.png)
+![My Terraform Associate Certificate](https://github.com/user-attachments/assets/617ee4e7-1b87-4c2e-9023-abce9eafd2b7) 
+
 -------------------------------------------------------------------------------------------------------
 
 # Terraform
