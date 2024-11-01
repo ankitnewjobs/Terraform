@@ -2,6 +2,7 @@
 # Terraform Complete Hands-On Guides 
 Terraform Complete Hands-On Guides.
 
+"C:\Users\Hp\Downloads\TerraformAssociate00320241028-26-8m16kg_page-0001.jpg"
 -------------------------------------------------------------------------------------------------------
 
 # Terraform
