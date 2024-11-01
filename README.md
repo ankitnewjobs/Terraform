@@ -106,7 +106,8 @@ https://www.linkedin.com/in/ankit-ranjan05/
 
 ## Terraform Learning Days                                                
 - [Day 01](https://github.com/ankitnewjobs/Terraform-Complete-Hands-On-Guides/blob/main/Day%2001%3A-%20Infrastructure-as-Code-IaC-Basics/Concept.md)
-
+- [Day 02](https://github.com/ankitnewjobs/Terraform/blob/main/Day%2002%3A-%20Install-Tools-Terraform-CLI-Azure-CLI-VSCode-IDE/Concept.md)
+- [Day 03](https://github.com/ankitnewjobs/Terraform/blob/main/Day%3A-%2003%20Terraform-Command-Basics/Terraform-Manifests/Azure-resource-group.tf)
 -------------------------------------------------------------------------
 
 ## Project Maintainers & Contributors  
