@@ -19,8 +19,7 @@ terraform {
 
 ### Block 1: **Terraform Settings Block**
 
-- This block sets up Terraform's requirements and backend settings.
-- required_version`: Ensures you’re using Terraform version 1.0.0 or higher.
+- This block sets up Terraform's requirements and backend settings, required_version`: Ensures you’re using Terraform version 1.0.0 or higher.
 - required_providers`: Specifies the provider (AzureRM in this case), using version 2.0 or newer from the HashiCorp registry.
 - backend "azurerm"`: Defines Azure Storage as the backend to store the Terraform state file securely.
 - **resource_group_name**: Specifies the Azure resource group to contain the storage.
@@ -141,4 +140,3 @@ module "network" {
 - **depends_on**: Ensures the module waits for the resource group to be created before proceeding.
 
 #####################################################################
-
