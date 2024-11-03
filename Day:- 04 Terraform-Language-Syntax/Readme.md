@@ -45,7 +45,7 @@ This section goes deeper into each component:
       ```
     In the Virtual Network example, note how arguments like `location` and `resource_group_name` use values from the Resource Group, making the configuration dynamic.
 
-- **Reference Links**: -
+ **Reference Links**: -
   
 - [Terraform Configuration](https://www.terraform.io/docs/configuration/index.html)
   
@@ -61,7 +61,7 @@ This section goes deeper into each component:
   - `count`: Allows creating multiple instances of a resource by specifying a number.
   - `for_each`: Creates instances based on a list or map, useful for handling dynamic configurations.
     
-- **Reference Links**: - 
+  **Reference Links**: - 
   
 - [Additional Reference](https://learn.hashicorp.com/tutorials/terraform/resource?in=terraform/configuration-language)
   
