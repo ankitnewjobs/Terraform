@@ -1,19 +1,16 @@
-Certainly! Here’s a detailed breakdown of the "Terraform Command Basics" you outlined, structured into clear steps for understanding the Terraform workflow.
-
----
 
 ## Terraform Command Basics
 
 ### Step 1: Introduction to Basic Terraform Commands
 Terraform is a powerful infrastructure as a code tool, and understanding its core commands is essential for managing cloud resources efficiently. The basic commands include:
 
-1. **terraform init**: Initializes a new or existing Terraform configuration. It sets up the working directory, downloads required provider plugins, and prepares the backend.
+1. **Terraform init**: Initializes a new or existing Terraform configuration. It sets up the working directory, downloads required provider plugins, and prepares the backend.
    
-2. **terraform validate**: This function validates the configuration files for syntax and logical errors. It ensures that the code is formatted correctly and will work as expected.
+2. **Terraform validate**: This function validates the configuration files for syntax and logical errors. It ensures that the code is formatted correctly and will work as expected.
 
-3. **terraform plan**: This function generates an execution plan that shows what actions Terraform will take to achieve the desired state defined in the configuration files. It provides a preview before making any changes.
+3. **Terraform plan**: This function generates an execution plan that shows what actions Terraform will take to achieve the desired state defined in the configuration files. It provides a preview before making any changes.
 
-4. **terraform apply**: Applies the changes required to reach the desired state of the configuration. It creates or updates resources as specified in the Terraform files.
+4. **Terraform apply**: Applies the changes required to reach the desired state of the configuration. It creates or updates resources as specified in the Terraform files.
 
 5. **Terraform destroy**: This command removes all the resources defined in the Terraform configuration. It is used to clean up and avoid incurring unnecessary costs.
 
