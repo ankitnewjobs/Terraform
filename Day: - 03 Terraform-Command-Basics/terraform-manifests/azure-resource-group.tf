@@ -36,7 +36,7 @@ terraform {
     }    
   }
 }
-```
+
 - **terraform block**: This block is used to specify configurations for Terraform itself.
 - **required_version**: Specifies the minimum Terraform version required to run this code. Here, it’s set to "1.0.0" or higher, ensuring compatibility with recent Terraform features.
 - **required_providers**: Defines any external providers required to interact with external platforms, in this case, Microsoft Azure.
@@ -49,7 +49,7 @@ terraform {
 provider "azurerm" {
   features {}
 }
-```
+
 - **provider block**: Defines the configuration for the Azure provider, azurerm.
 - **Features**: An empty {} block for `features` is required for initializing the provider. Some advanced Azure features require specific configurations within this block, but it's empty here, meaning default settings are used.
 
