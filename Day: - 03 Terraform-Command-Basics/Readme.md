@@ -55,6 +55,9 @@ resource "azurerm_resource_group" "my_demo_rg1" {
   name     = "my-demo-rg1"  
 }
 ```
+- [Azure Regions](https://docs.microsoft.com/en-us/azure/virtual-machines/regions)
+  
+- [Azure Regions Detailed](https://docs.microsoft.com/en-us/azure/best-practices-availability-paired-regions#what-are-paired-regions)
 
 ### Step 3: Terraform Core Commands
 1. **Initialize the working directory**:
