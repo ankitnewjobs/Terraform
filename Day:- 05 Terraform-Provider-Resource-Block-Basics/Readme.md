@@ -43,16 +43,7 @@ This step demonstrates how version constraints work in the `terraform` block.
   - `required_version = "~> 0.14.3"` would fail if the installed Terraform version doesn’t match the specified minor version.
   - `required_version = ">= 1.0.0"` will pass as it allows all versions equal to or above 1.0.0.
  
-  # Play with Terraform CLI Version (We installed the 1.0.0 version)
-  required_version = "~> 0.14.3" - Will fail
-  required_version = "~> 0.14"   - Will fail  
-  required_version = "= 0.14.4"  - Will fail
-  required_version = ">= 0.13"   - will pass
-  required_version = "= 1.0.0"   - will pass
-  required_version = "1.0.0"     - will pass 
-  required_version = ">= 1.0.0"   - will pass
-  
-- **Testing**:
+ - **Testing**:
   - Run `terraform init` with different `required_version` constraints to observe if Terraform initializes or raises a version error.
 
 ### Step-04: Terraform Providers
