@@ -14,6 +14,10 @@ Terraform is a powerful infrastructure as a code tool, and understanding its cor
 
 5. **Terraform destroy**: This command removes all the resources defined in the Terraform configuration. It is used to clean up and avoid incurring unnecessary costs.
 
+[![Image](https://stacksimplify.com/course-images/azure-terraform-workflow-1.png "HashiCorp Certified: Terraform Associate on Azure")](https://stacksimplify.com/course-images/azure-terraform-workflow-1.png)
+
+[![Image](https://stacksimplify.com/course-images/azure-terraform-workflow-2.png "HashiCorp Certified: Terraform Associate on Azure")](https://stacksimplify.com/course-images/azure-terraform-workflow-2.png)
+
 ### Step 2: Review Terraform Manifests
 Before running Terraform commands, you need to set up your Azure environment:
 
@@ -100,4 +104,4 @@ In this section, you learned the fundamental Terraform commands essential for ma
 
 --- 
 
-This structured approach provides clarity on how to use Terraform, helping you grasp the necessary commands for creating, managing, and destroying cloud resources effectively.
+
