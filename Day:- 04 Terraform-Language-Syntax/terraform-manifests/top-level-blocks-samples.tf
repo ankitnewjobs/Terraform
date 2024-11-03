@@ -20,8 +20,8 @@ terraform {
 ### Block 1: **Terraform Settings Block**
 
 - This block sets up Terraform's requirements and backend settings, required_version`: Ensures you’re using Terraform version 1.0.0 or higher.
-- required_providers`: Specifies the provider (AzureRM in this case), using version 2.0 or newer from the HashiCorp registry.
-- backend "azurerm"`: Defines Azure Storage as the backend to store the Terraform state file securely.
+- required_providers: Specifies the provider (AzureRM in this case), using version 2.0 or newer from the HashiCorp registry.
+- backend "azurerm": Defines Azure Storage as the backend to store the Terraform state file securely.
 - **resource_group_name**: Specifies the Azure resource group to contain the storage.
 - **storage_account_name**: Name of the storage account where the state file will be stored.
 - **container_name**: The container within the storage account to store state files.
@@ -36,7 +36,7 @@ provider "azurerm" {
 ### Block 2: **Provider Block**
 
 - Configures the Azure provider for Terraform.
-- features {}`: Initializes the AzureRM provider with the default settings for Azure features.
+- features {}: Initializes the AzureRM provider with the default settings for Azure features.
 
 #####################################################################
 # Block-3: Resource Block
@@ -56,8 +56,8 @@ resource "azurerm_virtual_network" "myvnet" {
 ### Block 3: **Resource Block**
 
 - Defines resources to be created in Azure:
-- **Resource Group** (`azurerm_resource_group`): Creates an Azure resource group named "myrg-1" in the specified region.
-- **Virtual Network** (`azurerm_virtual_network`): Creates a virtual network named "myvnet-1" with an address space (`10.0.0.0/16`) within the specified resource group and location.
+- **Resource Group** (`azurerm_resource_group): Creates an Azure resource group named "myrg-1" in the specified region.
+- **Virtual Network** (`azurerm_virtual_network): Creates a virtual network named "myvnet-1" with an address space (`10.0.0.0/16`) within the specified resource group and location.
 
 #####################################################################
 # Block-4: Input Variables Block
@@ -70,7 +70,7 @@ variable "azure_region" {
 
 ### Block 4: **Input Variables Block**
 
-- Defines a variable `azure_region` with a default value of `"eastus"`:
+- Defines a variable `azure_region` with a default value of "eastus":
 - Allows flexibility to change the Azure region without hardcoding it into resource definitions.
 
 #####################################################################
@@ -94,7 +94,7 @@ locals {
 }
 
 ### Block 6: **Local Values Block**
-- Defines a `local` variable:
+- Defines a local variable:
 - **name**: Combines `business_unit` and `environment_name` variables into a single string, which can be used in other parts of the code.
 
 #####################################################################
