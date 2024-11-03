@@ -26,7 +26,9 @@ The `provider` block configures the provider for Terraform to interact with, suc
 ---
 
 ### Step-02: Terraform Settings Block
-The `terraform` block is revisited to explore additional settings:
+
+- [Terraform Settings Block](https://www.terraform.io/docs/language/settings/index.html)
+  
 - **Required Terraform Version**: Sets the Terraform CLI version required to execute the configuration.
 - **Provider Requirements**: Specifies provider source and version constraints.
 - **Terraform Backends**: Manages where Terraform stores its state, such as remote backends (e.g., S3, Azure Blob).
@@ -40,10 +42,23 @@ This step demonstrates how version constraints work in the `terraform` block.
 - **Example Constraints**:
   - `required_version = "~> 0.14.3"` would fail if the installed Terraform version doesn’t match the specified minor version.
   - `required_version = ">= 1.0.0"` will pass as it allows all versions equal to or above 1.0.0.
+ 
+  # Play with Terraform CLI Version (We installed the 1.0.0 version)
+  required_version = "~> 0.14.3" - Will fail
+  required_version = "~> 0.14"   - Will fail  
+  required_version = "= 0.14.4"  - Will fail
+  required_version = ">= 0.13"   - will pass
+  required_version = "= 1.0.0"   - will pass
+  required_version = "1.0.0"     - will pass 
+  required_version = ">= 1.0.0"   - will pass
+  
 - **Testing**:
   - Run `terraform init` with different `required_version` constraints to observe if Terraform initializes or raises a version error.
 
 ### Step-04: Terraform Providers
+
+- What are [Terraform Providers](https://www.terraform.io/docs/language/providers/configuration.html)?
+  
 Providers act as plugins that enable Terraform to interact with specific services.
 - **Purpose**: Manage the lifecycle of resources within cloud platforms.
 - **Location**: Providers are sourced from the Terraform Registry.
@@ -56,7 +71,7 @@ The `required_providers` block within the `terraform` block specifies details ab
 - **Version**: Sets version constraints for the provider, preventing breaking changes from untested updates.
 
 **Example**:
-```hcl
+
 terraform {
   required_version = ">= 1.0.0"
   required_providers {
@@ -76,6 +91,7 @@ This block enables the configuration of authentication and access methods for th
       features {}
     }
     ```
+
 - **Authentication Options**:
   - **Azure CLI**: Authenticates using credentials stored in the Azure CLI.
   - **Managed Service Identity (MSI)**: Used for managed Azure resources.
@@ -86,6 +102,10 @@ This block enables the configuration of authentication and access methods for th
 1. `terraform init` – Initializes the configuration and downloads required providers.
 2. `terraform validate` – Checks for syntax errors.
 3. `terraform plan` – Simulates the creation or update of resources.
+
+- Discuss about [Authentication Types](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs#authenticating-to-azure)
+
+- Finally, understand about [Features Block](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs#features) in Provider Block
 
 ### Step-07: Experiment with Provider Version
 Testing different provider versions demonstrates the importance of version constraints to ensure compatibility.
@@ -129,12 +149,18 @@ Clean-up involves deleting created resources and local state files:
 ---
 
 ### References
-- Links to Terraform documentation provide detailed explanations for each concept:
-  - **Providers**: Understanding how providers work and how they manage resources.
-  - **Azure Provider Documentation**: Specific configurations for Azure.
-  - **Version Constraints**: Best practices for managing Terraform and provider versions.
+
+- [Terraform Providers](https://www.terraform.io/docs/configuration/providers.html)
+  
+- [Azure Provider Documentation](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs)
+  
+- [Azure Resource Group Terraform Resource](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/resource_group)
+  
+- [Terraform Version Constraints](https://www.terraform.io/docs/configuration/version-constraints.html)
+  
+- [Terraform Versions - Best Practices](https://www.terraform.io/docs/configuration/version-constraints.html#best-practices)
 
 ---
 
 ### Summary
-This guide explores the `terraform` settings block, provider configuration, and resource management, giving a foundational understanding of key blocks in Terraform and how to manage infrastructure code effectively.
+This module explores the `terraform` settings block, provider configuration, and resource management, giving a foundational understanding of key blocks in Terraform and how to manage infrastructure code effectively.
