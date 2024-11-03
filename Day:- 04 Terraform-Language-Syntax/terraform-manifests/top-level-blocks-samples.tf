@@ -17,7 +17,7 @@ terraform {
   }   
 }
 
-### Block 1: **Terraform Settings Block**
+### Block 1: Terraform Settings Block
 
 - This block sets up Terraform's requirements and backend settings, required_version`: Ensures you’re using Terraform version 1.0.0 or higher.
 - required_providers: Specifies the provider (AzureRM in this case), using version 2.0 or newer from the HashiCorp registry.
@@ -33,7 +33,7 @@ provider "azurerm" {
   features {}
 }
 
-### Block 2: **Provider Block**
+### Block 2: Provider Block
 
 - Configures the Azure provider for Terraform.
 - features {}: Initializes the AzureRM provider with the default settings for Azure features.
@@ -53,7 +53,7 @@ resource "azurerm_virtual_network" "myvnet" {
   resource_group_name = azurerm_resource_group.myrg.name
 }
 
-### Block 3: **Resource Block**
+### Block 3: Resource Block
 
 - Defines resources to be created in Azure:
 - **Resource Group** (`azurerm_resource_group): Creates an Azure resource group named "myrg-1" in the specified region.
@@ -68,7 +68,7 @@ variable "azure_region" {
   type = string
 }
 
-### Block 4: **Input Variables Block**
+### Block 4: Input Variables Block
 
 - Defines a variable `azure_region` with a default value of "eastus":
 - Allows flexibility to change the Azure region without hardcoding it into resource definitions.
@@ -81,7 +81,7 @@ output "azure_resourcegroup_id" {
   value = azurerm_resource_group.myrg.id 
 }
 
-### Block 5: **Output Values Block**
+### Block 5: Output Values Block
 
 - Outputs the ID of the created resource group:
 - azure_resourcegroup_id`: Outputs the unique identifier of the Azure resource group.
@@ -93,7 +93,7 @@ locals {
   name = "${var.business_unit}-${var.environment_name}"
 }
 
-### Block 6: **Local Values Block**
+### Block 6: Local Values Block
 - Defines a local variable:
 - **name**: Combines `business_unit` and `environment_name` variables into a single string, which can be used in other parts of the code.
 
@@ -107,7 +107,7 @@ output "id" {
   value = data.azurerm_resource_group.example.id
 }
 
-### Block 7: **Data Sources Block**
+### Block 7: Data Sources Block
 - Accesses information about existing resources in Azure.
 - data "azurerm_resource_group" "example"`: Retrieves details of an existing resource group with the name "existing."
 - **Output**: Outputs the ID of this existing resource group.
@@ -130,7 +130,7 @@ module "network" {
   depends_on = [azurerm_resource_group.example]
 }
 
-### Block 8: **Modules Block**
+### Block 8: Modules Block
 
 - Uses a module to create Azure resources, specifically a virtual network, using the [Azure network module](https://registry.terraform.io/modules/Azure/network/azurerm/latest).
 - **source**: Points to the Azure network module on the Terraform Registry.
