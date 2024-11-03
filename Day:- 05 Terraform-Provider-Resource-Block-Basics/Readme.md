@@ -101,30 +101,30 @@ terraform {
 
 This block enables the configuration of authentication and access methods for the provider.
 
-- **Example** for the Azure provider:
+- Example for the Azure provider:
     
     provider "azurerm" {
       features {}
     }
     ```
 
-- **Authentication Options**:
+- Authentication Options:
 
- - **Azure CLI**: Authenticates using credentials stored in the Azure CLI.
+ - Azure CLI: Authenticates using credentials stored in the Azure CLI.
 
-  - **Managed Service Identity (MSI)**: Used for managed Azure resources.
+  - Managed Service Identity (MSI): Used for managed Azure resources.
 
-  - **Service Principal (SP)**: Allows access with client certificates or secrets.
+  - Service Principal (SP): Allows access with client certificates or secrets.
 
-- **Features Block**: Some providers, like Azure, require an empty `features {}` block to enable provider initialization.
+- Features Block: Some providers, like Azure, require an empty `features {}` block to enable provider initialization.
 
-**Terraform Commands**:
+Terraform Commands:
 
-1. `terraform init` – Initializes the configuration and downloads required providers.
+1. terraform init – Initializes the configuration and downloads required providers.
 
-2. `terraform validate` – Checks for syntax errors.
+2. terraform validate – Checks for syntax errors.
 
-3. `terraform plan` – Simulates the creation or update of resources.
+3. terraform plan – Simulates the creation or update of resources.
 
 - Discuss about [Authentication Types](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs#authenticating-to-azure)
 
@@ -138,50 +138,50 @@ Testing different provider versions demonstrates the importance of version const
   - `version = "~> 2.0"` allows minor updates.
   - `version = ">= 2.0.0, < 2.60.0"` restricts versions within a range.
 
-- **Upgrade Option**: Run `terraform init -upgrade` to update to newer versions within the constraints.
+- Upgrade Option: Run `terraform init -upgrade` to update to newer versions within the constraints.
 
 ### Step-08: Create a Simple Resource Block
 
 This step introduces resource creation in Terraform.
 
-- **Example Resource Block**:
+- Example Resource Block:
     
     resource "azurerm_resource_group" "myrg" {
       name     = "myrg-1"
       location = "East US"
     }
     ```
-- **Explanation**:
+- Explanation:
 
-- **Resource Type**: `azurerm_resource_group` specifies that this is an Azure Resource Group.
+- Resource Type: `azurerm_resource_group specifies that this is an Azure Resource Group.
 
-  - **Name**: `"myrg"` is a local identifier within Terraform.
+  - Name: "myrg" is a local identifier within Terraform.
 
-  - **Arguments**:
-    - **name**: Sets the name of the resource group in Azure.
-    - **location**: Specifies the region in which to deploy.
+  - Arguments:
+    - name: Sets the name of the resource group in Azure.
+    - location: Specifies the region in which to deploy.
 
 ### Step-09: Execute Terraform Commands
 
-1. **Initialize**: `terraform init` sets up the working directory.
+1. Initialize: terraform init sets up the working directory.
 
-2. **Validate**: `terraform validate` checks for configuration correctness.
+2. Validate: terraform validate checks for configuration correctness.
 
-3. **Plan**: `terraform plan` previews the actions to be taken.
+3. Plan: terraform plan previews the actions to be taken.
 
-4. **Apply**: `terraform apply -auto-approve` creates the resources.
+4. Apply: terraform apply -auto-approve creates the resources.
 
 ### Step-10: Clean-Up
 
 Clean-up involves deleting created resources and local state files:
 
-- **Destroy Resources**: `terraform destroy -auto-approve` removes all resources managed by the configuration.
+- Destroy Resources: `terraform destroy -auto-approve removes all resources managed by the configuration.
 
-- **Delete Terraform Files**:
-  ```bash
+- Delete Terraform Files:
+  
   rm -rf .terraform*
   rm -rf terraform.tfstate*
-  ```
+  
   - Removes local files related to the Terraform state and configuration.
 
 ---
