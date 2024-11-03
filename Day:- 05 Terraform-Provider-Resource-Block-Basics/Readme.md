@@ -1,7 +1,7 @@
 This module provides a structured approach to understanding and implementing the key components in Terraform configuration: Settings, Providers, and Resource Blocks. Here’s a detailed breakdown of each step and its significance:
 
 ---
----
+
 title: Terraform Settings, Providers and Resource Blocks 
 description: Learn Key blocks of Terraform like Settings, Providers, and Resource Blocks
 ---
