@@ -45,7 +45,9 @@ This section goes deeper into each component:
       ```
     In the Virtual Network example, note how arguments like `location` and `resource_group_name` use values from the Resource Group, making the configuration dynamic.
 
-- **Reference Links**: The document provides links to Terraform’s official documentation, offering more detailed explanations of syntax and configuration.
+- [Terraform Configuration](https://www.terraform.io/docs/configuration/index.html)
+  
+- [Terraform Configuration Syntax](https://www.terraform.io/docs/configuration/syntax.html)
 
 ### Step-03: Arguments, Attributes, and Meta-Arguments
 - **Arguments**:
@@ -56,7 +58,18 @@ This section goes deeper into each component:
   - Special arguments like `count` and `for_each` that modify resource behavior.
   - `count`: Allows creating multiple instances of a resource by specifying a number.
   - `for_each`: Creates instances based on a list or map, useful for handling dynamic configurations.
-- **Reference Links**: Additional resources are provided for in-depth understanding of resource arguments, attributes, and meta-arguments.
+    
+- **Reference Links**:
+- 
+- [Additional Reference](https://learn.hashicorp.com/tutorials/terraform/resource?in=terraform/configuration-language)
+  
+- [Resource: Azure Resource Group](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/resource_group)
+ 
+- [Resource: Azure Resource Group Argument Reference](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/resource_group#arguments-reference)
+  
+- [Resource: Azure Resource Group Attribute Reference](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/resource_group#attributes-reference)
+  
+- [Resource: Meta-Arguments](https://www.terraform.io/docs/language/meta-arguments/depends_on.html)
 
 ### Step-04: Terraform Top-Level Blocks
 A summary of the top-level blocks commonly used in Terraform configurations:
