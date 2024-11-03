@@ -79,18 +79,6 @@ To learn more about compiling Terraform and contributing suggested changes, refe
 
 To learn more about how we handle bug reports, refer to the [bug triage guide](./BUGPROCESS.md).
 
-----------------------------------------------------------------------------------------------------
-
-**These courses contain all the concepts required for the HashiCorp Certified Terraform Associate.**
-
-- Link of the Course: - https://www.udemy.com/course/hashicorp-certified-terraform-associate-on-azure-cloud/?couponCode=KEEPLEARNING
-
-- Link of the Course: - https://www.udemy.com/course/hashicorp-certified-terraform-associate-step-by-step/?couponCode=KEEPLEARNING
-
-- Link of the Course: - https://www.udemy.com/course/terraform-on-azure-with-iac-azure-devops-sre-real-world-25-demos/?couponCode=KEEPLEARNING 
-
-You can also take reference from this repository: https://github.com/sahdevgrover/terraform-basic-to-advanced-resources
-
 ------------------------------------------------------------------------------------------------------
 
 # Hit the Star! ⭐
