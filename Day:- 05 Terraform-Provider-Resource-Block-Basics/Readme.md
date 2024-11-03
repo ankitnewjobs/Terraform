@@ -2,8 +2,8 @@ This module provides a structured approach to understanding and implementing the
 
 ---
 
-title: Terraform Settings, Providers and Resource Blocks 
-description: Learn Key blocks of Terraform like Settings, Providers, and Resource Blocks
+Title: Terraform Settings, Providers and Resource Blocks 
+Description: Learn Key blocks of Terraform like Settings, Providers, and Resource Blocks
 ---
 
 ### Step-01: Introduction
