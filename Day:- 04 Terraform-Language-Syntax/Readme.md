@@ -86,4 +86,4 @@ A summary of the top-level blocks commonly used in Terraform configurations:
 8. **Modules Block**: Allows using reusable and parameterized sets of resources, enhancing modularity.
 
 ### Summary
-This guide covers the basics of Terraform syntax, essential blocks, and configurations to structure Terraform code efficiently. Each element is part of Terraform's declarative language, which describes the desired state of infrastructure, enabling easy management and version control of cloud resources.
+This module covers the basics of Terraform syntax, essential blocks, and configurations to structure Terraform code efficiently. Each element is part of Terraform's declarative language, which describes the desired state of infrastructure, enabling easy management and version control of cloud resources.
