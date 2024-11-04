@@ -33,11 +33,11 @@ terraform {
 
 - required providers: This block specifies which providers are required for this configuration and where to get them.
 
-  - azurerm: This is the Azure Resource Manager provider for Terraform, which allows Terraform to manage Azure resources.
+- azurerm: This is the Azure Resource Manager provider for Terraform, which allows Terraform to manage Azure resources.
   
-  - source = "hashicorp/azurerm" specifies the provider's source. In this case, it’s from the Hashicorp provider registry, indicated by hashicorp/azurerm.
+- source = "hashicorp/azurerm" specifies the provider's source. In this case, it’s from the Hashicorp provider registry, indicated by hashicorp/azurerm.
   
-  - version = ">= 2.0": This specifies the minimum version of the azurerm provider required. Here, it's set to >= 2.0, which means version 2.0 or later is needed.
+- version = ">= 2.0": This specifies the minimum version of the azurerm provider required. Here, it's set to >= 2.0, which means version 2.0 or later is needed.
 
 By specifying the required providers, Terraform will ensure that the correct provider is installed before applying any configurations.
 
@@ -54,5 +54,6 @@ provider "azurerm" {
 ### Summary
 
 This configuration ensures that Terraform is using at least version 1.0.0 and the Azure provider (azurerm) is at least version 2.0.
+
 - It prepares Terraform to interact with Azure by defining the azurerm provider with an empty features block.
 
