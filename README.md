@@ -99,7 +99,9 @@ https://www.linkedin.com/in/ankit-ranjan05/
 - [Day 02](https://github.com/ankitnewjobs/Terraform/blob/main/Day%2002%3A-%20Install-Tools-Terraform-CLI-Azure-CLI-VSCode-IDE/Concept.md)
 - [Day 03](https://github.com/ankitnewjobs/Terraform/blob/main/Day%3A-%2003%20Terraform-Command-Basics/Terraform-Manifests/Azure-resource-group.tf)
 - [Day 04](https://github.com/ankitnewjobs/Terraform/blob/main/Day%3A-%2004%20Terraform-Language-Syntax/Terraform-Manifest/Top-Level-Blocks-samples.tf)
-- [Day 05](https://github.com/ankitnewjobs/Terraform/tree/main/Day%3A-%2005%20Terraform-Provider-Resource-Block-Basics)
+- [Day 05](https://github.com/ankitnewjobs/Terraform/tree/main/Day%3A-%2005%20Terraform-Provider-Resource-Block-Basics) 
+- [Day 06](https://github.com/ankitnewjobs/Terraform/tree/main/Day%3A-%2006%20Azure-Terraform-Vs-Code-Plugin)
+- [Day 07](https://github.com/ankitnewjobs/Terraform/tree/main/Day%3A-%2007%20Multiple-Provider-Configurations)
 -------------------------------------------------------------------------
 
 ## Project Maintainers & Contributors  
