@@ -116,8 +116,10 @@ After completing your work, clean up any temporary Terraform files.
 
 
 # Remove Terraform state and cache files
-rm -rf .terraform*
-rm -rf terraform.tfstate
+
+- rm -rf .terraform*
+
+- rm -rf terraform.tfstate
 
 ### **References**
 
