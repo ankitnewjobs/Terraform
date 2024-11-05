@@ -22,8 +22,7 @@ Graphviz is a graph visualization software that helps you visualize the relation
 
 - **Install Graphviz**: To install Graphviz on macOS, use the following command:
 
-- # Install Graphviz
-brew install Graphviz
+- # Install Graphviz: brew install Graphviz
   
     
 - **[Download Graphviz](https://graphviz.org/download/)**: Alternatively, you can download the software package for different operating systems directly from the Graphviz website.
