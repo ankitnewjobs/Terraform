@@ -21,8 +21,10 @@ For students or users who encounter difficulties in setting up Terraform locally
 Graphviz is a graph visualization software that helps you visualize the relationships and dependencies between different resources in your Terraform configurations.
 
 - **Install Graphviz**: To install Graphviz on macOS, use the following command:
-    
-    brew install Graphviz
+
+- # Install Graphviz
+brew install Graphviz
+  
     
 - **[Download Graphviz](https://graphviz.org/download/)**: Alternatively, you can download the software package for different operating systems directly from the Graphviz website.
 
@@ -46,7 +48,7 @@ The **Azure Terraform Visual Studio Code Extension** provides a convenient way t
     - validate Validates the configuration.
     - refresh: Refreshes the state file.
     - destroy: Destroys the infrastructure managed by Terraform.
-    - visualize: Generates a visual representation of the configuration.
+    - Visualization: Generates a visual representation of the configuration.
     - push: Syncs local Terraform files with Azure Cloud Shell.
     - Execute Test: Runs tests (if any are defined).
 
