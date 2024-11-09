@@ -3,34 +3,21 @@ title: Terraform Multiple Provider Blocks on Azure Cloud
 description: Learn how to use multiple Terraform provider blocks on Azure Cloud
 ---
 
-### Multiple Provider Configurations in Terraform
+# Multiple Provider Configurations
 
-Terraform allows you to define multiple configurations for the same provider to manage resources across different environments, regions, or configurations. This flexibility is crucial when managing complex infrastructures spread across multiple geographic locations or needing varied settings for different resources.
+## Step-01: Introduction
+- Understand and Implement Multiple Provider Configurations
 
-#### Step-01: Introduction
-
-The primary focus is understanding and implementing multiple configurations for the same provider. This practice helps deploy resources in different regions or with specific settings within the same infrastructure as a code project.
-
-#### Step-02: Defining Multiple Provider Configurations
-
-Terraform typically uses a *default* provider configuration. However, there are scenarios where you may need to specify distinct settings for different resources. To achieve this, Terraform allows you to create additional provider configurations with unique settings and identifiers (aliases).
-
-1. **Default Provider Configuration**
-
-- This is the standard configuration that resources will use if no explicit provider is specified.
-     
-   # Provider-1 for EastUS (Default Provider)
+## Step-02: How to define multiple provider configuration of same Provider?
+- Understand about default provider
+- Understand and define multiple provider configurations of same provider
+```t
+# Provider-1 for EastUS (Default Provider)
 provider "azurerm" {
   features {}
 }
-     
 
-2. **Additional Provider Configuration with an Alias**:
-
-- You can create another provider configuration with different settings and give it an alias. The alias helps to reference this specific configuration in resource definitions.
-
-  
-    # Provider-2 for WestUS Region
+# Provider-2 for WestUS Region
 provider "azurerm" {
   features {
     virtual_machine {
@@ -43,75 +30,50 @@ provider "azurerm" {
   #environment = "german"
   #subscription_id = "JJJJ"
 }
-     
+```
 
-#### Step-03: Referencing the Non-Default Provider in Resources: 
+## Step-03: How to reference the non-default provider configuration in a resource?
+```t
+# Provider-2: Create a resource group in WestUS region - Uses "provider2-westus" provider
+resource "azurerm_resource_group" "myrg2" {
+  name = "myrg-2"
+  location = "West US"
+    #<PROVIDER NAME>.<ALIAS NAME>
+  provider = azurerm.provider2-westus
+}
+```
 
-- When a resource needs to use a specific provider configuration (non-default), you reference it with the provider attribute. The format used is <PROVIDER_NAME>.<ALIAS_NAME>.
+## Step-04: Execute Terraform Commands
+```t
+# Initialize Terraform
+terraform init
 
-- **Example of Referencing a Non-Default Provider**:
+# Validate Terraform Configuration Files
+terraform validate
 
-- Provider-2: Create a resource group in the West US region using the "provider2-westus" provider
-  
-  resource "azurerm_resource_group" "myrg2" {
-    name     = "myrg-2"
-    location = "West US"
-    provider = azurerm.provider2-westus
-  }
-  
+# Generate Terraform Plan
+terraform plan
 
-In this example, azurerm.provider2-westus tells Terraform to use the provider configuration with the alias = "provider2-westus".
+# Create Resources
+terraform apply -auto-approve
 
-#### Step-04: Executing Terraform Commands
+# Verify the same
+1. Verify the Resource Group created in EastUS region
+2. Verify the Resource Group created in WestUS region
+```
 
-After setting up your configuration, you need to execute the following Terraform commands:
+## Step-05: Clean-Up 
+```t
+# Destroy Terraform Resources
+terraform destroy -auto-approve
 
-1. **Initialize Terraform**
-   
- - terraform init: This command initializes your working directory, downloads necessary plugins, and prepares the environment.
+# Delete Terraform Files
+rm -rf .terraform*
+rm -rf terraform.tfstate*
+```
 
-2. **Validate Terraform Configuration**
 
- - terraform validate: This checks the syntax and logical consistency of the Terraform files.
-
-3. **Generate a Plan**
-   
- -  terraform plan: The plan command provides a preview of the actions Terraform will take when applying the configuration.
-
-4. **Apply the Configuration**
-   
-- terraform apply -auto-approve: This command creates the resources as defined in the configuration files. The -auto-approve flag bypasses manual approval.
-
-5. **Verification**
- 
-   - After applying, verify that the resources were created successfully:
-
-    1. Check the resource group in the East US region (default provider).
-
-   2. Check the resource group in the West US region (referenced provider).
-
-#### Step-05: Clean-Up
-
-To remove resources and clean up your working environment, run the following commands:
-
-1. **Destroy Resources**
-   
-  -  terraform destroy -auto-approve: This removes all resources created by the configuration.
-
-2. **Delete Terraform State Files and Directories**
-   
- -  rm -rf .terraform*
-   
--   rm -rf terraform.tfstate*
-   
-- These commands delete Terraform's state files and cache, ensuring a clean start for future projects or configurations.
-
-### Summary
-
-By defining multiple provider configurations, you can manage infrastructure efficiently across different regions and settings within the same code base. Aliases allow for easy reference, enabling more complex and customizable deployments.
 
 ## References
-
 - [Provider Meta Argument](https://www.terraform.io/docs/configuration/meta-arguments/resource-provider.html)
-
 - [Azure Provider - Argument and Attribute References](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs)
