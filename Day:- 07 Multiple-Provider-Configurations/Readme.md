@@ -21,10 +21,12 @@ Terraform typically uses a default provider configuration. However, there are sc
  
    Example:
    
-      Provider-1 for East US (Default Provider)
+      # Provider-1 for East US (Default Provider)
    
      provider "azurerm" {
-       features {}
+
+      features {}
+
      }
    
 
