@@ -9,6 +9,7 @@ terraform {
     }   } }
 
 # Provider Block
+
 provider "azurerm" {
 features {}
 }
@@ -21,13 +22,17 @@ This Terraform configuration sets up and configures the requirements and provide
 ### 1. Terraform Block
 
 The Terraform block is used to specify settings for Terraform itself, including versions and providers.
-terraform {
+
+terraform 
+{
   required version = ">= 1.0.0"
   required providers {
     azurerm = {
       source = "hashicorp/azurerm"
       version = ">= 2.0"
-    }   } }
+    }  
+} 
+}
 
 - required version = ">= 1.0.0": This line specifies the minimum version of Terraform required to run this configuration. Here, it's set to require version 1.0.0 or higher, ensuring compatibility with Terraform 1.x features.
 
@@ -43,7 +48,8 @@ By specifying the required providers, Terraform will ensure that the correct pro
 
 ### 2. Provider Block
 
-provider "azurerm" {
+provider "azurerm" 
+{
   features {}
 }
 
