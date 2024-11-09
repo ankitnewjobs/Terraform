@@ -15,26 +15,18 @@ The primary focus is understanding and implementing multiple configurations for 
 
 Terraform typically uses a *default* provider configuration. However, there are scenarios where you may need to specify distinct settings for different resources. To achieve this, Terraform allows you to create additional provider configurations with unique settings and identifiers (aliases).
 
-1. **Default Provider Configuration**
- 
-   - This is the standard configuration that resources will use if no explicit provider is specified.
+1. **Default Provider Configuration**: This is the standard configuration that resources will use if no explicit provider is specified.
      
-   - Example:
-   
-     # Provider-1 for East US (Default Provider)
+   - Example: # Provider-1 for East US (Default Provider)
      
      provider "azurerm" {
        features {}
      }
      
 
-2. **Additional Provider Configuration with an Alias**
+2. **Additional Provider Configuration with an Alias**: You can create another provider configuration with different settings and give it an alias. The alias helps to reference this specific configuration in resource definitions.
 
-   - You can create another provider configuration with different settings and give it an alias. The alias helps to reference this specific configuration in resource definitions.
-
-    - Example:
- 
-     # Provider-2 for West US Region
+    - Example: # Provider-2 for West US Region
    
      provider "azurerm" {
        features {
@@ -47,13 +39,9 @@ Terraform typically uses a *default* provider configuration. However, there are 
      }
      
 
-#### Step-03: Referencing the Non-Default Provider in Resources
+#### Step-03: Referencing the Non-Default Provider in Resources: When a resource needs to use a specific provider configuration (non-default), you reference it with the provider attribute. The format used is <PROVIDER_NAME>.<ALIAS_NAME>.
 
-When a resource needs to use a specific provider configuration (non-default), you reference it with the provider attribute. The format used is <PROVIDER_NAME>.<ALIAS_NAME>.
-
-- **Example of Referencing a Non-Default Provider**
- 
-  # Provider-2: Create a resource group in the West US region using the "provider2-westus" provider
+- **Example of Referencing a Non-Default Provider**: # Provider-2: Create a resource group in the West US region using the "provider2-westus" provider
   
   resource "azurerm_resource_group" "myrg2" {
     name     = "myrg-2"
@@ -70,27 +58,19 @@ After setting up your configuration, you need to execute the following Terraform
 
 1. **Initialize Terraform**
    
-   terraform init
-   
-   - This command initializes your working directory, downloads necessary plugins, and prepares the environment.
+ - terraform init: This command initializes your working directory, downloads necessary plugins, and prepares the environment.
 
 2. **Validate Terraform Configuration**
 
-   terraform validate
-   
-   - This checks the syntax and logical consistency of the Terraform files.
+ - terraform validate: This checks the syntax and logical consistency of the Terraform files.
 
 3. **Generate a Plan**
    
-   terraform plan
-   
-   - The plan command provides a preview of the actions Terraform will take when applying the configuration.
+ -  terraform plan: The plan command provides a preview of the actions Terraform will take when applying the configuration.
 
 4. **Apply the Configuration**
    
-   terraform apply -auto-approve
-   
-   - This command creates the resources as defined in the configuration files. The -auto-approve flag bypasses manual approval.
+- terraform apply -auto-approve: This command creates the resources as defined in the configuration files. The -auto-approve flag bypasses manual approval.
 
 5. **Verification**
  
@@ -106,9 +86,7 @@ To remove resources and clean up your working environment, run the following com
 
 1. **Destroy Resources**
    
-   terraform destroy -auto-approve
-   
-   - This removes all resources created by the configuration.
+  -  terraform destroy -auto-approve: This removes all resources created by the configuration.
 
 2. **Delete Terraform State Files and Directories**
    
@@ -116,7 +94,7 @@ To remove resources and clean up your working environment, run the following com
    
 -   rm -rf terraform.tfstate*
    
-   - These commands delete Terraform's state files and cache, ensuring a clean start for future projects or configurations.
+- These commands delete Terraform's state files and cache, ensuring a clean start for future projects or configurations.
 
 ### Summary
 
