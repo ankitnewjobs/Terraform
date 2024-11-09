@@ -19,32 +19,30 @@ Terraform typically uses a *default* provider configuration. However, there are 
 
 - This is the standard configuration that resources will use if no explicit provider is specified.
      
-   - Example:
-   
-   - # Provider-1 for East US (Default Provider)
-     
-     provider "azurerm" {
-       features {}
-     }
+   # Provider-1 for EastUS (Default Provider)
+provider "azurerm" {
+  features {}
+}
      
 
 2. **Additional Provider Configuration with an Alias**:
 
 - You can create another provider configuration with different settings and give it an alias. The alias helps to reference this specific configuration in resource definitions.
 
-    - Example:
-    
-    - # Provider-2 for West US Region
-   
-     provider "azurerm" {
-       features {
-         virtual_machine {
-           delete_os_disk_on_deletion = false
-         }
-       }
-       alias = "provider2-westus"
-       # client_id, client_secret, environment, and subscription_id can be optionally set here.
-     }
+  
+    # Provider-2 for WestUS Region
+provider "azurerm" {
+  features {
+    virtual_machine {
+      delete_os_disk_on_deletion = false # This will ensure when the Virtual Machine is destroyed, Disk is not deleted, default is true and we can alter it at provider level
+    }
+  }
+  alias = "provider2-westus"
+  #client_id = "XXXX"
+  #client_secret = "YYY"
+  #environment = "german"
+  #subscription_id = "JJJJ"
+}
      
 
 #### Step-03: Referencing the Non-Default Provider in Resources: 
