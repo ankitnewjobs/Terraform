@@ -15,7 +15,9 @@ The primary focus is understanding and implementing multiple configurations for 
 
 Terraform typically uses a *default* provider configuration. However, there are scenarios where you may need to specify distinct settings for different resources. To achieve this, Terraform allows you to create additional provider configurations with unique settings and identifiers (aliases).
 
-1. **Default Provider Configuration**: This is the standard configuration that resources will use if no explicit provider is specified.
+1. **Default Provider Configuration**
+
+- This is the standard configuration that resources will use if no explicit provider is specified.
      
    - Example: # Provider-1 for East US (Default Provider)
      
@@ -24,7 +26,9 @@ Terraform typically uses a *default* provider configuration. However, there are 
      }
      
 
-2. **Additional Provider Configuration with an Alias**: You can create another provider configuration with different settings and give it an alias. The alias helps to reference this specific configuration in resource definitions.
+2. **Additional Provider Configuration with an Alias**:
+
+- You can create another provider configuration with different settings and give it an alias. The alias helps to reference this specific configuration in resource definitions.
 
     - Example: # Provider-2 for West US Region
    
@@ -39,9 +43,13 @@ Terraform typically uses a *default* provider configuration. However, there are 
      }
      
 
-#### Step-03: Referencing the Non-Default Provider in Resources: When a resource needs to use a specific provider configuration (non-default), you reference it with the provider attribute. The format used is <PROVIDER_NAME>.<ALIAS_NAME>.
+#### Step-03: Referencing the Non-Default Provider in Resources: 
 
-- **Example of Referencing a Non-Default Provider**: # Provider-2: Create a resource group in the West US region using the "provider2-westus" provider
+- When a resource needs to use a specific provider configuration (non-default), you reference it with the provider attribute. The format used is <PROVIDER_NAME>.<ALIAS_NAME>.
+
+- **Example of Referencing a Non-Default Provider**:
+
+- Provider-2: Create a resource group in the West US region using the "provider2-westus" provider
   
   resource "azurerm_resource_group" "myrg2" {
     name     = "myrg-2"
