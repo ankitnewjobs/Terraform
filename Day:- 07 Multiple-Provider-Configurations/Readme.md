@@ -30,7 +30,7 @@ Terraform typically uses a default provider configuration. However, there are sc
      }
    
 
-3. **Additional Provider Configuration with an Alias**
+2. **Additional Provider Configuration with an Alias**
 
     - You can create another provider configuration with different settings and give it an alias. The alias helps to reference this specific configuration in resource definitions.
    
@@ -57,13 +57,13 @@ When a resource needs to use a specific provider configuration (non-default), yo
  
   # Provider-2: Create a resource group in the West US region using the "provider2-westus" provider
 
-   resource "azurerm_resource_group" "myrg2" {
+   resource "azurerm_resource_group" "myrg2" 
+   {
     name     = "myrg-2"
     location = "West US"
     provider = azurerm.provider2-westus
   }
   
-
 In this example, azurerm.provider2-westus tells Terraform to use the provider configuration with the alias = "provider2-westus".
 
 #### Step-04: Executing Terraform Commands
