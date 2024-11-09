@@ -1,23 +1,36 @@
 # Terraform Block
-terraform {
+
+terraform 
+{
   required_version = ">= 0.15"
-  required_providers {
-    azurerm = {
+  required_providers 
+{
+    azurerm = 
+{
       source = "hashicorp/azurerm"
       version = ">= 2.0"
-    }   } }
+    }  
+}
+}
 
 # Provider-1 for EastUS (Default Provider)
-provider "azurerm" {
+
+provider "azurerm" 
+{
   features {}
 }
 
 # Provider-2 for WestUS
-provider "azurerm" {
-  features {
-    virtual_machine {
+
+provider "azurerm" 
+{
+  features 
+{
+    virtual_machine 
+{
       delete_os_disk_on_deletion = false # This will ensure when the Virtual Machine is destroyed, the Disk is not deleted, the default is true and we can alter it at the provider level
-    }   }
+    }   
+}
   alias = "provider2-westus"
   #client_id = "XXXX"
   #client_secret = "YYY"
@@ -27,6 +40,7 @@ provider "azurerm" {
 
 
 # Provider Documentation for Reference
+
 # https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs
 
 --------
@@ -46,7 +60,9 @@ terraform
     azurerm = {
       source = "hashicorp/azurerm"
       version = ">= 2.0"
-    }   } }
+    }   
+} 
+}
 
 
 - **required_version = ">= 0.15"`**: Ensures that Terraform version 0.15 or newer is used. This helps maintain compatibility with features and syntax.
@@ -90,7 +106,8 @@ provider "azurerm"
     virtual_machine
 {
       delete_os_disk_on_deletion = false # This ensures that when the virtual machine is destroyed, the OS disk is not deleted.
-    }   }
+    }   
+}
   alias = "provider2-westus"
   #client_id = "XXXX"
   #client_secret = "YYY"
