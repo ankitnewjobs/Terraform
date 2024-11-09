@@ -1,7 +1,8 @@
 # This file is maintained automatically by "terraform init".
 # Manual edits may be lost in future updates.
 
-provider "registry.terraform.io/hashicorp/azurerm" {
+provider "registry.terraform.io/hashicorp/azurerm"
+{
   version     = "1.44.0"
   constraints = "1.44.0"
   hashes = [
@@ -21,7 +22,8 @@ provider "registry.terraform.io/hashicorp/azurerm" {
   ]
 }
 
-provider "registry.terraform.io/hashicorp/random" {
+provider "registry.terraform.io/hashicorp/random"
+{
   version     = "3.1.0"
   constraints = ">= 3.0.0"
   hashes = [
