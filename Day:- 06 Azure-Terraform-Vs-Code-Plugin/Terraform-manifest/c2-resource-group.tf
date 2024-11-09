@@ -1,6 +1,9 @@
 # Resource Block
+
 # Create a resource group
-resource "azurerm_resource_group" "myrg" {
+
+resource "azurerm_resource_group" "myrg"
+{
   name = "myrg-1"
   location = "East US"
 }
@@ -12,8 +15,11 @@ In Terraform, a **resource block** defines a specific resource that you want to 
 Here’s a detailed breakdown of each component of the code provided:
 
 # Resource Block
+
 # Create a resource group
-resource "azurerm_resource_group" "myrg" {
+
+resource "azurerm_resource_group" "myrg"
+{
   name     = "myrg-1"
   location = "East US"
 }
@@ -42,12 +48,15 @@ resource "azurerm_resource_group" "myrg" {
 ### Summary of What This Code Does
 
 - The **resource block** defines an Azure Resource Group named myrg-1.
+
 - The resource group will be created in the **East US** region.
+
 - The **name** of the resource group is set to "myrg-1", and it will be uniquely identified within the Terraform configuration as azurerm_resource_group.myrg.
 
 ### Additional Notes
 
 - **Resource groups** are essential in Azure as they act as containers for managing and organizing resources. They allow you to manage, delete, and apply policies to groups of resources collectively.
+
 - **The naming and location properties** are crucial since Azure requires a unique name for each resource group within a subscription, and the region specifies the physical location for data storage.
 
 With this block, Terraform will use the Azure Resource Manager (ARM) provider (azurerm) to create a resource group named "myrg-1" in the "East US" region.
