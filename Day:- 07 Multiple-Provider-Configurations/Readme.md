@@ -55,7 +55,7 @@ When a resource needs to use a specific provider configuration (non-default), yo
 
 **Example of Referencing a Non-Default Provider**
  
-  # Provider-2: Create a resource group in the West US region using the "provider2-westus" provider
+  Provider-2: Create a resource group in the West US region using the "provider2-westus" provider
 
    resource "azurerm_resource_group" "myrg2" 
    {
