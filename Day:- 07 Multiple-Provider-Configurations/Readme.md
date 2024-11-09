@@ -19,7 +19,9 @@ Terraform typically uses a *default* provider configuration. However, there are 
 
 - This is the standard configuration that resources will use if no explicit provider is specified.
      
-   - Example: # Provider-1 for East US (Default Provider)
+   - Example:
+   
+   - # Provider-1 for East US (Default Provider)
      
      provider "azurerm" {
        features {}
@@ -30,7 +32,9 @@ Terraform typically uses a *default* provider configuration. However, there are 
 
 - You can create another provider configuration with different settings and give it an alias. The alias helps to reference this specific configuration in resource definitions.
 
-    - Example: # Provider-2 for West US Region
+    - Example:
+    
+    - # Provider-2 for West US Region
    
      provider "azurerm" {
        features {
