@@ -4,13 +4,13 @@ description: Learn about Terraform Provider Dependency Lock File
 ---
 
 ## Step-01: Introduction
-- Understand the importance of Dependency Lock File which is introduced in `Terraform v0.14` onwards
+- Understand the importance of the Dependency Lock File which is introduced in `Terraform v0.14` onwards
 
 ## Step-02: Create or Review c1-versions.tf
 - c1-versions.tf
-1. Discuss about Terraform, Azure and Random Pet Provider Versions
-2. Discuss about Azure RM Provider version `1.44.0`
-3. In provider block, `features {}` block is not present in Azure RM provider verion `1.44.0`
+1. Discuss Terraform, Azure, and Random Pet Provider Versions
+2. Discuss Azure RM Provider version `1.44.0`
+3. In the provider block, the `features {}` block is not present in Azure RM provider version `1.44.0`
 4. Also discuss about Random Provider
 4. [Azure Provider v1.44.0 Documentation](https://registry.terraform.io/providers/hashicorp/azurerm/1.44.0/docs)
 ```t
