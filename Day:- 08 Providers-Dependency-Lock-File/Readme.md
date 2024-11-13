@@ -20,7 +20,7 @@ description: Learn about Terraform Provider Dependency Lock File
 
 4. [Azure Provider v1.44.0 Documentation](https://registry.terraform.io/providers/hashicorp/azurerm/1.44.0/docs)
 
-# Terraform Block
+Terraform Block
 
 terraform {
   required_version = ">= 1.0.0"
@@ -37,10 +37,10 @@ terraform {
   }
 }
 
-# Provider Block
+Provider Block
 
 provider "azurerm" {
-# features {}          # Commented for Dependency Lock File Demo
+features {}           Commented for Dependency Lock File Demo
 }
 
 ## Step-03: Create or Review c2-resource-group-storage-container.tf
@@ -55,14 +55,14 @@ provider "azurerm" {
 
 4. Discuss about [Azure Storage Account Resource - v1.44.0](https://registry.terraform.io/providers/hashicorp/azurerm/1.44.0/docs/resources/storage_account)
 
-# Resource-1: Azure Resource Group
+Resource-1: Azure Resource Group
 
 resource "azurerm_resource_group" "myrg1" {
   name = "myrg-1"
   location = "East US"
 }
 
-# Resource-2: Random String 
+ Resource-2: Random String 
 
 resource "random_string" "myrandom" {
   length = 16
@@ -70,7 +70,7 @@ resource "random_string" "myrandom" {
   special = false
 }
 
-# Resource-3: Azure Storage Account 
+Resource-3: Azure Storage Account 
 
 resource "azurerm_storage_account" "mysa" {
   name                     = "mysa${random_string.myrandom.id}"
@@ -106,7 +106,7 @@ terraform plan
 
 # Create Resources using Terraform Apply
 terraform apply
-```
+
 - Discuss the following 3 items in `.terraform.lock.hcl`
 
 1. Provider Version
@@ -118,7 +118,7 @@ terraform apply
 
 - For Azure Provider, with version constraint `version = ">= 2.0.0"`, it is going to upgrade to latest version with command `terraform init -upgrade` 
 
-# c1-versions.tf - Comment 1.44.0  and Uncomment ">= 2.0"
+ c1-versions.tf - Comment 1.44.0  and Uncomment ">= 2.0"
       #version = "1.44.0"
       version = ">= 2.0" 
 
@@ -169,7 +169,7 @@ Ankit-MacBook-Pro:terraform-manifests kdaida$
 
 # Comment account_encryption_source Attribute
 
-# Resource-3: Azure Storage Account
+Resource-3: Azure Storage Account
 
 resource "azurerm_storage_account" "mysa" {
   name                     = "mysa${random_string.myrandom.id}"
@@ -191,7 +191,7 @@ resource "azurerm_storage_account" "mysa" {
 
 - Please Uncomment `features {}` block
 
-# Provider Block
+ Provider Block
 
 provider "azurerm" {
  features {}          
