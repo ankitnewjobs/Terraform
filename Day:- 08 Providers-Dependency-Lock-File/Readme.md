@@ -4,13 +4,13 @@ description: Learn about Terraform Provider Dependency Lock File
 ---
 
 ## Step-01: Introduction
-- Understand the importance of Dependency Lock File which is introduced in `Terraform v0.14` onwards
+- Understand the importance of the Dependency Lock File which is introduced in `Terraform v0.14` onwards
 
 ## Step-02: Create or Review c1-versions.tf
 - c1-versions.tf
-1. Discuss about Terraform, Azure and Random Pet Provider Versions
-2. Discuss about Azure RM Provider version `1.44.0`
-3. In provider block, `features {}` block is not present in Azure RM provider verion `1.44.0`
+1. Discuss Terraform, Azure, and Random Pet Provider Versions
+2. Discuss Azure RM Provider version `1.44.0`
+3. In the provider block, the `features {}` block is not present in Azure RM provider version `1.44.0`
 4. Also discuss about Random Provider
 4. [Azure Provider v1.44.0 Documentation](https://registry.terraform.io/providers/hashicorp/azurerm/1.44.0/docs)
 ```t
@@ -73,7 +73,7 @@ resource "azurerm_storage_account" "mysa" {
 ```t
 # We will start with Base v1.44 `.terraform.lock.hcl` file
 cp .terraform.lock.hcl-v1.44 .terraform.lock.hcl
-Observation: This will ensure, when we run terraform init, everything related to providers will be picked from this file
+Observation: This will ensure, that when we run terraform init, everything related to providers will be picked from this file
 
 # Initialize Terraform
 terraform init
@@ -90,14 +90,14 @@ terraform plan
 # Create Resources using Terraform Apply
 terraform apply
 ```
-- Discuss about following 3 items in `.terraform.lock.hcl`
+- Discuss following 3 items in `.terraform.lock.hcl`
 1. Provider Version
 2. Version Constraints 
 3. Hashes
 
 
 ## Step-05: Upgrade the Azure provider version
-- For Azure Provider, with version constraint `version = ">= 2.0.0"`, it is going to upgrade to latest version with command `terraform init -upgrade` 
+- For Azure Provider, with version constraint `version = ">= 2.0.0"`, it is going to upgrade to the latest version with the command `terraform init -upgrade` 
 ```t
 # c1-versions.tf - Comment 1.44.0  and Uncomment ">= 2.0"
       #version = "1.44.0"
@@ -113,7 +113,7 @@ cp .terraform.lock.hcl terraform.lock.hcl-V2.X.X
 1. Discuss about Azure Provider Versions
 2. Compare `.terraform.lock.hcl-v1.44` & `terraform.lock.hcl-V2.X.X`
 
-## Step-06: Run Terraform Apply with latest Azure Provider
+## Step-06: Run Terraform Apply with the latest Azure Provider
 - Should fail due to argument `account_encryption_source` for Resource `azurerm_storage_account` not present in Azure v2.x provider when compared to Azure v1.x provider
 ```t
 # Terraform Plan
@@ -137,8 +137,8 @@ Kalyans-MacBook-Pro:terraform-manifests kdaida$
 ```
 
 ## Step-07: Comment account_encryption_source
-- When we do a major version upgrade to providers, it might break few features. 
-- So with `.terraform.lock.hcl`, we can avoid this type of issues by maintaining our Provider versions consistent across any machine by having a copy of `.terraform.lock.hcl` file with us. 
+- When we do a major version upgrade to providers, it might break a few features. 
+- So with `.terraform.lock.hcl`, we can avoid this type of issue by maintaining our Provider versions consistent across any machine by having a copy of `.terraform.lock.hcl` file with us. 
 ```t
 # Comment account_encryption_source Attribute
 # Resource-3: Azure Storage Account 
@@ -157,7 +157,7 @@ resource "azurerm_storage_account" "mysa" {
 ```
 
 ## Step-08: Uncomment or add features block in Azure Provider Block
-- As part of Azure Provider 2.x.x latest versions, it needs `features {}` block in Provider block. 
+- As part of Azure Provider 2.x.x latest versions, it needs `features {}` block in the Provider block. 
 - Please Uncomment `features {}` block
 ```t
 # Provider Block
@@ -181,7 +181,7 @@ Kalyans-MacBook-Pro:terraform-manifests kdaida$
 ```
 
 ## Step-09: Run Terraform Plan and Apply
-- Everything should pass and Storage account should migrate to `StorageV2` 
+- Everything should pass and the Storage account should migrate to `StorageV2` 
 - Also Azure Provider v2.x default changes should be applied
 ```t
 # Terraform Plan
@@ -206,13 +206,13 @@ Observation:  We are not removing files named ".terraform.lock.hcl-V2.X.X, .terr
 rm -rf terraform.tfstate*
 ```
 
-## Step-11: To put back this to original demo state for students to have seamless demo
+## Step-11: To put back this to the original demo state for students to have a seamless demo
 ```t
 # Change-1: c1-versions.tf
       version = "1.44.0"
       #version = ">= 2.0" 
 
-# Change-2: c1-versions.tf: Features block in commented state
+# Change-2: c1-versions.tf: Features block in the commented state
 # features {}          
 
 # Change-3: c2-resource-group-storage-container.tf 
