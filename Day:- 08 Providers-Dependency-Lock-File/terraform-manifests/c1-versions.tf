@@ -53,6 +53,7 @@ terraform {
 - **required_version = ">= 0.15"**: Specifies that the configuration requires Terraform version 0.15 or higher. This ensures that the user runs the configuration using an appropriate version of Terraform that supports the required features.
   
 - **required_providers**: Lists the providers necessary for this configuration and their versions:
+
 - **azurerm**:
 
 - ** source = "hashicorp/azurerm"**: Specifies the source of the provider as the official HashiCorp registry.
