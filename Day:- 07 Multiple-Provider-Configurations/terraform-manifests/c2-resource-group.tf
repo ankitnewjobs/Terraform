@@ -21,7 +21,7 @@ Additional Note:
 provider = <PROVIDER NAME>.<ALIAS NAME>  # This is a Meta-Argument from the Resources Section nothing but a Special Argument
 */
 
-----------
+------------------------------------------------------------------------------------------------------------------------
 
 ### Explanation of the Terraform Code for Resource Group Creation
 
