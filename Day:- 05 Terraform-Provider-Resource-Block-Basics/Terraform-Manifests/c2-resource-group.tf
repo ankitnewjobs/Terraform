@@ -8,10 +8,11 @@ resource "azurerm_resource_group" "myrg"
   location = "East US"
 }
 
+--------------------------------------------------------------------------------------------------------------------------
+
 This Terraform code defines a **Resource Block** that creates a resource group in Microsoft Azure using the `azurerm` provider. Let's break down each component to understand how it works.
 
 ### Code Explanation
-
 
 # Resource Block
 
