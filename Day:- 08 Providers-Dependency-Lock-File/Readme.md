@@ -230,3 +230,131 @@ rm -rf terraform.tfstate*
 - [Dependency Lock File](https://www.terraform.io/docs/configuration/dependency-lock.html)
 
 - [Terraform New Features in v0.14](https://learn.hashicorp.com/tutorials/terraform/provider-versioning?in=terraform/0-14)
+
+-------------------------------------------------------------------------------------------------------
+
+This guide provides a comprehensive walkthrough on working with the Terraform Dependency Lock File, introduced in Terraform v0.14, and demonstrates its importance for consistent provider versions across different environments. Below is an explanation for each step with additional details:
+
+### Step-01: Introduction
+
+- Purpose: The Dependency Lock File (.terraform.lock.hcl) ensures that when terraform init is run, the provider versions remain consistent across different environments, avoiding discrepancies that could lead to failed deployments or inconsistent behavior.
+
+### Step-02: Create or Review `c1-versions.tf`
+
+- File Overview (c1-versions.tf): This Terraform configuration file specifies the required Terraform version and provider versions.
+
+- Discussions:
+
+  1. Terraform, Azure, and Random Pet Provider Versions: Ensures that the Terraform setup uses specific versions of providers for stability.
+
+  2. Azure RM Provider v1.44.0: This version lacks certain modern features like the features {} block, which was introduced in later versions.
+
+  3. Random Provider: The `random` provider version specifies the use of random data generation functionalities.
+
+- Key Configuration Block:
+  
+  terraform {
+    required_version = ">= 1.0.0"
+    required_providers {
+      azurerm = {
+        source = "hashicorp/azurerm"
+        version = "1.44.0"
+      }
+      random = {
+        source = "hashicorp/random"
+        version = ">= 3.0"
+      }
+    }
+  }
+  
+- **Provider Block**:
+
+   - The features {} block is intentionally commented out for the initial setup, as it is unsupported in version 1.44.0.
+
+### Step-03: Create or Review c2-resource-group-storage-container.tf
+
+-  Resource Configurations:
+ 
+  1. **Azure Resource Group**: Demonstrates creating an Azure resource group.
+  2. **Random String**: Generates a unique, simple string for naming purposes.
+  3. **Azure Storage Account**:
+     - Discusses creating a storage account with essential attributes like replication type and tags.
+- Key Example:
+  
+  resource "azurerm_storage_account" "mysa" {
+    name                     = "mysa${random_string.myrandom.id}"
+    resource_group_name      = azurerm_resource_group.myrg1.name
+    location                 = azurerm_resource_group.myrg1.location
+    account_tier             = "Standard"
+    account_replication_type = "GRS"
+    account_encryption_source = "Microsoft.Storage"  // This might not be valid for v2.x provider
+    tags = {
+      environment = "staging"
+    }
+  }
+  
+
+### Step-04: Initialize and Apply the Configuration
+
+- Steps:
+  
+  - Copy the .terraform.lock.hcl from version 1.44 to preserve initial provider data.
+  - Run terraform init to initialize the configuration and read the lock file.
+  - Use diff to compare lock files to observe changes.
+
+- Validation & Execution:
+  - Validate the configuration with terraform validate.
+  - Run the terraform plan and `terraform apply` to create resources.
+
+- Key Aspects in .terraform.lock.hcl:
+  1. Provider Version: Specifies the exact version locked for each provider.
+  2. Version Constraints: Dictates acceptable provider version ranges.
+  3. Hashes: Used to verify provider authenticity.
+
+### Step-05: Upgrade the Azure Provider Version
+
+- Process:
+- Update the provider version constraint in c1-versions.tf to >= 2.0.0 and run terraform init -upgrade.
+- Back up the updated lock file as `terraform.lock.hcl-V2.X.X` for tracking.
+- Goal: Ensure the new provider version and its behavior are considered.
+
+### Step-06: Run Terraform Apply with the Latest Azure Provider
+
+- Expected Outcome:
+  - Running terraform plan or apply might produce errors due to deprecated or unsupported arguments like account_encryption_source.
+
+- Typical Error:
+  
+  Error: Unsupported argument
+  │   on c2-resource-group-storage-container.tf line 21, in resource "azurerm_storage_account" "mysa":
+  │   21:   account_encryption_source = "Microsoft.Storage"
+  
+
+### Step-07: Comment account_encryption_source
+
+- Reason: Some attributes may be unsupported after a major provider version upgrade. Maintaining the lock file avoids such breakages during deployment across environments.
+
+### Step-08: Uncomment or Add features {} Block
+
+- Necessity: The features {} block is required in provider configurations for Azure RM provider versions 2.x.x and above to enable advanced provider features.
+
+### Step-09: Run Terraform Plan and Apply
+
+- Final Check: Execute the terraform plan and terraform apply to ensure the new configuration runs smoothly with updated resources and versions.
+
+### Step-10: Clean-Up
+
+- Commands:
+- terraform destroy: Destroys created resources.
+- Delete auxiliary files like .terraform and .terraform.lock.hcl but keep backups for demo purposes.
+- Purpose: Resets the environment to its original state.
+
+### Step-11: Reset Demo State
+
+- Revert Changes:
+  
+  - Update c1-versions.tf to use version 1.44.0 and ensure that the features {} block and unsupported attributes are in a commented state.
+
+- Objective: Ensure a smooth demo experience for users.
+
+These steps collectively demonstrate how to manage and apply Terraform configurations effectively, maintaining provider versions through .terraform.lock.hcl and handling version upgrades seamlessly.
