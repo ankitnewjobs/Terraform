@@ -7,47 +7,14 @@ description: Learn about Terraform Provider Dependency Lock File
 - Understand the importance of the Dependency Lock File which is introduced in `Terraform v0.14` onwards
 
 ## Step-02: Create or Review c1-versions.tf
-
 - c1-versions.tf
-  
 1. Discuss Terraform, Azure, and Random Pet Provider Versions
-
-Terraform is an open-source infrastructure as code (IaC) tool that enables users to define and provision data center infrastructure using a declarative configuration language called HashiCorp Configuration Language (HCL). Terraform supports various cloud providers, allowing users to manage infrastructure on different platforms, such as Azure.
-
-Azure RM Provider is a specific Terraform provider that allows you to manage Microsoft Azure services and resources. The provider versions in Terraform are essential because they specify which features, resources, and bug fixes are available. It is important to pin the version of the provider in configurations to ensure compatibility and avoid unexpected changes when newer versions are released.
-
-The Random Pet Provider in Terraform is part of the HashiCorp random provider. This provider can generate random values, such as strings or numbers, which are often used for resource naming or testing infrastructure deployments. It includes resources like random_pet, which generates random names with a combination of words (e.g., delightful-dolphin).
-
 2. Discuss Azure RM Provider version `1.44.0`
-
-The Azure RM Provider version 1.44.0 is an older version of the Azure Resource Manager (RM) provider for Terraform. This version includes a specific set of features and may have limitations or lack some features available in later versions. Users working with older versions like 1.44.0 may miss out on the latest enhancements, new resource types, and performance improvements.
-
-The significance of using an older version, such as 1.44.0, could be due to project dependencies, compatibility with existing codebases, or known bugs in newer releases that impact the user's deployment. It is essential to review the provider's changelog and documentation for detailed differences between versions and potential migration considerations.
-
 3. In the provider block, the `features {}` block is not present in Azure RM provider version `1.44.0`
-
-The features {} block in Terraform's Azure RM provider is used to enable or configure specific options for the provider. In later versions of the Azure RM provider (e.g., version 2.x.x and above), the features {} block is typically mandatory to define certain configurations and optimizations.
-
-However, in Azure RM Provider version 1.44.0, the features {} block was not a requirement and did not exist in the configuration. This means that configurations using version 1.44.0 would not need to include this block, and omitting it would not result in configuration errors. Upgrading to later versions may require adding the features {} block to maintain compatibility and leverage new functionalities.
-
 4. Also discuss about Random Provider
-
-The Random Provider in Terraform is a tool for creating random values to use in Terraform configurations. It includes resources like random_id, random_pet, random_password, and random_integer. These resources help generate random or unique strings, names, or numbers that are useful for:
-
-Ensuring unique resource names to avoid naming conflicts.
-
-Generating secure passwords or tokens.
-
-Creating data for testing or demonstration purposes.
-
-For instance, the random_pet resource creates a name composed of two or more random words, making it useful for assigning fun and unique names to resources without user input. It is a simple way to introduce randomness or entropy into your infrastructure as needed.
-
-The random provider is maintained by HashiCorp and is included in many practical infrastructure configurations for generating unique names or values in an automated and programmatic manner.
-
-5. [Azure Provider v1.44.0 Documentation](https://registry.terraform.io/providers/hashicorp/azurerm/1.44.0/docs)
-
+4. [Azure Provider v1.44.0 Documentation](https://registry.terraform.io/providers/hashicorp/azurerm/1.44.0/docs)
+```t
 # Terraform Block
-
 terraform {
   required_version = ">= 1.0.0"
   required_providers {
@@ -63,60 +30,23 @@ terraform {
   }
 }
 
-
-# Key Components Explained:
-
-- required_version = ">= 1.0.0":
-
-This sets the minimum version of Terraform required to run the configuration. The >= 1.0.0 constraint ensures that the Terraform version must be 1.0.0 or higher. This helps ensure compatibility with features and syntax that might be available only in certain versions.
-
-- required_providers Block:
-
-This block defines the external providers that Terraform will use. Each provider has a source, indicating where the provider can be found (e.g., the HashiCorp registry), and a version constraint that specifies which versions of the provider are acceptable for use.
-
-# Providers Explained:
-
-- azurerm Provider:
-
-source = "hashicorp/azurerm": Specifies that the Azure Resource Manager (AzureRM) provider is hosted by HashiCorp and should be sourced from the official registry.
-
-version = "1.44.0": Indicates that this configuration specifically requires version 1.44.0 of the AzureRM provider. This version constraint ensures that the exact version 1.44.0 is used. This can be necessary for compatibility with older code that relies on that version.
-
-# version = ">= 2.0" (commented line): This line, although commented out, suggests a configuration change to require version 2.0 or higher of the AzureRM provider. The comment could indicate that it’s there for demonstration purposes, such as dependency lock file creation or future upgrades.
-
-- random Provider:
-
-source = "hashicorp/random": Specifies that the random provider should be fetched from the HashiCorp registry.
-
-version = ">= 3.0": Indicates that the configuration is compatible with version 3.0 or higher of the random provider. This ensures that newer features and updates included in 3.0 or later versions can be used while still supporting backward compatibility.
-
-# Purpose of Defining required_providers:
-
-The required_providers block:
-
-Ensures that Terraform installs the correct versions of providers, preventing version mismatches or unintended changes.
-Helps maintain consistent behavior across different environments by locking provider versions.
-
-- Additional Notes:
-
-Dependency Lock File Demo: The commented # version = ">= 2.0" line may be there to demonstrate how changing the version constraint could impact the terraform.lock.hcl file, which Terraform uses to lock provider versions to ensure reproducible builds.
-
-By setting version constraints (=, >=, etc.), you control the range of acceptable versions. Using = "1.44.0" means only that exact version is allowed, whereas >= allows flexibility for newer versions that meet or exceed the specified version.
-
-This configuration helps ensure that infrastructure deployments are consistent, compatible with specified versions, and maintainable over time.
-
 # Provider Block
 provider "azurerm" {
 # features {}          # Commented for Dependency Lock File Demo
 }
 
 ## Step-03: Create or Review c2-resource-group-storage-container.tf
+
 - c2-resource-group-storage-container.tf
+
 1. Discuss about [Azure Resource Group Resource](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/resource_group)
+
 2. Discuss about [Random String Resource](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/string)
+
 3. Discuss about [Azure Storage Account Resource - Latest](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/storage_account)
+
 4. Discuss about [Azure Storage Account Resource - v1.44.0](https://registry.terraform.io/providers/hashicorp/azurerm/1.44.0/docs/resources/storage_account)
-```t
+
 # Resource-1: Azure Resource Group
 resource "azurerm_resource_group" "myrg1" {
   name = "myrg-1"
@@ -148,7 +78,7 @@ resource "azurerm_storage_account" "mysa" {
 ```t
 # We will start with Base v1.44 `.terraform.lock.hcl` file
 cp .terraform.lock.hcl-v1.44 .terraform.lock.hcl
-Observation: This will ensure, that when we run terraform init, everything related to providers will be picked from this file
+Observation: This will ensure, when we run terraform init, everything related to providers will be picked from this file
 
 # Initialize Terraform
 terraform init
@@ -165,14 +95,14 @@ terraform plan
 # Create Resources using Terraform Apply
 terraform apply
 ```
-- Discuss following 3 items in `.terraform.lock.hcl`
+- Discuss the following 3 items in `.terraform.lock.hcl`
 1. Provider Version
 2. Version Constraints 
 3. Hashes
 
 
 ## Step-05: Upgrade the Azure provider version
-- For Azure Provider, with version constraint `version = ">= 2.0.0"`, it is going to upgrade to the latest version with the command `terraform init -upgrade` 
+- For Azure Provider, with version constraint `version = ">= 2.0.0"`, it is going to upgrade to latest version with the command `terraform init -upgrade` 
 ```t
 # c1-versions.tf - Comment 1.44.0  and Uncomment ">= 2.0"
       #version = "1.44.0"
@@ -232,7 +162,7 @@ resource "azurerm_storage_account" "mysa" {
 ```
 
 ## Step-08: Uncomment or add features block in Azure Provider Block
-- As part of Azure Provider 2.x.x latest versions, it needs `features {}` block in the Provider block. 
+- As part of Azure Provider 2.x.x latest versions, it needs the `features {}` block in the Provider block. 
 - Please Uncomment `features {}` block
 ```t
 # Provider Block
@@ -281,7 +211,7 @@ Observation:  We are not removing files named ".terraform.lock.hcl-V2.X.X, .terr
 rm -rf terraform.tfstate*
 ```
 
-## Step-11: To put back this to the original demo state for students to have a seamless demo
+## Step-11: To put back this to the original demo state for students to have the seamless demo
 ```t
 # Change-1: c1-versions.tf
       version = "1.44.0"
@@ -296,5 +226,7 @@ rm -rf terraform.tfstate*
 
 ## References
 - [Random Pet Provider](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/pet)
+
 - [Dependency Lock File](https://www.terraform.io/docs/configuration/dependency-lock.html)
+
 - [Terraform New Features in v0.14](https://learn.hashicorp.com/tutorials/terraform/provider-versioning?in=terraform/0-14)
