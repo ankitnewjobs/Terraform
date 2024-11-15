@@ -276,9 +276,13 @@ This guide provides a comprehensive walkthrough on working with the Terraform De
 -  Resource Configurations:
  
   1. **Azure Resource Group**: Demonstrates creating an Azure resource group.
+ 
   2. **Random String**: Generates a unique, simple string for naming purposes.
+  
   3. **Azure Storage Account**:
-     - Discusses creating a storage account with essential attributes like replication type and tags.
+
+      - Discusses creating a storage account with essential attributes like replication type and tags.
+
 - Key Example:
   
   resource "azurerm_storage_account" "mysa" {
@@ -299,29 +303,40 @@ This guide provides a comprehensive walkthrough on working with the Terraform De
 - Steps:
   
   - Copy the .terraform.lock.hcl from version 1.44 to preserve initial provider data.
-  - Run terraform init to initialize the configuration and read the lock file.
+
+   - Run terraform init to initialize the configuration and read the lock file.
+
   - Use diff to compare lock files to observe changes.
 
 - Validation & Execution:
+
   - Validate the configuration with terraform validate.
+
   - Run the terraform plan and `terraform apply` to create resources.
 
 - Key Aspects in .terraform.lock.hcl:
+
   1. Provider Version: Specifies the exact version locked for each provider.
+
   2. Version Constraints: Dictates acceptable provider version ranges.
+
   3. Hashes: Used to verify provider authenticity.
 
 ### Step-05: Upgrade the Azure Provider Version
 
 - Process:
+
 - Update the provider version constraint in c1-versions.tf to >= 2.0.0 and run terraform init -upgrade.
+
 - Back up the updated lock file as `terraform.lock.hcl-V2.X.X` for tracking.
+
 - Goal: Ensure the new provider version and its behavior are considered.
 
 ### Step-06: Run Terraform Apply with the Latest Azure Provider
 
 - Expected Outcome:
-  - Running terraform plan or apply might produce errors due to deprecated or unsupported arguments like account_encryption_source.
+
+   - Running terraform plan or apply might produce errors due to deprecated or unsupported arguments like account_encryption_source.
 
 - Typical Error:
   
@@ -345,8 +360,11 @@ This guide provides a comprehensive walkthrough on working with the Terraform De
 ### Step-10: Clean-Up
 
 - Commands:
+
 - terraform destroy: Destroys created resources.
+
 - Delete auxiliary files like .terraform and .terraform.lock.hcl but keep backups for demo purposes.
+
 - Purpose: Resets the environment to its original state.
 
 ### Step-11: Reset Demo State
