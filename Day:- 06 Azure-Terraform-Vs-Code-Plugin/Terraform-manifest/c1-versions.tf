@@ -15,7 +15,7 @@ features {}
 }
 #
 
-----
+------------------------------------------------------------------------------------------------------------------------
 
 This Terraform configuration sets up and configures the requirements and provider for working with Azure resources. Let's go through each section in detail.
 
