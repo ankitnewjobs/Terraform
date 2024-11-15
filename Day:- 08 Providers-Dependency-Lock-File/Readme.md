@@ -233,6 +233,8 @@ rm -rf terraform.tfstate*
 
 -------------------------------------------------------------------------------------------------------
 
+# Explanation: - 
+
 This guide provides a comprehensive walkthrough on working with the Terraform Dependency Lock File, introduced in Terraform v0.14, and demonstrates its importance for consistent provider versions across different environments. Below is an explanation for each step with additional details:
 
 ### Step-01: Introduction
