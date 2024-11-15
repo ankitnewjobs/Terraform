@@ -30,7 +30,7 @@ resource "azurerm_storage_account" "mysa"
   }
 }
 
------------------
+-----------------------------------------------------------------------------------------------------------------------
 
 This code snippet represents a Terraform configuration that defines three resources: an Azure Resource Group, a Random String, and an Azure Storage Account. Below is a detailed explanation of each resource and its components:
 
