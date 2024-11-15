@@ -91,12 +91,14 @@ az account set --subscription="SUBSCRIPTION_ID"
 - [Download Git Client](https://git-scm.com/downloads)
 - This is required when we are working with `Terraform Modules`
 
-![1](https://github.com/user-attachments/assets/38849d11-2781-4739-a369-2c3c468f509f)
-
 
 ![{23030C56-488D-41E4-94B9-B2E5A34DEAD3}](https://github.com/user-attachments/assets/d0b95b05-c092-4737-b115-7883e7850232)
 
 ![{5D7046F2-AC72-4DD2-872F-077242E4D2D3}](https://github.com/user-attachments/assets/1c3c37d7-86ff-456f-aa61-f792deb89c33)
+
+![1](https://github.com/user-attachments/assets/38849d11-2781-4739-a369-2c3c468f509f)
+
+
 
 ## Step-07: WindowsOS: Terraform & Azure CLI Install
 
