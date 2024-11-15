@@ -94,11 +94,9 @@ az account set --subscription="SUBSCRIPTION_ID"
 ![1](https://github.com/user-attachments/assets/38849d11-2781-4739-a369-2c3c468f509f)
 
 
-![{5D7046F2-AC72-4DD2-872F-077242E4D2D3}](https://github.com/user-attachments/assets/1c3c37d7-86ff-456f-aa61-f792deb89c33)
-
 ![{23030C56-488D-41E4-94B9-B2E5A34DEAD3}](https://github.com/user-attachments/assets/d0b95b05-c092-4737-b115-7883e7850232)
 
-![{F0CFD3B5-CAE9-4AE7-8758-1E379489CBF1}](https://github.com/user-attachments/assets/06668007-d0f0-4617-9bd0-9a71248d1c62)
+![{5D7046F2-AC72-4DD2-872F-077242E4D2D3}](https://github.com/user-attachments/assets/1c3c37d7-86ff-456f-aa61-f792deb89c33)
 
 ## Step-07: WindowsOS: Terraform & Azure CLI Install
 
