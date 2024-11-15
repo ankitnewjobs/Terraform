@@ -42,6 +42,8 @@ Play with Provider Version (as of today latest version is 2.64.0)
       version = ">= 2.0.0, <= 2.64.0"     
 */
 
+-----------------------------------------------------------------------------------------------------------------------
+
 ## Explanation 
 
 This Terraform code snippet defines the necessary configuration for specifying the required Terraform version and the `azurerm` provider, which is used to interact with Azure resources. Let's go through each part in detail:
