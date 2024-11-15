@@ -24,7 +24,7 @@ resource "azurerm_resource_group" "my_demo_rg1"
   name = "my-demo-rg1"  
 }
 
----------
+------------------------------------------------------------------------------------------------------------------------
 # Explanation
 
 This Terraform code is written for provisioning resources on Microsoft Azure. Here’s a detailed breakdown of each block:
