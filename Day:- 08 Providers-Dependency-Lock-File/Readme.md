@@ -241,7 +241,7 @@ This guide provides a comprehensive walkthrough on working with the Terraform De
 
 - Purpose: The Dependency Lock File (.terraform.lock.hcl) ensures that when terraform init is run, the provider versions remain consistent across different environments, avoiding discrepancies that could lead to failed deployments or inconsistent behavior.
 
-### Step-02: Create or Review `c1-versions.tf`
+### Step-02: Create or Review c1-versions.tf
 
 - File Overview (c1-versions.tf): This Terraform configuration file specifies the required Terraform version and provider versions.
 
@@ -269,7 +269,7 @@ This guide provides a comprehensive walkthrough on working with the Terraform De
     }
   }
   
-- **Provider Block**:
+- Provider Block:
 
    - The features {} block is intentionally commented out for the initial setup, as it is unsupported in version 1.44.0.
 
