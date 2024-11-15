@@ -43,7 +43,7 @@ provider "azurerm"
 
 # https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs
 
---------
+-----------------------------------------------------------------------------------------------------------------------
 
 ### Explanation of the Terraform Code
 
