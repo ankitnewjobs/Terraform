@@ -20,10 +20,7 @@ resource "azurerm_subnet" "mysubnet" {
 
 resource "azurerm_public_ip" "mypublicip" {
   # Add Explicit Dependency to have this resource created only after Virtual Network and Subnet Resources are created. 
-  depends_on = [
-    azurerm_virtual_network.myvnet,
-    azurerm_subnet.mysubnet
-  ]
+  depends_on = [azurerm_virtual_network.myvnet, azurerm_subnet.mysubnet   ]
   name                = "mypublicip-1"
   resource_group_name = azurerm_resource_group.myrg.name
   location            = azurerm_resource_group.myrg.location
