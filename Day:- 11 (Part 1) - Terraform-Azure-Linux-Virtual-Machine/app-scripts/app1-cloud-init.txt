@@ -18,3 +18,74 @@ runcmd:
   - sudo mkdir /var/www/html/app1 
   - [sudo, curl, -H, "Metadata:true", --noproxy, "*", "http://169.254.169.254/metadata/instance?api-version=2020-09-01", -o, /var/www/html/app1/metadata.html]
 
+------------------------------------------------------------------------------------------------------------------------
+
+This code is a cloud-init configuration script used for setting up an environment on a Linux virtual machine (VM) during its first boot. The script helps automate package installation, file creation, and initial command execution. Let's break down each section:
+
+### 1. Header Section
+yaml
+#cloud-config
+
+- #cloud-config: Indicates that this file is a cloud-init configuration. Cloud-init is a widely used tool for automating the initial setup of cloud instances.
+
+### 2. Package Installation
+yaml
+package_upgrade: false
+packages:
+  - httpd
+
+- package_upgrade: false:
+- Prevents automatic updates of all packages on the system during provisioning.
+- packages::
+- Specifies a list of packages to be installed on the VM.
+- httpd: Installs the Apache HTTP Server, enabling the VM to serve web pages.
+
+### 3. File Creation
+yaml
+write_files:
+  - owner: root:root 
+    path: /var/www/html/index.html
+    content: |
+      <h1>Welcome to StackSimplify - APP-1</h1>
+  - owner: root: root 
+    path: /var/www/html/app1/index.html
+    content: |
+      <!DOCTYPE html> <html> <body style="background-color:rgb(250, 210, 210);"> <h1>Welcome to Stack Simplify - APP-1</h1> <p>Terraform Demo</p> <p>Application Version: V1</p> </body></html>
+
+- write_files:`: Creates and writes content to specified files during the VM's initialization.
+
+- First file block:
+- owner: root:root: Sets the ownership of the file to the root user and group.
+- path: /var/www/html/index.html: Specifies the location where the file will be created.
+- content:: The content of the HTML file, which displays a simple "Welcome" message when accessed.
+
+- Second file block: Similar to the first, but creates a more complex HTML file at /var/www/html/app1/index.html with a styled background and additional content.
+
+### 4. Commands to Run After Initialization
+yaml
+runcmd:
+  - sudo systemctl start httpd  
+  - sudo systemctl enable httpd
+  - sudo systemctl stop firewalld
+  - sudo mkdir /var/www/html/app1 
+  - [sudo, curl, -H, "Metadata:true", --noproxy, "*", "http://169.254.169.254/metadata/instance?api-version=2020-09-01", -o, /var/www/html/app1/metadata.html]
+
+- runcmd:: Lists commands to be executed in sequence after the VM's boot.
+
+- Commands:
+  - sudo systemctl start httpd: Starts the Apache HTTP server so the web server can handle incoming HTTP requests.
+  - sudo systemctl enable httpd: Ensures that Apache starts on boot.
+  - sudo systemctl stop firewalld: Stops the firewall service to allow external access to the web server without restrictions (use cautiously, as it can pose security risks).
+  - sudo mkdir /var/www/html/app1: Creates a directory named app1 under the web server's root directory to host additional content.
+  - [sudo, curl, -H, "Metadata:true", --noproxy, "*", "http://169.254.169.254/metadata/instance?api-version=2020-09-01", -o, /var/www/html/app1/metadata.html]:
+  - Runs the curl command to fetch instance metadata from the Azure Instance Metadata Service (AIMS).
+  - The metadata contains information about the running VM instance.
+  - The command saves the metadata in the /var/www/html/app1/metadata.html file, making it accessible from the web server.
+
+### Summary
+
+- This cloud-init script:
+  - Installs Apache HTTP Server.
+  - Creates and writes custom HTML files to specific locations for web page display.
+  - Runs essential commands to start and configure Apache and manage firewall settings.
+  - Retrieves and saves instance metadata for display or debugging purposes.
