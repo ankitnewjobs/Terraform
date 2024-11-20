@@ -21,6 +21,8 @@ terraform {
 
 -----------------------------------------------------------------------------------------------------------------------
 
+# Explanation: - 
+
 ### Block 1: Terraform Settings Block
 
 - This block sets up Terraform's requirements and backend settings, required_version: Ensures you’re using Terraform version 1.0.0 or higher.
