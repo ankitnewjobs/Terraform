@@ -46,6 +46,8 @@ resource "azurerm_network_interface" "myvmnic" {
 
 ------------------------------------------------------------------------------------------------------------------------
 
+# Explanation: - 
+
 Let's break down each part of the code in detail:
 
 ### 1. Creating a Virtual Network
