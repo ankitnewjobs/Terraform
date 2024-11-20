@@ -18,6 +18,8 @@ provider "azurerm" {
 
 --------------------------------------------------------------------------------------------------------------------------
 
+# Explanation: - 
+
 The provided Terraform code is foundational for managing infrastructure in Azure and is divided into two main blocks: Terraform Block and Provider Block. Here's a detailed breakdown of each part:
 
 ### Terraform Block
