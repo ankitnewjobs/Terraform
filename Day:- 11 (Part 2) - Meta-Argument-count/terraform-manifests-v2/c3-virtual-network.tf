@@ -48,47 +48,45 @@ resource "azurerm_network_interface" "myvmnic" {
 
 This Terraform code snippet provisions an Azure infrastructure consisting of a Virtual Network (VNet), a Subnet, Public IP addresses, and Network Interfaces (NICs). Below is a detailed explanation of each resource block:
 
----
+### 1. Virtual Network (VNet)
 
-### 1. **Virtual Network (VNet)**
-```hcl
 resource "azurerm_virtual_network" "myvnet" {
   name                = "myvnet-1"
   address_space       = ["10.0.0.0/16"]
   location            = azurerm_resource_group.myrg.location
   resource_group_name = azurerm_resource_group.myrg.name
 }
-```
 
-- **Purpose**: Creates a Virtual Network in Azure.
-- **Key Attributes**:
-  - **`name`**: Specifies the name of the VNet, here `"myvnet-1"`.
-  - **`address_space`**: Defines the range of IP addresses available within the VNet, here `10.0.0.0/16`, which allows 65,536 IP addresses.
-  - **`location`**: The Azure region (e.g., `East US`) derived from the resource group.
-  - **`resource_group_name`**: Specifies the name of the resource group to associate this VNet with.
+- Purpose: Creates a Virtual Network in Azure.
 
----
+- Key Attributes:
 
-### 2. **Subnet**
-```hcl
+  - name: Specifies the name of the VNet, here "myvnet-1".
+  - address_space: Defines the range of IP addresses available within the VNet, here 10.0.0.0/16, which allows 65,536 IP addresses.
+  - location: The Azure region (e.g., `East US`) derived from the resource group.
+  - resource_group_name: Specifies the name of the resource group to associate this VNet with.
+
+### 2. ubnet
+
 resource "azurerm_subnet" "mysubnet" {
   name                 = "mysubnet-1"
   resource_group_name  = azurerm_resource_group.myrg.name
   virtual_network_name = azurerm_virtual_network.myvnet.name
   address_prefixes     = ["10.0.2.0/24"]
 }
-```
 
-- **Purpose**: Creates a Subnet within the Virtual Network.
-- **Key Attributes**:
-  - **`name`**: Name of the subnet, `"mysubnet-1"`.
-  - **`virtual_network_name`**: Links this subnet to the VNet `"myvnet-1"`.
-  - **`address_prefixes`**: Defines the IP address range within the VNet for this subnet, `10.0.2.0/24`, which supports 256 IP addresses.
+- Purpose: Creates a Subnet within the Virtual Network.
+
+- Key Attributes:
+
+  - name`**: Name of the subnet, "mysubnet-1".
+  - virtual_network_name: Links this subnet to the VNet `"myvnet-1".
+  - address_prefixes*: Defines the IP address range within the VNet for this subnet, 10.0.2.0/24` which supports 256 IP addresses.
 
 ---
 
-### 3. **Public IP Addresses**
-```hcl
+### 3.
+
 resource "azurerm_public_ip" "mypublicip" {
   count = 2
   name                = "mypublicip-${count.index}"
@@ -97,19 +95,19 @@ resource "azurerm_public_ip" "mypublicip" {
   allocation_method   = "Static"
   domain_name_label = "app1-vm-${count.index}-${random_string.myrandom.id}"  
 }
-```
 
-- **Purpose**: Creates two static Public IP addresses.
-- **Key Attributes**:
-  - **`count`**: Dynamically creates two resources (indexed as `0` and `1`).
+
+- Purpose: Creates two static Public IP addresses.
+
+- Key Attributes:
+
+  -count`**: Dynamically creates two resources (indexed as `0` and `1`).
   - **`name`**: Constructs names dynamically as `"mypublicip-0"` and `"mypublicip-1"`.
   - **`allocation_method`**: Configures the IPs to be `Static`, meaning they do not change once assigned.
   - **`domain_name_label`**: Generates a unique DNS label for each IP using the `count.index` and a random string (`random_string.myrandom.id`).
 
----
-
 ### 4. **Network Interfaces**
-```hcl
+
 resource "azurerm_network_interface" "myvmnic" {
   count = 2
   name                = "vmnic-${count.index}"
@@ -125,15 +123,18 @@ resource "azurerm_network_interface" "myvmnic" {
 }
 ```
 
-- **Purpose**: Creates two Network Interfaces (NICs), each linked to a Public IP and the Subnet.
+: Creates two Network Interfaces (NICs), each linked to a Public IP and the Subnet.
+
 - **Key Attributes**:
-  - **`count`**: Dynamically creates two NICs.
-  - **`name`**: Constructs names dynamically as `"vmnic-0"` and `"vmnic-1"`.
+
+  - count: Dynamically creates two NICs.
+  - nam Constructs names dynamically as `"vmnic-0"` and `"vmnic-1"`.
+
   - **`ip_configuration`**:
-    - **`name`**: Name of the IP configuration, `"internal"`.
-    - **`subnet_id`**: Links the NIC to the `mysubnet-1` Subnet using its ID.
-    - **`private_ip_address_allocation`**: Configures the private IP to be dynamically assigned.
-    - **`public_ip_address_id`**: Links each NIC to its corresponding Public IP using `count.index`.
+    `name`**: Name of the IP configuration, `"internal"`.
+    - subnet_id`: Links the NIC to the `mysubnet-1` Subnet using its ID.
+    - private_ip_address_allocation`**: Configures the private IP to be dynamically assigned.
+    - ss_id`**: Links each NIC to its corresponding Public IP using `count.index`.
 
 ---
 
