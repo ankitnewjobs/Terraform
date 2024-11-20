@@ -28,6 +28,8 @@ provider "azurerm"
 
 -----------------------------------------------------------------------------------------------------------------------
 
+# Explanation: - 
+
 The provided code snippet is a basic Terraform configuration file that sets up the required version of Terraform, specifies the providers needed for the project, and partially configures one of the providers. Here’s an explanation of each section:
 
 ### 1. Terraform Block
