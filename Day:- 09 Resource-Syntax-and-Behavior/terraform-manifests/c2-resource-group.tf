@@ -7,6 +7,8 @@ resource "azurerm_resource_group" "myrg" {
 
 -------------------------------------------------------------------------------------------------------------------------
 
+# Explanation: - 
+
 The resource block in Terraform is used to define and manage infrastructure components. In this case, the block is creating an Azure Resource Group, which is a logical container in Microsoft Azure used to group related resources so they can be managed as a single entity.
 
 ### Explanation of the Resource Block
