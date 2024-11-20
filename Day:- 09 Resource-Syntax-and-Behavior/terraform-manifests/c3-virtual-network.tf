@@ -22,6 +22,8 @@ resource "azurerm_subnet" "mysubnet" {
 
 ------------------------------------------------------------------------------------------------------------------------
 
+# Explanation: - 
+
 This set of resource definitions is part of a Terraform configuration designed to create networking components in Microsoft Azure. Each resource block defines specific infrastructure elements essential for setting up a virtual network environment.
 
 ### Explanation of Each Resource Block
