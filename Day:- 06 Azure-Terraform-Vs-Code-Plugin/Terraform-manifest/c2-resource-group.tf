@@ -10,6 +10,8 @@ resource "azurerm_resource_group" "myrg"
 
 ------------------------------------------------------------------------------------------------------------------------
 
+# Explanation: - 
+
 In Terraform, a **resource block** defines a specific resource that you want to create and manage in your infrastructure. In this case, the resource block is used to create an Azure resource group.
 
 Here’s a detailed breakdown of each component of the code provided:
