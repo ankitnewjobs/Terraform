@@ -28,6 +28,8 @@ resource "azurerm_linux_virtual_machine" "mylinuxvm" {
 
 ------------------------------------------------------------------------------------------------------------------------
 
+# Explanation: - 
+
 Here's a detailed explanation of the given Terraform code for creating an Azure Linux Virtual Machine (VM):
 
 ### 1. Resource Block Definition
