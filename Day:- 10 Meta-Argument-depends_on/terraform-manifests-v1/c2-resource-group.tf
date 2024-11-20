@@ -7,6 +7,8 @@ resource "azurerm_resource_group" "myrg" {
 
 --------------------------------------------------------------------------------------------------------------------------
 
+# Explanation: - 
+
 Here's a detailed explanation of the provided code that creates an Azure Resource Group using Terraform:
 
 ### Code Breakdown:
