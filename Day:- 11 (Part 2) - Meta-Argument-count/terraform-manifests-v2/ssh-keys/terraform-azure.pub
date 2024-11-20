@@ -1,1 +1,137 @@
 ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQCxA6mEMrD7t6WV9VkWDiNLLtfJo9Fjiq9BQ0QSST1lfz6khwr7ALrjddDSVELMqtDsey7otyz+GvsXYN5Pw2/aR50ym5ft7Plz7f2YmTEzhSBa5nAnin1HnGFQwiYsYF25qdUsNDvkLrkWs8Nn2n7wGT8hmrRK+NROWNb4Jl7fqdiHdmd2xbWQNMIZ3D6rjFF2rVpmTHaK7w6P1ZwWRdjH+6rcFOdS1O76zctpoVPcZ3731FxHnsBwUEucAbVdT9oKefwCsgsF8IUeKMAdHexkpB6OO/7DU4sy22yByrHBsv+e2KBAFSRNwom4Fa+kpy3iMlMklysJDtAF9Ob6EqDXuKEyFdis8rbND1byN4H/kKw9nDsLqIW3KjoUf/hBHafLbElKSsq8kRZKTHPhzVIHKfOJhX2lsOW2s2X/RnNrb1cDTqZQanqNIk/umnJZR8hG87CbxOyni04xFp89OqbRl7Pnm7+efqGVYA5wLk7EnwHnj9uI+Yxz2HyBW7Y645pNt8WuwiEabcyHe+ht40Sx8XVAayCoaA6RhZjMGP4xykBf3i7Is9VlrwgjcrYbrwJo5aF/4x7pP+6SgNKnAi39JGL1kzEHVu5FJiHxJqd8/fYNlKz+I9/e+b1IZgQchelsUPG8SYtU7/6wi70xw4fvaEkwFYRDaF1SowqDBggnFw== azureuser@myserver
+
+---------------------------------------------------------------------------------------------------------------------------
+
+The code represents an SSH public key in OpenSSH format, commonly used for key-based authentication. Let’s break it down in detail:
+
+### Structure of the SSH Public Key
+
+The public key is written in OpenSSH format, and its components are as follows:
+
+1. Key Type:
+
+   plaintext
+   ssh-rsa
+
+   - Indicates that the key is an RSA public key.
+   - RSA (Rivest-Shamir-Adleman) is a widely used public-key cryptosystem.
+   - This key will work with SSH servers supporting RSA.
+
+2. Key Data:
+
+   plaintext
+   AAAAB3NzaC1yc2EAAAADAQABAAACAQCxA6mEMrD7t6WV9VkWDiNLLtfJo9Fjiq9BQ0QSST1lfz6khwr7ALrjddDSVELMqtDsey7otyz+GvsXYN5Pw2/aR50ym5ft7Plz7f2YmTEzhSBa5nAnin1HnGFQwiYsYF25qdUsNDvkLrkWs8Nn2n7wGT8hmrRK+NROWNb4Jl7fqdiHdmd2xbWQNMIZ3D6rjFF2rVpmTHaK7w6P1ZwWRdjH+6rcFOdS1O76zctpoVPcZ3731FxHnsBwUEucAbVdT9oKefwCsgsF8IUeKMAdHexkpB6OO/7DU4sy22yByrHBsv+e2KBAFSRNwom4Fa+kpy3iMlMklysJDtAF9Ob6EqDXuKEyFdis8rbND1byN4H/kKw9nDsLqIW3KjoUf/hBHafLbElKSsq8kRZKTHPhzVIHKfOJhX2lsOW2s2X/RnNrb1cDTqZQanqNIk/umnJZR8hG87CbxOyni04xFp89OqbRl7Pnm7+efqGVYA5wLk7EnwHnj9uI+Yxz2HyBW7Y645pNt8WuwiEabcyHe+ht40Sx8XVAayCoaA6RhZjMGP4xykBf3i7Is9VlrwgjcrYbrwJo5aF/4x7pP+6SgNKnAi39JGL1kzEHVu5FJiHxJqd8/fYNlKz+I9/e+b1IZgQchelsUPG8SYtU7/6wi70xw4fvaEkwFYRDaF1SowqDBggnFw==
+   
+   - This is the actual Base64-encoded key data, representing the RSA key.
+
+3. Comment:
+
+   plaintext
+   azureuser@myserver
+   
+   - A comment to identify the key owner or the system where the key will be used.
+   - Typically, this is the username and hostname of the user or system that generated the key.
+   - You can modify this comment when creating a key pair.
+
+### Purpose of an SSH Public Key
+
+An SSH public key is part of a key pair used for secure authentication and communication in systems like Linux servers or cloud platforms. 
+
+1. Key-Based Authentication:
+
+   - The public key is added to the ~/.ssh/authorized_keys file on the server you want to access.
+   - The private key (kept secure) is used locally for authentication.
+
+2. **Secure Communication**:
+
+   - The server uses the public key to encrypt data, which can only be decrypted by the corresponding private key.
+   - This ensures secure and password-less logins.
+
+3. **Widely Used In**:
+
+   - Remote access to servers (e.g., Linux VMs).
+   - Automation tools (e.g., Terraform, Ansible).
+   - Cloud platforms like Azure, AWS, GCP.
+
+### Explanation of Components
+
+- Key Type (ssh-rsa):
+
+  - Specifies that this is an RSA public key.
+  - RSA keys are versatile and widely supported.
+
+- Key Data (Base64):
+
+  - Encodes the public key's mathematical components.
+
+  - Decoding it would yield:
+
+    - The modulus (n): The large number used in RSA calculations.
+    - The exponent (e): Used in the RSA encryption process.
+
+- Comment:
+  - Helps you identify the key, especially when managing multiple keys.
+
+### How It's Used in Practice
+
+1. Generate the Key Pair:
+
+   - Public and private keys are generated together. For example, using SSH:
+     bash
+     ssh-keygen -t rsa -b 2048 -C "azureuser@myserver"
+     
+   - The private key is stored in a file like ~/.ssh/id_rsa.
+   - The public key is stored in ~/.ssh/id_rsa.pub.
+
+2. Add Public Key to a Server:
+
+   - Add the public key to the remote server's authorized keys:
+     bash
+     echo "ssh-rsa AAAAB3... azureuser@myserver" >> ~/.ssh/authorized_keys
+     
+
+3. Connect to the Server:
+   - Use the private key to authenticate:
+     
+     ssh -i ~/.ssh/id_rsa azureuser@myserver
+     
+
+### Best Practices
+
+1. Keep the Private Key Secure:
+   - Never share the private key.
+   - Use passphrase protection.
+
+2. Use Strong Key Lengths:
+   - At least 2048 bits for RSA keys.
+
+3. Rotate Keys Regularly:
+   - Generate new keys periodically to enhance security.
+
+4. Restrict Permissions:
+
+   - Ensure the .ssh directory and files have appropriate permissions:
+     bash
+     chmod 700 ~/.ssh
+     chmod 600 ~/.ssh/authorized_keys
+     
+
+5. Centralized Key Management:
+
+   - Use tools like AWS Systems Manager, Azure Key Vault, or Vault by HashiCorp to manage keys securely.
+
+### How This Key Might Be Used
+
+- For automating deployments in a cloud environment:
+  - Terraform could embed this public key into a virtual machine resource.
+
+  - Example in Terraform:
+    
+    resource "azurerm_linux_virtual_machine" "example" {
+      admin_ssh_key {
+        username   = "azureuser"
+        public_key = "ssh-rsa AAAAB3NzaC1yc2E... azureuser@myserver"
+      }
+    }
+    
+  - The private key would remain with the user or automation system.
