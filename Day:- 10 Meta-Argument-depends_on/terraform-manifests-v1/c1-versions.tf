@@ -31,6 +31,8 @@ resource "random_string" "myrandom" {
 
 ------------------------------------------------------------------------------------------------------------------------
 
+# Explanation: - 
+
 Here's a detailed explanation of each part of the provided code:
 
 ### 1. Terraform Block
