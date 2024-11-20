@@ -31,7 +31,7 @@ resource "random_string" "myrandom" {
 
 -------------------------------------------------------------------------------------------------------------------------
 
-Here's a detailed explanation of each component of this Terraform configuration:
+# Explanation: - 
 
 ### 1. Terraform Block
 
