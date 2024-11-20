@@ -17,7 +17,7 @@ provider "azurerm" {
 
 --------------------------------------------------------------------------------------------------------------------------
 
-The terraform block and the provider block are foundational components in a Terraform configuration. Here is a detailed explanation of their structure, purpose, and how they function:
+# Explanation: - 
 
 ### 1.  Terraform Block
 
