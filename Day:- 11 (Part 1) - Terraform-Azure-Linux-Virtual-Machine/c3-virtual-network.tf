@@ -46,7 +46,7 @@ resource "azurerm_network_interface" "myvmnic" {
 
 ------------------------------------------------------------------------------------------------------------------------
 
-Here's a detailed breakdown of the Terraform code:
+# Explanation: -
 
 ### 1. Creating a Virtual Network
 
@@ -56,8 +56,6 @@ resource "azurerm_virtual_network" "myvnet" {
   location            = azurerm_resource_group.myrg.location
   resource_group_name = azurerm_resource_group.myrg.name
 }
-
-Explanation:
 
 - resource "azurerm_virtual_network" "myvnet":
 
