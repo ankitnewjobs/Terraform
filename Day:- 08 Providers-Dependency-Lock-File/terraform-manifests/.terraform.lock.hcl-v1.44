@@ -43,6 +43,8 @@ provider "registry.terraform.io/hashicorp/random"
 
 -----------------------------------------------------------------------------------------------------------------------
 
+# Explanation: - 
+
 This code is a part of Terraform's internal state management, specifically related to the lock file (.terraform.lock.hcl). This file ensures consistency in the versions of the providers used across different runs of terraform. Here's a detailed breakdown of the code:
 
 ### Overview
