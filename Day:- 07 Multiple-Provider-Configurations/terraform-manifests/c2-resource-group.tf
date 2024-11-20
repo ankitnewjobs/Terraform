@@ -23,7 +23,7 @@ provider = <PROVIDER NAME>.<ALIAS NAME>  # This is a Meta-Argument from the Reso
 
 ------------------------------------------------------------------------------------------------------------------------
 
-### Explanation of the Terraform Code for Resource Group Creation
+### Explanation: - 
 
 This code snippet defines two azurerm_resource_group resources for creating resource groups in different Azure regions, using different provider configurations.
 
