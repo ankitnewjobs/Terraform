@@ -19,6 +19,7 @@ runcmd:
   - [sudo, curl, -H, "Metadata:true", --noproxy, "*", "http://169.254.169.254/metadata/instance?api-version=2020-09-01", -o, /var/www/html/app1/metadata.html]
 
 ------------------------------------------------------------------------------------------------------------------------
+# Explanation: - 
 
 This code is a cloud-init configuration script used for setting up an environment on a Linux virtual machine (VM) during its first boot. The script helps automate package installation, file creation, and initial command execution. Let's break down each section:
 
