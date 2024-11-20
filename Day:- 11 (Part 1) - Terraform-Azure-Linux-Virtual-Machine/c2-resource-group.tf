@@ -7,7 +7,7 @@ resource "azurerm_resource_group" "myrg" {
 
 ----------------------------------------------------------------------------------------------------------------------------
 
-Here's a detailed explanation of the Terraform code snippet provided:
+# Explanation: - 
 
 ### Resource Definition: Azure Resource Group
 
