@@ -44,6 +44,7 @@ package_upgrade: false
 - Helps avoid potential issues or delays caused by package upgrades at boot.
 
 #### 3. packages
+
 yaml
 packages:
   - httpd
@@ -54,6 +55,7 @@ packages:
   - httpd is being installed, which is the Apache HTTP Server for serving web content.
 
 #### 4. write_files
+
 yaml
 write_files:
   - owner: root:root 
@@ -177,15 +179,15 @@ resource "azurerm_linux_virtual_machine" "example" {
 
 
 
-### **Key Notes**
+### Key Notes
 
-1. **Flexibility**:
+1. Flexibility:
    - The script can be customized for different configurations, such as adding more packages or creating additional files.
 
-2. **Security**:
+2. Security:
    - Disabling the firewall may expose the instance to unnecessary risks. Use this only in secure environments.
 
-3. **Metadata Fetching**:
+3. Metadata Fetching:
    - Fetching and storing metadata can help in debugging and monitoring, especially in environments like Azure.
 
 This script is a robust example of initializing a VM with a web server and custom configurations in an automated way.
