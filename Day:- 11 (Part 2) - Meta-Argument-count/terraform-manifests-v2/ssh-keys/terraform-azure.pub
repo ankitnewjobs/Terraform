@@ -43,16 +43,16 @@ An SSH public key is part of a key pair used for secure authentication and commu
    - The public key is added to the ~/.ssh/authorized_keys file on the server you want to access.
    - The private key (kept secure) is used locally for authentication.
 
-2. **Secure Communication**:
+2. Secure Communication:
 
    - The server uses the public key to encrypt data, which can only be decrypted by the corresponding private key.
    - This ensures secure and password-less logins.
 
-3. **Widely Used In**:
+3. Widely Used In:
 
    - Remote access to servers (e.g., Linux VMs).
    - Automation tools (e.g., Terraform, Ansible).
-   - Cloud platforms like Azure, AWS, GCP.
+   - Cloud platforms like Azure, AWS, and GCP.
 
 ### Explanation of Components
 
@@ -64,14 +64,12 @@ An SSH public key is part of a key pair used for secure authentication and commu
 - Key Data (Base64):
 
   - Encodes the public key's mathematical components.
-
   - Decoding it would yield:
 
     - The modulus (n): The large number used in RSA calculations.
     - The exponent (e): Used in the RSA encryption process.
 
-- Comment:
-  - Helps you identify the key, especially when managing multiple keys.
+- Comment: Helps you identify the key, especially when managing multiple keys.
 
 ### How It's Used in Practice
 
