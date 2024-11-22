@@ -33,8 +33,6 @@ resource "azurerm_linux_virtual_machine" "mylinuxvm" {
 
 This Terraform code provisions two Azure Linux Virtual Machines (VMs) using the `azurerm_linux_virtual_machine` resource. Below is a detailed explanation of each component in the resource definition:
 
----
-
 ### Resource Block
 
 resource "azurerm_linux_virtual_machine" "mylinuxvm" {
