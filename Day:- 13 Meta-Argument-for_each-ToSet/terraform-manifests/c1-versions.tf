@@ -17,6 +17,7 @@ provider "azurerm" {
 }
 
 ---------------------------------------------------------------------------------------------------------------------------------------------
+# Explanation: - 
 
 This Terraform code snippet defines the Terraform block and the provider block for managing Azure resources using Terraform. Let's break it down:
 
