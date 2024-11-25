@@ -18,7 +18,7 @@ provider "azurerm" {
 
 ------------------------------------------------------------------------------------------------------------------------
 
-The provided Terraform code defines the Terraform block** and the Provider block, both of which are essential for configuring a Terraform project to work with the Azure platform. Let’s break it down in detail:
+The provided Terraform code defines the Terraform block and the Provider block, both of which are essential for configuring a Terraform project to work with the Azure platform. Let’s break it down in detail:
 
 ### Terraform Block
 
