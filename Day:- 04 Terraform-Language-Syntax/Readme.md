@@ -89,6 +89,7 @@ A summary of the top-level blocks commonly used in Terraform configurations:
 This module covers the basics of Terraform syntax, essential blocks, and configurations to structure Terraform code efficiently. Each element is part of Terraform's declarative language, which describes the desired state of infrastructure, enabling easy management and version control of cloud resources.
 
 ----------------------------------------------------------------------------------------------------------------------------------------
+# Explanation: - 
 
 ### Step-01: Introduction to Terraform Language Basics
 
