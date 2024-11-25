@@ -232,3 +232,167 @@ resource "azurerm_resource_group" "myrg" {
 - The configuration is dynamic and scales well for large infrastructure.
 - Each iteration dynamically sets the resource properties based on the map’s keys and values.
 - Terraform's workflow (init, plan, apply, destroy) ensures a predictable and manageable process.
+  
+-----------------------------------------------------------------------------------------------------------------------------------------
+# Explanation
+
+This step-by-step guide details how to use the `for_each` meta-argument in Terraform to create multiple resources dynamically based on a map. Below is a breakdown of the steps:
+
+### Step-01: Introduction to for_each
+
+The for_each meta-argument in Terraform simplifies resource creation by allowing iteration over a collection (map or set). It is an alternative to count and offers more flexibility when working with named resources.
+
+- Key Concepts of for_each:
+  
+  - Operates on maps or sets.
+
+  - Creates one instance of the resource for each element in the collection.
+
+  - Provides access to:
+
+    - each.key: the key from the map or index in the set.
+    - each.value: the value associated with the key in a map.
+
+- Use Case with Maps:
+  
+  - A map, a collection of key-value pairs, helps define unique resource properties like names and locations dynamically.
+  - Example: Create Azure Resource Groups with custom names and locations.
+
+- Why for_each?
+
+  - When you need unique naming conventions or specific configurations for each resource, for_each is preferred over count.
+
+- Terraform Documentation Reference:
+
+   For further reading, refer to the [official Terraform documentation](https://www.terraform.io/docs/language/meta-arguments/for_each.html).
+
+### Step-02: Define Terraform Configurations
+
+This step involves configuring the Terraform environment and Azure provider.
+
+#### c1-versions.tf
+
+1. Terraform Block:
+   
+   terraform {
+     required_version = ">= 0.15"
+     required_providers {
+       azurerm = {
+         source = "hashicorp/azurerm"
+         version = ">= 2.0"
+       }
+     }
+   }
+   
+   - Ensures compatibility with Terraform versions 0.15 and above.
+   - Specifies the azurerm provider (Azure Resource Manager), fetching it from HashiCorp's registry.
+
+2. Provider Block:
+   
+   provider "azurerm" {
+     features {}
+   }
+   
+   - Configures the Azure provider.
+   - features {} is mandatory for enabling default Azure provider settings.
+
+### Step-03: Implement for_each with Maps
+
+#### c2-resource-group.tf
+
+resource "azurerm_resource_group" "myrg" {
+  for_each = {
+    dc1apps = "eastus"
+    dc2apps = "eastus2"
+    dc3apps = "westus"
+  }
+  name     = "${each.key}-rg"
+  location = each.value
+}
+
+#### Explanation:
+
+- Input Map:
+  
+  {
+    dc1apps = "eastus"
+    dc2apps = "eastus2"
+    dc3apps = "westus"
+  }
+  
+  This map defines:
+
+  - Keys (dc1apps, dc2apps, dc3apps) as identifiers for each resource.
+  - Values (eastus, eastus2, westus) as the corresponding Azure regions.
+
+- Dynamic Resource Creation:
+
+  - The resource name is dynamically derived using ${each.key}-rg (e.g., dc1apps-rg).
+  - The location is set to each.value (e.g., eastus).
+
+- Generated Resource Groups:
+
+  1. dc1apps-rg in eastus
+  2. dc2apps-rg in eastus2
+  3. dc3apps-rg in westus
+
+### Step-04: Execute Terraform Commands
+
+1. Initialize Terraform:
+   
+   terraform init
+   
+   - Downloads provider plugins.
+   - Sets up the working directory.
+
+2. Validate Configuration:
+   
+   terraform validate
+   
+   - Checks syntax and ensures the configurations are valid.
+
+3. Format Files:
+   
+   terraform fmt
+   
+   - Formats .tf files according to Terraform standards.
+
+4. Plan Execution:
+   
+   terraform plan
+   
+   - Prepares an execution plan.
+   - Observations:
+
+      - Three resources (azurerm_resource_group.myrg["dc1apps"], etc.) are listed in the plan.
+     - Resource names and regions match the map entries.
+
+5. Apply Configuration:
+   
+   terraform apply
+   
+   - Executes the plan and creates resources.
+
+   - Observations:
+     - Verify that three resource groups are created in the Azure portal with the expected names and locations.
+
+7. Destroy Resources:
+   
+   terraform destroy
+    
+   - Deletes the created resources.
+
+8. Clean Up:
+   
+   rm -rf .terraform*
+   rm -rf terraform.tfstate*
+
+   - Removes local state files and working directory.
+
+
+
+### Summary
+
+Using for_each with maps in Terraform enables efficient resource creation with unique names and properties. This example demonstrates the creation of Azure Resource Groups in different regions using a single resource block, simplifying configuration management and increasing flexibility.
+
+
