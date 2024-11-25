@@ -11,6 +11,7 @@ in this case
 */
 
 ---------------------------------------------------------------------------------------------------------------------------------------------
+# Explanation: - 
 
 This code defines a Terraform resource block for creating Azure Resource Groups dynamically using the for_each meta-argument. It iterates over a set of values (toset([...])) to create multiple resource groups with unique names and locations. Here's a detailed breakdown:
 
