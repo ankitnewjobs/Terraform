@@ -93,7 +93,7 @@ Feel free to connect with me on LinkedIn through this profile:
 https://www.linkedin.com/in/ankit-ranjan05/
 
 -------------------------------------------------------------------------------------------------------
-# Original Repository: https://github.com/stacksimplify/hashicorp-certified-terraform-associate-on-azure
+ Original Repository: https://github.com/stacksimplify/hashicorp-certified-terraform-associate-on-azure
 
 ----------------------------------------------------------------------------------------------------------
 ## Project Maintainers & Contributors  
