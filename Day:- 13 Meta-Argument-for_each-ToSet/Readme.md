@@ -133,25 +133,29 @@ rm -rf terraform.tfstate*
 
 terraform console
 
-# Convert List to Set
+Convert List to Set
 
 toset(["kalyan", "reddy", "daida"])
-# Output: toset(["daida", "kalyan", "reddy"])
 
-# Mixed Types - All converted to Strings
+Output: toset(["daida", "kalyan", "reddy"])
+
+ Mixed Types - All converted to Strings
 
 toset(["kalyan", "reddy", 123, 456])
-# Output: toset(["123", "456", "kalyan", "reddy"])
 
-# Remove Duplicates
+Output: toset(["123", "456", "kalyan", "reddy"])
+
+ Remove Duplicates
 
 toset(["z", "k", "r", "a", "k"])
-# Output: toset(["a", "k", "r", "z"])
 
-# Order Loss with Numbers
+Output: toset(["a", "k", "r", "z"])
+
+Order Loss with Numbers
 
 toset([4, 100, 20, 11, 21, 7, 6, 4, 100])
-# Output: toset([4, 6, 7, 11, 20, 21, 100])
+
+Output: toset([4, 6, 7, 11, 20, 21, 100])
 
 ### Step-02: Terraform Configuration for for_each with toset
 
