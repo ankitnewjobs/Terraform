@@ -133,25 +133,25 @@ rm -rf terraform.tfstate*
 
 terraform console
 
-Convert List to Set
+1. Convert List to Set
 
 toset(["kalyan", "reddy", "daida"])
 
 Output: toset(["daida", "kalyan", "reddy"])
 
- Mixed Types - All converted to Strings
+2. Mixed Types - All converted to Strings
 
 toset(["kalyan", "reddy", 123, 456])
 
 Output: toset(["123", "456", "kalyan", "reddy"])
 
- Remove Duplicates
+3. Remove Duplicates
 
 toset(["z", "k", "r", "a", "k"])
 
 Output: toset(["a", "k", "r", "z"])
 
-Order Loss with Numbers
+4. Order Loss with Numbers
 
 toset([4, 100, 20, 11, 21, 7, 6, 4, 100])
 
