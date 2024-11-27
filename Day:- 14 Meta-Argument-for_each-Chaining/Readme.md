@@ -138,3 +138,157 @@ terraform destroy
 rm -rf .terraform*
 rm -rf terraform.tfstate*
 ```
+
+--------------------------------------------------------------------------------------------------------------------------------------
+
+# Explanation: - 
+
+The snippet you've provided outlines a step-by-step procedure for creating and managing multiple Linux Virtual Machines (VMs) on Azure using Terraform, emphasizing dynamic resource creation through the for_each argument.
+
+Let me break it down and explain each part in detail:
+
+### Code Block Explanation
+
+The provided Terraform configuration includes key components:
+
+1. Disk Configuration:
+   
+    caching              = "ReadWrite"
+    storage_account_type = "Standard_LRS"
+    #disk_size_gb = 20
+    
+    - caching: Specifies caching options for the VM's OS disk (ReadWrite allows reading and writing cached data).
+    - storage_account_type: Specifies the storage type for the VM's disk (e.g., Standard_LRS for low-cost HDD storage).
+    - disk_size_gb: (commented out) Optionally specifies the disk size in GB.
+
+2. Source Image Reference:
+   
+    source_image_reference {
+      publisher = "RedHat"
+      offer     = "RHEL"
+      sku       = "83-gen2"
+      version   = "latest"
+    }
+   
+    - Defines the image to be used for creating the VM.
+      
+    - publisher: The provider of the image (RedHat in this case).
+    - offer: The type or category of the image (RHEL - Red Hat Enterprise Linux).
+    - sku: The specific stock-keeping unit (SKU) or version.
+    - version: latest ensures the newest image version is used.
+
+3. Custom Data:
+    
+    custom_data = filebase64("${path.module}/app-scripts/app1-cloud-init.txt")
+    
+    - Supplies a base64-encoded initialization script (commonly used for cloud-init configuration) to the VM.
+    - The script file app1-cloud-init.txt is located in the app-scripts directory under the module path.
+
+### Step 06: Observe Linux Virtual Machine for_each Argument
+
+Terraform uses for_each to dynamically iterate over a collection of items and create resources for each. 
+
+
+for_each = azurerm_network_interface.myvmnic
+
+- This approach chains the creation of Linux Virtual Machines to the Network Interfaces. 
+- Every VM is associated with one Network Interface from the collection azurerm_network_interface.myvmnic.
+
+### Step 07: Execute Terraform Commands
+
+#### 1. Initialization:
+
+terraform init
+
+- Downloads the required Terraform provider plugins and initializes the working directory.
+
+#### 2. Validation:
+
+terraform validate
+
+- Ensures the configuration files are syntactically correct.
+
+#### 3. Formatting:
+
+terraform fmt
+
+- Automatically formats the Terraform configuration files to follow standard conventions.
+
+#### 4. Planning:
+
+terraform plan
+
+- Preview the changes Terraform will make to match the configuration.
+
+Observation:
+
+1. **Resource Creation**:
+
+   - Public IPs: Indicates 2 unique external IPs.
+   - Network Interfaces: Each VM is assigned one NIC.
+   - Linux VMs: 2 VMs are created based on the NIC count.
+   
+2. Resource Naming:
+   - Resource names follow the pattern ResourceType.ResourceLocalName[each.key], leveraging for_each.
+
+#### 5. Apply Changes:
+
+terraform apply
+
+- Executes the plan and creates the resources.
+
+#### 6. Verification:
+
+- Check for the following resources in the Azure Portal:
+
+  - Resource Group
+  - Virtual Network (VNet)
+  - Subnets
+  - Public IP addresses
+  - Network Interfaces
+  - Linux Virtual Machines
+
+#### 7. Access Applications:
+
+- Confirm the VMs are functioning by accessing their public IPs:
+ 
+  http://<PUBLIC_IP-1>
+  http://<PUBLIC_IP-2>
+  ```
+
+### Step 08: Destroy Resources
+
+#### 1. Destroy:
+
+terraform destroy
+
+- Removes all the resources created by the Terraform configuration.
+
+#### 2. Cleanup:
+
+rm -rf .terraform
+rm -rf terraform.tfstate
+
+- Deletes the local Terraform state files and the .terraform directory to clean up your working directory.
+
+### Key Concepts in the Workflow
+
+1. Dynamic Resource Creation with for_each:
+
+   - Ensures efficient management of resources by linking VMs to network interfaces dynamically.
+
+3. Idempotence:
+
+    - Terraform’s state ensures repeated executions produce consistent results without duplicating resources.
+
+5. Modularity and Customization:
+
+    - Use of custom_data allows specific initialization of VMs.
+
+7. Resource Verification and Accessibility:
+
+    - Resources are verified both through the Azure portal and by accessing applications running on the VMs.
+
+### Final Notes
+
+This process demonstrates best practices in infrastructure as code (IaC), automating Azure VM deployment while enabling scalability and dynamic configuration. If you need further clarification or additional examples, feel free to ask!
