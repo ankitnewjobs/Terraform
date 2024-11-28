@@ -107,7 +107,7 @@ Terraform is an Infrastructure-as-Code (IaC) tool that manages resources by foll
 
    - Prevents Terraform from destroying a resource. Any terraform destroy or update operation requiring destruction will fail.
 
-  - Common Use Cases: Protecting critical resources like production databases.
+   - Common Use Cases: Protecting critical resources like production databases.
 
 3. ignore_changes:
    - Ignores updates to specified attributes, allowing external processes or configurations to manage them without Terraform interference.\
