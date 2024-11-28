@@ -90,8 +90,6 @@ rm -rf terraform.tfstate*
 
 # Explanation: - 
 
-Let’s expand the explanation further, providing deeper insights into each step and the context behind the Terraform workflow.
-
 ### Step-01: Introduction
 
 Terraform is an Infrastructure-as-Code (IaC) tool that manages resources by following its lifecycle rules. However, Terraform's default behavior may not always align with real-world requirements, especially when resource availability or data continuity is critical. To address this, Terraform provides the lifecycle meta-argument, which has three attributes:
