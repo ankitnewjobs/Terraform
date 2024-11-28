@@ -3,7 +3,7 @@ title: Terraform Meta-Argument lifecycle create_before_destroy
 description: Learn Terraform Resource Meta-Argument lifecycle create_before_destroy
 ---
 ## Step-01: Introduction
-- lifecyle Meta-Argument block contains 3 arguments
+- The lifecycle Meta-Argument block contains 3 arguments
 1. create_before_destroy
 2. prevent_destroy
 3. ignore_changes
@@ -14,11 +14,11 @@ description: Learn Terraform Resource Meta-Argument lifecycle create_before_dest
 - c2-resource-group.tf
 - c3-virtual-network.tf
 
-## Step-03: lifecyle - create_before_destroy
+## Step-03: lifecycle - create_before_destroy
 - Default Behavior of a Resource: Destroy Resource & re-create Resource
-- With Lifecycle Block we can change that using `create_before_destroy=true`
-  - First new resource will get created
-  - Second old resource will get destroyed
+- With Lifecycle Block, we can change that using `create_before_destroy=true`
+  - First new resources will get created
+  - Second old resources will get destroyed
 - **Add Lifecycle Block inside Resource Block to alter behavior**  
 ```t
 # Lifecycle Block inside a Resource
