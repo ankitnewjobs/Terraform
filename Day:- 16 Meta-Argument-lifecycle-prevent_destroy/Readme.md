@@ -92,6 +92,24 @@ This guide walks through the use of the prevent_destroy meta-argument in Terrafo
 
 ### Step 01: Introduction
 
+Terraform's lifecycle meta-argument allows you to define specific behaviors for resource management, enhancing control and safety during operations. It includes three powerful arguments:
+
+create_before_destroy: Ensures that when a resource needs to be replaced (e.g., during updates requiring recreation), Terraform first creates the new resource and switches to it before destroying the old one.
+
+Prevents downtime but requires resources to support simultaneous existence (e.g., multiple instances or networks).
+
+prevent_destroy: This is a safety feature that stops any Terraform operation attempting to destroy the resource, throwing an error instead.
+
+Useful for critical resources like production databases or long-running storage buckets.
+
+ignore_changes: Ignores specified attributes during updates. For example, if an attribute like tags is managed manually or by another tool, this prevents Terraform from overriding or modifying it.
+
+Why prevent_destroy?
+
+It’s particularly valuable for Preventing accidental deletions during iterative development or updates.
+
+Safeguarding resources that are expensive to recreate, like database instances, data storage, or complex network configurations.
+
 - The lifecycle meta-argument block in Terraform provides additional configuration options for managing the lifecycle of resources.
 
 - It supports three key arguments:
@@ -104,6 +122,57 @@ The focus here is on prevent_destroy, which prevents accidental or unwanted dele
 
 ### Step 02: Review Terraform Manifests
 
+Terraform manifests are configuration files written in HashiCorp Configuration Language (HCL). In this example, the manifests include:
+
+c1-versions.tf:
+
+Specifies the Terraform version and providers being used.
+
+Example:
+
+Copy code
+terraform {
+  required_version = ">= 1.4.0"
+  required_providers {
+    azurerm = {
+      source  = "hashicorp/azurerm"
+      version = "~> 3.0"
+    }
+  }
+}
+provider "azurerm" {
+  features {}
+}
+
+c2-resource-group.tf:
+
+Defines an Azure Resource Group.
+
+Example:
+
+Copy code
+resource "azurerm_resource_group" "myrg" {
+  name     = "myrg-1"
+  location = "East US"
+}
+c3-virtual-network.tf:
+
+Defines a Virtual Network and includes the lifecycle block to prevent deletion.
+
+Example:
+
+Copy code
+resource "azurerm_virtual_network" "myvnet" {
+  name                = "myvnet-1"
+  address_space       = ["10.0.0.0/16"]
+  resource_group_name = azurerm_resource_group.myrg.name
+  location            = azurerm_resource_group.myrg.location
+
+  lifecycle {
+    prevent_destroy = true
+  }
+}
+
 - Manifest Files Overview:
   
   - c1-versions.tf: Contains Terraform version and provider configurations.
@@ -114,8 +183,37 @@ These manifests represent the typical infrastructure setup for an Azure environm
 
 ### Step 03: lifecycle - prevent_destroy
 
+The prevent_destroy argument modifies the behavior of a resource:
+
+How it Works: Setting prevent_destroy = true tells Terraform to prevent any action that would destroy the resource.
+
+Any plan or apply operation attempting to delete the resource will fail with an error.
+
+Error Behavior:
+
+When you try to destroy a resource with prevent_destroy, Terraform will fail with a message:
+kotlin
+
+Copy code
+
+Error: Instance cannot be destroyed
+
+Resource <resource-name> has lifecycle.prevent_destroy set, but the plan calls for this resource to be destroyed.
+
+Limitations:
+
+Direct Deletion Blocked: Resources cannot be deleted as long as the prevent_destroy setting is present.
+
+Indirect Deletion Possible: If the resource block is removed from the configuration file, Terraform no longer recognizes the resource and allows it to be deleted on the next apply.
+
+Use Cases:
+
+- Production database instances.
+- Shared or multi-tenant infrastructure.
+- Resources critical to business continuity.
+
 - Purpose of prevent_destroy:
-- 
+  
   - Setting prevent_destroy = true ensures that Terraform prevents resource deletion during a plan or apply operation. This is especially useful for resources like databases, which are costly or critical.
     
   - Example use case:
@@ -187,7 +285,7 @@ These manifests represent the typical infrastructure setup for an Azure environm
   
    Error: Instance cannot be destroyed
    
-   Resource azurerm_virtual_network.myvnet has lifecycle.prevent_destroy set, but the plan calls for this resource to be destroyed. To avoid this error and continue with the plan, either disable lifecycle.prevent_destroy or reduce the scope of the    plan using the -target flag.
+   Resource azurerm_virtual_network.myvnet has a lifecycle.prevent_destroy set, but the plan calls for this resource to be destroyed. To avoid this error and continue with the plan, either disable lifecycle.prevent_destroy or reduce the scope of the    plan using the -target flag.
   
 ### Step 05: Comment Lifecycle Block to Destroy Resources
 
@@ -197,11 +295,12 @@ These manifests represent the typical infrastructure setup for an Azure environm
     
   - Example:
 
-    # lifecycle {
-    #   prevent_destroy = true
-    # }
+     lifecycle {
+       prevent_destroy = true
+     }
     
 - Clean-Up Process:
+  
   1. After removing the lifecycle block, destroy the resources:
      
      terraform destroy
@@ -213,15 +312,26 @@ These manifests represent the typical infrastructure setup for an Azure environm
 
 This step ensures the resources are cleaned up without residual state files.
 
+Key Takeaways
 
+Pros of prevent_destroy:
+
+Prevents accidental deletion of critical infrastructure.
+Adds a safety layer for sensitive resources.
+
+Cons of prevent_destroy:
+
+Can complicate certain operations, especially configuration updates.
+Needs to be disabled manually for intentional deletions.
+
+Best Practices:
+
+- Use for critical or production resources only.
+- Regularly review plans (terraform plan) before applying changes.
+- Pair with proper version control and review processes for added safety.
 
 ### Conclusion
 
 - The prevent_destroy argument is a safeguard for critical resources, but it requires careful management.
   
 - It protects against accidental deletions while adding a layer of complexity to Terraform operations.
-  
-- Best Practices:
-  - Use this setting only for highly critical resources.
-    
-  - Always review plans (terraform plan) before applying changes.
