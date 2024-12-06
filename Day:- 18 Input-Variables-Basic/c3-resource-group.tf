@@ -9,6 +9,8 @@ resource "azurerm_resource_group" "myrg" {
 
 ---------------------------------------------------------------------------------------------------------------------------------------------
 
+#Explanation 
+
 This Terraform code block defines an Azure Resource Group using the azurerm_resource_group resource.
 
 A resource group in Azure is a container that holds related resources for an Azure solution.
