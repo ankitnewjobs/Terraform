@@ -9,7 +9,7 @@ resource "azurerm_resource_group" "myrg" {
 
 ---------------------------------------------------------------------------------------------------------------------------------------------
 
-#Explanation 
+#Explanation: - 
 
 This Terraform code block defines an Azure Resource Group using the azurerm_resource_group resource.
 
