@@ -92,4 +92,4 @@ Changing the values to environment = "prod" and resoure_group_location = "westus
 - environment: Describes the logical deployment stage (here, qa2 for the second QA environment).
 - resoure_group_location: Specifies the physical Azure region where the resources will be deployed (eastus2).
 
-These variables make the deployment process flexible, reusable, and environment-agnostic. Let me know if you need examples of how to integrate this snippet into a complete Terraform file or if you want to explore Azure-specific details!
+These variables make the deployment process flexible, reusable, and environment-agnostic. 
