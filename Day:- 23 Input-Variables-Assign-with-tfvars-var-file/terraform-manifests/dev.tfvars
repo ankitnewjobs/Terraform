@@ -3,6 +3,8 @@ resoure_group_location = "eastus"
 
 ----------------------------------------------------------------------------------------------------------------------------------------------
 
+# Explanation
+
 The code snippet appears as part of a configuration file, likely written in the Terraform or another Infrastructure as Code (IaC) tool. 
 
 Here’s a detailed breakdown of its components:
