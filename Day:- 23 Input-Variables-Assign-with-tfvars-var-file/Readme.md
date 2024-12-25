@@ -76,130 +76,138 @@ rm -rf terraform.tfstate*
 
 # Explanation:- 
 
-This detailed script is a guide for managing **input variables** in Terraform using variable files (`.tfvars`) to define environment-specific configurations. The process involves initializing and applying Terraform configurations for different environments while highlighting the importance of proper resource management. Let’s break it down step by step.
+This detailed script is a guide for managing input variables in Terraform using variable files (.tfvars) to define environment-specific configurations. The process involves initializing and applying Terraform configurations for different environments while highlighting the importance of proper resource management. 
 
----
+Let’s break it down step by step.
 
-## **Step-01: Introduction**
+## Step-01: Introduction
+
 ### Key Points:
-- **Purpose**: To provide environment-specific variables dynamically using `.tfvars` files.
-- **How**: Use the Terraform command-line argument `-var-file` to specify which `.tfvars` file to use during the `terraform plan` or `terraform apply` process.
 
----
+- Purpose: To provide environment-specific variables dynamically using .tfvars files.
+- How: Use the Terraform command-line argument -var-file to specify which .tfvars file to use during the terraform plan or terraform apply process.
 
-## **Step-02: Assign Input Variables with -var-file Argument**
+## Step-02: Assign Input Variables with -var-file Argument
+
 ### Key Points:
-- **Default Behavior**:
-  - Terraform automatically looks for a file named `terraform.tfvars` to load default values.
-- **Custom Files**:
-  - If environment-specific files are named differently (e.g., `dev.tfvars`, `qa.tfvars`), the `-var-file` argument is required.
-- **File Organization**:
-  - `terraform.tfvars`: Stores common variables.
-  - `dev.tfvars`: Contains variables specific to the **Dev** environment (e.g., `environment` and `resoure_group_location`).
-  - `qa.tfvars`: Contains variables specific to the **QA** environment.
 
-#### **Example Variable Files**
-- **terraform.tfvars**:
-  ```t
+- Default Behavior:
+  - Terraform automatically looks for a file named terraform.tfvars to load default values.
+
+- Custom Files:
+  - If environment-specific files are named differently (e.g., dev.tfvars, qa.tfvars), the -var-file argument is required.
+
+- File Organization:
+  - terraform.tfvars: Stores common variables.
+  - dev.tfvars: Contains variables specific to the Dev environment (e.g., environment and resoure_group_location).
+  - qa.tfvars: Contains variables specific to the QA environment.
+
+#### Example Variable Files
+
+- terraform.tfvars:
+  
   business_unit          = "it"
   resoure_group_name     = "rg-tfvars"
   virtual_network_name   = "vnet-tfvars"
   subnet_name            = "subnet-tfvars"
-  ```
+  
   - Common variables shared across all environments.
 
-- **dev.tfvars**:
-  ```t
+- dev.tfvars:
+  
   environment            = "dev"
   resoure_group_location = "eastus2"
-  ```
-  - Overrides variables for the **Dev** environment.
+  
+  - Overrides variables for the Dev environment.
 
-- **qa.tfvars**:
-  ```t
+- qa.tfvars:
+  
   environment            = "qa"
   resoure_group_location = "eastus"
-  ```
+  
   - Overrides variables for the **QA** environment.
 
----
+## Step-03: Execute Terraform Commands
 
-## **Step-03: Execute Terraform Commands**
 This step covers initializing Terraform, validating configurations, formatting files, and applying plans.
 
-### **Commands and Explanations**
-1. **Initialize Terraform**:
-   ```bash
+### Commands and Explanations
+
+1. Initialize Terraform:
+   
    terraform init
-   ```
+   
    - Downloads provider plugins and sets up the working directory.
 
-2. **Validate Terraform Configuration**:
-   ```bash
+2. Validate Terraform Configuration:
+   
    terraform validate
-   ```
+   
    - Ensures the configuration syntax and logic are valid.
 
-3. **Format Terraform Configuration Files**:
-   ```bash
+3. Format Terraform Configuration Files:
+   
    terraform fmt
-   ```
+
    - Automatically formats configuration files to follow best practices.
 
-4. **Review the Terraform Plan**:
-   ```bash
+4. Review the Terraform Plan:
+   
    terraform plan -var-file="dev.tfvars"
    terraform plan -var-file="qa.tfvars"
-   ```
-   - Simulates the changes Terraform will make without applying them, using the specified `.tfvars` file.
+   
+   - Simulates the changes Terraform will make without applying them, using the specified .tfvars file.
 
-5. **Apply Terraform Plan**:
-   - **Dev Environment**:
-     ```bash
+5. Apply Terraform Plan:
+ 
+   - Dev Environment:
+     
      terraform apply -var-file="dev.tfvars"
-     ```
-     - Deploys resources for the **Dev** environment.
-   - **QA Environment**:
-     ```bash
+     
+     - Deploys resources for the **Dev environment.
+   - QA Environment:
+     
      terraform apply -var-file="qa.tfvars"
-     ```
-     - Deploys resources for the **QA** environment.
-     - **Warning**: Running this in the same directory as Dev can overwrite Dev resources, because the local resource names are identical for both environments.
+     
+     - Deploys resources for the QA environment.
 
-### **Observation**
-- Running `terraform apply` for both environments in the same directory will replace one environment's resources with the other's.
-- **Solution**:
+     - Warning: Running this in the same directory as Dev can overwrite Dev resources because the local resource names are identical for both environments.
+
+### Observation
+
+- Running terraform apply for both environments in the same directory will replace one environment's resources with the other's.
+
+- Solution:
   - Use Terraform Workspaces to maintain multiple environments within the same working directory (to be introduced in later sections).
 
----
+## Step-04: Destroy Resources
 
-## **Step-04: Destroy Resources**
-### **Commands and Explanations**
-1. **Destroy Resources**:
-   ```bash
+### Commands and Explanations
+
+1. Destroy Resources:
+   
    terraform destroy -auto-approve
-   ```
+   
    - Removes all resources created by Terraform.
 
-2. **Cleanup Files**:
-   ```bash
-   rm -rf .terraform*
-   rm -rf terraform.tfstate*
-   ```
+2. Cleanup Files:
+   
+   rm -rf .terraform
+   rm -rf terraform.tfstate
+   
    - Deletes the `.terraform` directory and state files, cleaning up the working directory.
 
----
+### Summary and Key Learnings
 
-### **Summary and Key Learnings**
-- **Input Variables**:
-  - Use `.tfvars` files to define environment-specific configurations dynamically.
-  - Common variables go in `terraform.tfvars`, while specific overrides are placed in `dev.tfvars` or `qa.tfvars`.
+- Input Variables:
+  - Use .tfvars files to define environment-specific configurations dynamically.
+  - Common variables go in terraform.tfvars, while specific overrides are placed in dev.tfvars or qa.tfvars.
 
-- **Resource Replacement Issue**:
+- Resource Replacement Issue:
   - Without unique resource names, running multiple environments from the same directory will overwrite resources.
-  - **Solution**: Use Terraform Workspaces to segregate environments.
+  - Solution: Use Terraform Workspaces to segregate environments.
 
-- **Best Practices**:
+- Best Practices:
   - Always validate and review plans before applying them.
   - Maintain a clean and organized directory structure to avoid accidental overwrites.
 
