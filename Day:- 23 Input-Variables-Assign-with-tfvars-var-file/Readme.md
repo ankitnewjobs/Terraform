@@ -76,7 +76,7 @@ rm -rf terraform.tfstate*
 
 # Explanation:- 
 
-This detailed script is a guide for managing **input variables** in Terraform using variable files (`.tfvars`) to define environment-specific configurations. The process involves initializing and applying Terraform configurations for different environments, while highlighting the importance of proper resource management. Let’s break it down step by step.
+This detailed script is a guide for managing **input variables** in Terraform using variable files (`.tfvars`) to define environment-specific configurations. The process involves initializing and applying Terraform configurations for different environments while highlighting the importance of proper resource management. Let’s break it down step by step.
 
 ---
 
