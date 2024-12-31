@@ -213,5 +213,125 @@ resoure_group_location = "eastus"
 ## References
 - [Terraform Input Variables](https://www.terraform.io/docs/language/values/variables.html)
 
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+# Explanation:- 
 
+This is a comprehensive tutorial for learning and practicing Terraform functions, along with implementing variable validation. 
+
+Here's a detailed explanation of each step:
+
+### Step-01: Introduction
+
+This step introduces some Terraform functions and highlights the goal of implementing custom validation rules for input variables. The functions covered include:
+
+1. length(): Measures the size of strings, lists, or maps.
+2. substr(): Extracts a substring from a string.
+3. contains(): Checks if a list contains a specific value.
+4. lower() and upper(): Converts strings to lowercase or uppercase.
+5. regex(): Validates a string against a pattern.
+6. can(): Checks if an expression can be evaluated without errors.
+
+Custom validation rules allow developers to enforce specific constraints on input variables.
+
+### Step-02: Terraform Length Function
+
+The length() function determines the size of a string, list, or map. Examples:
+
+- length("hi") returns 2 (two characters).
+- length(["a", "b", "c"]) returns 3 (three elements in the list).
+- length({"key" = "value"}) returns 1 (one key-value pair).
+
+Terraform Console (terraform console) is used to interactively test these expressions.
+
+### Step-03: Terraform SubString Function
+
+The substr() function extracts a portion of a string based on an offset and length. Examples:
+
+- substr("stack simplify", 1, 4) extracts "tack" (starts at index 1, length 4).
+- substr("stack simplify", 0, 6) extracts "stack ".
+
+This is useful for parsing or truncating strings dynamically.
+
+### Step-04: Terraform Contains Function
+
+The contains() function checks whether a value exists in a list. Examples:
+
+- contains(["a", "b", "c"], "a") returns true (value exists).
+- contains(["eastus", "eastus2"], "westus2") returns false (value not in the list).
+
+This is helpful for validation or conditional logic.
+
+### Step-05: Terraform Lower and Upper Functions
+
+The lower() and upper() functions convert strings to lowercase or uppercase. Examples:
+
+- lower("STACKSIMPLIFY") returns "stacksimplify".
+- upper("Kalyan reddy") returns "KALYAN REDDY".
+
+These are commonly used for standardizing string input for comparisons.
+
+### Step-06: Variable Validation Rules
+
+This step demonstrates how to validate input variables. Validation rules enforce constraints on input values:
+
+- Condition: Expression that returns true for valid input, false otherwise.
+- Error Message: Custom error message when validation fails.
+
+Example:
+
+variable "resource_group_location" {
+  description = "Resource Group Location"
+  type        = string
+  default     = "eastus"
+  validation {
+    condition     = var.resource_group_location == "eastus" || var.resource_group_location == "eastus2"
+    error_message = "We only allow Resources to be created in eastus or eastus2 Locations."
+  }
+}
+
+This ensures only eastus or eastus2 are valid values for the resource_group_location variable.
+
+### Step-07: Run Terraform Commands
+
+1. Initialize Terraform: terraform init
+2. Validate Configurations: terraform validate
+3. Review Plan: terraform plan
+
+Observations:
+
+- When the location is valid (e.g., eastus), the plan proceeds.
+- For invalid inputs (e.g., westus), it fails with a validation error.
+
+### Step-08: Terraform Regex and Can Functions
+
+- regex(): Validates whether a string matches a specific pattern.
+  - Example: regex("india$", "west India") returns true.
+    
+- can(): Checks if an expression is evaluable without errors.
+  - Example: can(regex("india$", "west India")) returns true.
+
+### Step-09: Update Variable with Regex Validation
+
+Updates the resource_group_location variable validation:
+
+validation {
+  condition     = can(regex("india$", var.resource_group_location))
+  error_message = "We only allow Resources to be created in westindia and southindia locations."
+}
+
+Observations:
+
+- Passes for westindia or southindia.
+- Fails for eastus.
+
+### Step-10: Clean-Up
+
+This step ensures the configurations are reset to their original state for reuse. It also removes temporary files generated during execution.
+
+### Use Cases
+
+1. Enforcing resource creation constraints.
+2. Dynamically validating input values.
+3. Enhancing modularity by testing Terraform functions.
+   
