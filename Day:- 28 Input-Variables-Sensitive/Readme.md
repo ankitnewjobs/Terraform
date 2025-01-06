@@ -223,5 +223,106 @@ rm -rf terraform.tfstate*
 ## References
 - [Terraform Input Variables](https://www.terraform.io/docs/language/values/variables.html)
 
+-----------------------------------------------------------------------------------------------------------------------------------------
 
+# Explanation: 
 
+This detailed explanation serves as a comprehensive guide for deploying and managing Azure MySQL databases using Terraform while ensuring the protection of sensitive input variables.
+
+Here's a breakdown of each step:
+
+### Step-01: Introduction
+
+This section introduces variable types in Terraform:
+
+- Boolean: Represents true/false values, often used for toggling features.
+- Number: Represents numeric values (e.g., storage sizes, counts).
+- Sensitive Variables: Masks sensitive information (e.g., credentials) in output logs and command lines.
+- Protection of Sensitive Input Variables: Highlights best practices, such as not storing sensitive data in plain text or version control.
+
+### Step-02: Protect Sensitive Input Variables
+
+Key points on securing sensitive data:
+
+1. Vault Provider: Use HashiCorp Vault or other secrets management tools for storing sensitive data securely.
+2. Environment Variables: Sensitive data can be set via environment variables (e.g., TF_VAR_db_username).
+3. Terraform Redaction: Sensitive variables are redacted in Terraform outputs and logs but are still visible in terraform.tfstate files, requiring secure handling.
+4. Important Notes:
+   - Never commit sensitive files like secrets. tfvars to version control.
+   - Keep terraform.tfstate files secure, as they store sensitive values.
+
+### Step-03: c1-versions.tf
+
+- The Terraform block specifies version constraints for Terraform itself and the azurerm provider.
+- The provider block initializes AzureRM with default settings (features {}).
+
+### Step-04: c2-variables.tf
+
+Defines variables for the Azure MySQL database:
+
+1. db_name: String, database name.
+2. db_username: Sensitive string, administrator username.
+3. db_password: Sensitive string, administrator password.
+4. db_storage_mb: Number, storage in MB.
+5. db_auto_grow_enabled: Boolean, auto-grow setting.
+
+### Step-05: c4-azure-mysql-database.tf
+
+Creates an Azure MySQL server with the defined variables:
+- Uses azurerm_mysql_server resource.
+- Includes features like auto-grow, backup retention, and security settings.
+
+### Step-06: c4-azure-mysql-database.tf
+
+Creates a MySQL database schema (webappdb1) within the Azure MySQL server using the azurerm_mysql_database resource.
+
+### Step-07: terraform.tfvars
+
+- Contains generic and database-specific variables:
+- Defines reusable configurations like resource group names, location, and database details.
+
+- Example:
+  
+  db_name = "mydb101"
+  db_storage_mb = 5120
+  db_auto_grow_enabled = true
+  
+### Step-08: secrets.tfvars
+
+Stores sensitive variables securely, such as database username and password:
+
+db_username = "mydbadmin"
+db_password = "H@Sh1CoR3!"
+
+- Keep this file out of version control.
+
+### Step-09: Execute Terraform Commands
+
+- Initialize Terraform: Prepares the working directory (terraform init).
+- Validate: Checks syntax correctness (terraform validate).
+- Plan: Preview changes using secrets.tfvars for sensitive variables.
+- Apply: Provisions resources, marking sensitive variables as "sensitive" in outputs.
+- State File Check: Highlights the need to secure state files since sensitive values are stored in plain text.
+
+### Step-10: Verify and Connect to MySQL DB
+
+- Use Azure Management Console or CLI to verify the database.
+
+- Steps include:
+  1. Adding client IP to firewall rules.
+  2. Connecting using mysql commands.
+  3. Verifying schema creation (show schemas;).
+
+### Step-11: Clean-Up
+
+- Destroy Resources: Removes resources (terraform destroy).
+- Clean Workspace: Deletes Terraform-generated files to prevent accidental exposure.
+
+### Step-12: Variable Definition Precedence
+
+- Explains how Terraform resolves variable definitions, with precedence from:
+  
+  1. Command-line flags.
+  2. Environment variables.
+  3. terraform.tfvars or .auto.tfvars files.
+  4. Variables defined directly in configuration files.
