@@ -61,6 +61,16 @@ variable "db_auto_grow_enabled" {
   type = bool
 }
 
+# 11. Azure MySQL DB Threat Detection Policy (Variable Type: object)
+variable "tdpolicy" {
+  description = "Azure MySQL DB Threat Detection Policy"
+  type = object({
+    enabled = bool,
+    retention_days = number
+    email_account_admins = bool
+    email_addresses = list(string)
+  })
+
 ---------------------------------------------------------------------------------------------------------------------------------------
 
 # Explanation: 
