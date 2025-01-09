@@ -201,8 +201,6 @@ variable "db_auto_grow_enabled" {
 
 The given Terraform variable definition, `tdpolicy`, represents a configuration for an **Azure MySQL Database Threat Detection Policy**. Let’s break it down in detail:
 
----
-
 ### 11. Context: Azure MySQL Database Threat Detection Policy
 
 Azure provides a Threat Detection feature for Azure databases (e.g., MySQL) to identify anomalous activities that might indicate potential security threats. 
