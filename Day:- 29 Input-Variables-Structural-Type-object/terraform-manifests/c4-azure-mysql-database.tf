@@ -1,4 +1,5 @@
 # Azure MySQL Database Server
+
 resource "azurerm_mysql_server" "mysqlserver" {
   name                = "${var.business_unit}-${var.environment}-${var.db_name}" 
   location            = azurerm_resource_group.myrg.location
@@ -42,6 +43,7 @@ resource "azurerm_mysql_server" "mysqlserver" {
 }
 
 # Create Database inside Azure MySQL Database Server
+
 resource "azurerm_mysql_database" "webappdb1" {
   name                = "webappdb1"
   resource_group_name = azurerm_resource_group.myrg.name
