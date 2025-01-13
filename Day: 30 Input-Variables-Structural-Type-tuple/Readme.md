@@ -118,6 +118,12 @@ rm -rf .terraform*
 rm -rf terraform.tfstate*
 ```
 
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+# Explanation:- 
+
+
+
 
 ## References
 - [Terraform Input Variables](https://www.terraform.io/docs/language/values/variables.html)
