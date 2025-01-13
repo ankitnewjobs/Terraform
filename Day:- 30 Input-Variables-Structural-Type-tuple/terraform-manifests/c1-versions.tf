@@ -136,4 +136,3 @@ When combined with the above blocks:
 
 2. The resource group will be created in the "East US" region under your Azure subscription.
 
-This foundational setup is the starting point for managing Azure resources with Terraform.
