@@ -97,7 +97,7 @@ resource "azurerm_virtual_network" "myvnet"
 ## Summary
 
 | Variable                 | Value                                  | Purpose |
-|--------------------------|----------------------------- ----------|------------|
+|--------------------------|----------------------------- ----------|-------------------------------------------------------------|
 | business_unit`           | "it"                                   | Prefix for resource names |
 | environment`             | ["dev2", "myqa2", "staging2", "prod2"] | List of environments (Terraform creates resources for each) |
 | resoure_group_name`      | "myrg"                                 | Azure Resource Group Name |
