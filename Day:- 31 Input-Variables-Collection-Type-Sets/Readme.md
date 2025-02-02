@@ -245,4 +245,237 @@ rm -rf terraform.tfstate*
 ## References
 - [Terraform Input Variables](https://www.terraform.io/docs/language/values/variables.html)
 
------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------------------------------------------------
+
+# Explanation:- 
+
+This Terraform configuration is designed to deploy multiple environments (dev, qa, staging, and prod) using a set type variable. 
+
+It leverages for_each to dynamically create multiple resources with a single set of configurations. 
+
+Below is a detailed breakdown:
+
+## 1. Overview
+
+- Uses Terraform set-type input variables to manage multiple environments.
+  
+- Creates resources for each environment:
+  
+  1. Resource Group
+  2. Virtual Network
+  3. Subnet
+  4. Public IP & DNS Name
+  5. Network Interface
+  6. RHEL Virtual Machine
+  7. Provision a Sample Webserver
+
+## 2. Key Concepts Used
+
+### Collection Type: set
+
+- A set in Terraform ensures:
+  
+  - Unique elements (no duplicates)
+  - No specific ordering
+  - Cannot access elements using an index
+    
+- Example:
+  
+  variable "environment"
+  {
+    description = "Environment Name"
+    type = set(string)
+    default = ["dev1", "qa1", "staging1", "prod1"]
+  }
+
+- Environments created: dev1, qa1, staging1, prod1
+
+## 3. Breakdown of Key Terraform Files
+
+### (1) c2-variables.tf - Defining Input Variables
+
+- Defines environment names using a set
+- Ensures environments (dev, qa, staging, prod) are unique
+
+### (2) terraform.tfvars - Defining Custom Values
+
+- Custom values for environment, business_unit, resource_group_name
+  
+  business_unit = "it"
+  environment = ["dev2", "myqa2", "staging2", "prod2"]
+  resoure_group_name = "rg"
+
+### (3) c1-versions.tf - Creating Random String Resource
+
+- Generates unique random strings for each environment
+  
+  resource "random_string" "myrandom"
+  {
+    for_each = var.environment
+    length = 6
+    upper = false 
+    special = false
+    number = false   
+  }
+  
+- Each environment gets a unique 6-character string
+
+### (4) c3-resource-group.tf - Creating Resource Groups
+
+- Creates one Azure Resource Group per environment
+  
+  resource "azurerm_resource_group" "myrg"
+   {
+    for_each = var.environment
+    name = "${var.business_unit}-${each.key}-${var.resoure_group_name}"
+    location = var.resoure_group_location
+  }
+  
+- Naming convention: it-dev-rg, it-qa-rg, it-staging-rg, etc.
+
+### (5) c4-virtual-network.tf - Virtual Network and Subnet
+
+- Virtual Network
+  
+  resource "azurerm_virtual_network" "myvnet"
+   {
+    for_each = var.environment
+    name = "${var.business_unit}-${each.key}-${var.virtual_network_name}"
+    address_space = ["10.0.0.0/16"]
+    location = azurerm_resource_group.myrg[each.key].location
+    resource_group_name = azurerm_resource_group.myrg[each.key].name
+  }
+  
+- Subnet
+  
+  resource "azurerm_subnet" "mysubnet"
+  {
+    for_each = var.environment
+    name = "${var.business_unit}-${each.key}-${var.virtual_network_name}-mysubnet"
+    resource_group_name  = azurerm_resource_group.myrg[each.key].name
+    virtual_network_name = azurerm_virtual_network.myvnet[each.key].name
+    address_prefixes     = ["10.0.2.0/24"]
+  }
+  
+### (6) c4-virtual-network.tf - Public IP
+
+- Creates one public IP per environment
+  
+  resource "azurerm_public_ip" "mypublicip"
+  {
+    for_each = var.environment
+    name = "${var.business_unit}-${each.key}-${var.virtual_network_name}-mypublicip"
+    resource_group_name = azurerm_resource_group.myrg[each.key].name
+    location = azurerm_resource_group.myrg[each.key].location
+    allocation_method = "Static"
+    domain_name_label = "app1-vm-${each.key}-${random_string.myrandom[each.key].id}"
+  }
+  
+### (7) c4-virtual-network.tf - Network Interface
+
+- Creates a NIC for each VM
+  
+  resource "azurerm_network_interface" "myvmnic"
+  {
+    for_each = var.environment
+    name = "${var.business_unit}-${each.key}-${var.virtual_network_name}-myvmnic"
+    location = azurerm_resource_group.myrg[each.key].location
+    resource_group_name = azurerm_resource_group.myrg[each.key].name
+
+    ip_configuration {
+      name = "internal"
+      subnet_id = azurerm_subnet.mysubnet[each.key].id
+      private_ip_address_allocation = "Dynamic"
+      public_ip_address_id = azurerm_public_ip.mypublicip[each.key].id
+    }
+  }
+  
+### (8) c5-linux-virtual-machine.tf - Creating RHEL Virtual Machines
+
+- Creates a Virtual Machine for each environment
+  
+  resource "azurerm_linux_virtual_machine" "mylinuxvm"
+   {
+    for_each = var.environment
+    name = "mylinuxvm-${each.key}"
+    computer_name = "devlinux-${each.key}"
+    resource_group_name = azurerm_resource_group.myrg[each.key].name
+    location = azurerm_resource_group.myrg[each.key].location
+    size = "Standard_DS1_v2"
+    admin_username = "azureuser"
+    network_interface_ids = [azurerm_network_interface.myvmnic[each.key].id]
+
+    admin_ssh_key {
+      username = "azureuser"
+      public_key = file("${path.module}/ssh-keys/terraform-azure.pub")
+    }
+
+    os_disk
+  {
+      name = "osdisk${each.key}"
+      caching = "ReadWrite"
+      storage_account_type = "Standard_LRS"
+    }
+
+    source_image_reference
+   {
+      publisher = "RedHat"
+      offer = "RHEL"
+      sku = "83-gen2"
+      version = "latest"
+    }
+
+    custom_data = filebase64("${path.module}/app-scripts/app1-cloud-init.txt")
+  }
+  
+- Bootstraps a web server using cloud-init
+
+## 4. Execution Commands
+
+### Step 1: Initialize Terraform
+
+terraform init
+
+### Step 2: Validate & Format Code
+
+terraform validate
+terraform fmt
+
+### Step 3: Plan & Apply
+
+terraform plan
+terraform apply -auto-approve
+
+## 4. Expected Outputs
+
+### Resources Created
+
+-  Resource Groups
+-  Virtual Networks
+-  Subnets
+-  Network Interfaces
+-  RHEL Virtual Machines
+-  Public IPs
+
+### 5. Accessing the Application
+
+- Base URL:
+  
+  http://app1-vm-dev2-<random>.eastus.cloudapp.azure.com
+  http://app1-vm-myqa2-<random>.eastus.cloudapp.azure.com
+  
+- Web App:
+  
+  http://app1-vm-dev2-<random>.eastus.cloudapp.azure.com/app1/index.html
+  
+## 6. Cleanup
+
+terraform destroy -auto-approve
+rm -rf .terraform*
+rm -rf terraform.tfstate*
+
+## 7. Summary
+
+- Uses Terraform set type to manage multiple environments.
+- Uses for_each to dynamically create 4 environments (dev, qa, staging, prod).
+- Automates Azure infrastructure provisioning for a web server.
