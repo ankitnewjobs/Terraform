@@ -75,8 +75,6 @@ terraform {
         - source: The random provider from hashicorp.
         - version: Ensures the provider version is >= 3.0`.
 
----
-
 ### 2. Provider Block
 
 The provider block specifies the configuration for the Azure Resource Manager (azurerm) provider.
