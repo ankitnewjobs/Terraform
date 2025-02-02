@@ -19,3 +19,98 @@ runcmd:
   - [sudo, curl, -H, "Metadata:true", --noproxy, "*", "http://169.254.169.254/metadata/instance?api-version=2020-09-01", -o, /var/www/html/app1/metadata.html]
 
 ----------------------------------------------------------------------------------------------------------------------------------------
+
+# Explanation:- 
+
+This script is a cloud-init configuration used to configure a Linux Virtual Machine when it is created using Terraform.
+
+It performs the following tasks:
+
+## 1. Cloud-Config Header
+
+#cloud-config
+
+- This indicates that the file is written in cloud-config format, which is used by cloud-init to configure instances at boot.
+
+## 2. Package Installation
+
+package_upgrade: false
+packages:
+  - httpd
+
+- package_upgrade: false → Prevents automatic OS package upgrades.
+- Package: Installs the Apache HTTP server (httpd).
+
+## 3. Write Files
+
+The script creates two HTML files for a web application.
+
+### (a) Create /var/www/html/index.html
+
+write_files:
+  - owner: root:root 
+    path: /var/www/html/index.html
+    content: |
+      <h1>Welcome to StackSimplify - APP-1</h1>
+
+- This creates an index.html file in the default Apache web root /var/www/html/.
+- Displays "Welcome to StackSimplify - APP-1" when accessed via a browser.
+
+### (b) Create /var/www/html/app1/index.html
+
+  - owner: root:root 
+    path: /var/www/html/app1/index.html
+    content: |
+      <!DOCTYPE html> 
+      <html> 
+      <body style="background-color:rgb(250, 210, 210);"> 
+      <h1>Welcome to Stack Simplify - APP-1</h1> 
+      <p>Terraform Demo</p> 
+      <p>Application Version: V1</p> 
+      </body>
+      </html>      
+
+- Creates another HTML file inside /var/www/html/app1/.
+
+- This file:
+  - Has a light red background (rgb(250, 210, 210)).
+  - Displays:
+    
+    Welcome to Stack Simplify - APP-1
+    Terraform Demo
+    Application Version: V1
+    
+## 4. Run Commands at Boot (runcmd)
+
+runcmd:
+
+  - sudo systemctl start httpd  
+  - sudo systemctl enable httpd
+  - sudo systemctl stop firewalld
+  - sudo mkdir /var/www/html/app1 
+  - [sudo, curl, -H, "Metadata:true", --noproxy, " ", "http://169.254.169.254/metadata/instance?api-version=2020-09-01", -o, /var/www/html/app1/metadata.html]
+
+- sudo systemctl start httpd → Starts the Apache web server.
+- sudo systemctl enable httpd → Ensures Apache starts automatically after a reboot.
+- sudo systemctl stop firewalld → Disables the firewall to allow access to Apache.
+- sudo mkdir /var/www/html/app1 → Ensures the /var/www/html/app1 directory exists.
+- Fetches Azure VM metadata and saves it to /var/www/html/app1/metadata.html:
+  
+  - [sudo, curl, -H, "Metadata:true", --noproxy, " ", "http://169.254.169.254/metadata/instance?api-version=2020-09-01", -o, /var/www/html/app1/metadata.html]
+  
+  - Uses curl to fetch VM metadata from Azure's instance metadata service (169.254.169.254).
+  - Saves the metadata response to /var/www/html/app1/metadata.html.
+  - This helps verify VM details like IP, location, VM size, etc..
+
+## Final Outcome
+
+1. Apache (httpd) is installed and running.
+2. Firewall is disabled for easier access.
+3. Web pages (index.html, app1/index.html) are created with application content.
+4. VM metadata is stored in /var/www/html/app1/metadata.html for debugging.
+
+When you visit the VM’s public IP in a browser:
+
+- http://<vm-public-ip>/ → Shows Welcome to StackSimplify - APP-1
+- http://<vm-public-ip>/app1/ → Shows the formatted Terraform demo page.
+- http://<vm-public-ip>/app1/metadata.html → Displays Azure VM metadata.
