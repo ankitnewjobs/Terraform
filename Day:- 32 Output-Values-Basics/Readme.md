@@ -198,3 +198,209 @@ In c5-outputs.tf, roll back "sensitive=true"
 - [Terraform Output Values](https://www.terraform.io/docs/language/values/outputs.html)
 
 --------------------------------------------------------------------------------------------------------------------------------------
+
+# Explanation 
+
+This Terraform script is structured into multiple steps, explaining how to define and manage infrastructure using Terraform while focusing on output values, sensitive data handling, and querying the Terraform state. It explains
+
+## Step-01: Introduction
+
+This step provides an overview of the key concepts covered in the script, which include:
+
+- Understanding and implementing Terraform output values.
+- Querying outputs using terraform output.
+- Redacting sensitive attributes in output values.
+- Generating machine-readable output in JSON format.
+- Exporting both argument and attribute references.
+- Using sensitive = true to redact sensitive outputs.
+
+## Step-02: c1-versions.tf
+
+This file defines the Terraform version and provider requirements.
+
+### Code Breakdown:
+
+![image](https://github.com/user-attachments/assets/241d552a-ca58-46a6-a1df-7f8fdc1a2d0c)
+
+- Specifies that Terraform must be version 1.0.0 or later.
+- Defines Azurerm provider (used to manage Azure resources) with version >= 2.0.
+
+![image](https://github.com/user-attachments/assets/7f703ae3-e2d6-4f26-b315-35a73449ff23)
+
+- Enables azurerm provider.
+- {} signifies that no additional features are required.
+
+## Step-03: c2-variables.tf  
+
+This file defines input variables to make the script dynamic.
+
+### Code Breakdown:
+
+![image](https://github.com/user-attachments/assets/68b733ef-9512-4304-a7f9-7f435ff87954)
+
+- Defines a variable business_unit of type string with a default value "hr".
+
+![image](https://github.com/user-attachments/assets/ae6979ce-c096-42c0-82b7-2b85b93f485d)
+
+- Defines environment variable with a default value "poc".
+
+Other variables:
+
+- resoure_group_name → Name of the Azure Resource Group.
+- resoure_group_location → Location where the resource group will be created.
+- virtual_network_name → Name of the Azure Virtual Network.
+
+Note:
+
+There's a typo in resoure_group_name and resoure_group_location → It should be resource_group_name and resource_group_location.
+
+## Step-04: c3-resource-group.tf
+
+Defines the Azure Resource Group.
+
+### Code Breakdown:
+
+![image](https://github.com/user-attachments/assets/e2ea28fa-603e-4ab2-90c6-a211e73b5b82)
+
+- Creates an Azure Resource Group named:
+
+![image](https://github.com/user-attachments/assets/8abcbf6c-c955-4d1e-ac47-d0e6c82da077)
+
+  Example:
+
+![image](https://github.com/user-attachments/assets/52885a0f-5daa-4d2e-82f0-b75cfa64f26a)
+
+- Location is taken from var.resoure_group_location.
+
+## Step-05: c4-virtual-network.tf
+
+Defines the Azure Virtual Network.
+
+### Code Breakdown:
+
+![image](https://github.com/user-attachments/assets/b7522dba-b482-4607-8e6b-a946a6efc9d6)
+
+- Creates an Azure Virtual Network named:
+
+![image](https://github.com/user-attachments/assets/73162ad6-c49f-49aa-8349-038d3df78b5f)
+
+  Example:
+
+![image](https://github.com/user-attachments/assets/7cb276bb-8ae6-4010-8cbd-77937b7fe9c7)
+
+- Address Space is 10.0.0.0/16.
+- Location and Resource Group Name reference the previously created resource group.
+
+## Step-06: terraform.tfvars
+
+This file overrides the default values defined in variables.tf.
+
+![image](https://github.com/user-attachments/assets/7cec6f28-149c-473c-bc2d-87331b22b96c)
+
+- business_unit = "it"
+- environment = "dev"
+- resoure_group_name = "rg"
+- virtual_network_name = "vnet"
+
+Now, the actual resource names created will be:
+
+- Resource Group: "it-dev-rg"
+- Virtual Network: "it-dev-vnet"
+
+## Step-07: c5-outputs.tf
+
+This file defines output values that Terraform will display after resource creation.
+
+### Code Breakdown:
+
+![image](https://github.com/user-attachments/assets/619c389d-e27f-4882-9172-b1d514c2f7ad)
+
+- Outputs the Resource Group ID.
+
+![image](https://github.com/user-attachments/assets/92f30601-f0c4-4b11-8d21-7ef765992064)
+
+- Outputs the Resource Group Name.
+
+![image](https://github.com/user-attachments/assets/d333c182-adf0-4ca0-9fe0-4bf83b80fd1b)
+
+- Outputs the Virtual Network Name.
+
+## Step-08: Terraform Commands Execution
+
+Commands to initialize, validate, format, plan, and apply the Terraform configuration.
+
+![image](https://github.com/user-attachments/assets/855ae64c-300b-4972-bfd9-02b7dcdd26c6)
+
+- terraform init: Downloads provider plugins.
+- terraform validate: Checks for syntax errors.
+- terraform fmt: Formats the configuration files.
+- terraform plan: Shows what will be created.
+- terraform apply: Deploys the infrastructure.
+
+## Step-09: Query Terraform Outputs
+
+After applying, query the output values:
+
+![image](https://github.com/user-attachments/assets/a9c611ea-5d36-4c15-9a98-c68eef8572ce)
+
+- terraform output → Displays all outputs.
+- terraform output resource_group_id → Displays only the resource group ID.
+
+## Step-10: Suppressing Sensitive Output Values
+
+To redact sensitive outputs:
+
+![image](https://github.com/user-attachments/assets/c5fcc424-db12-463f-8d17-af22f7ea6a23)
+
+- This hides the value in CLI but keeps it in terraform.tfstate.
+
+### Test the sensitive value flow:
+
+![image](https://github.com/user-attachments/assets/cfa476b1-5c76-4f9f-b095-369d936f3336)
+
+- CLI Observation: It will show [sensitive] instead of the actual value.
+
+Query it manually:
+
+![image](https://github.com/user-attachments/assets/090f2338-5e7d-4ace-a4d7-b6333cfb4efb)
+
+- The value is visible in terraform.tfstate.
+
+## Step-11: Generating Machine-Readable Output
+
+To generate JSON-formatted output:
+
+![image](https://github.com/user-attachments/assets/a5187dec-e712-4089-85d9-65dd0fba9439)
+
+- Useful for automation and integration with other tools.
+
+## Step-12: Destroying Resources
+
+To delete all resources:
+
+![image](https://github.com/user-attachments/assets/5d5bc454-b3c1-42c3-b754-adb33c2033c4)
+
+- Cleans up everything created.
+
+To remove state files:
+
+![image](https://github.com/user-attachments/assets/d926bcce-0b72-4154-8236-6d6188f91fd7)
+
+- Removes Terraform state and cache files.
+
+## Key Takeaways
+
+1. Terraform Output  
+
+  - Used to retrieve created resource attributes.
+  - Supports both argument & attribute references.
+  - Can be queried using terraform output.
+
+3. Sensitive Data Handling 
+   - sensitive = true hides values in CLI but keeps them in the state.
+
+4. Automation & JSON Output 
+   - terraform output -json generates machine-readable output.
+
+5. Full Infrastructure Lifecycle 
+   - Define, plan, apply, query, and destroy resources.
