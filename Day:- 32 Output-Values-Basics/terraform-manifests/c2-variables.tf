@@ -33,3 +33,226 @@ variable "virtual_network_name" {
 }
 
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+# Explanation: - 
+
+This Terraform code defines **input variables** that allow dynamic configuration of infrastructure resources. These variables provide **flexibility** by enabling users to override default values instead of hardcoding them. Let’s go through it in detail.
+
+---
+
+## **1. Purpose of Input Variables in Terraform**
+- **Input variables** allow Terraform configurations to be **reusable and modular**.
+- They help define values **once** and use them **multiple times** throughout the code.
+- Variables can be **overridden** by:
+  - A **`terraform.tfvars`** file.
+  - **Command-line arguments** (`-var` flag).
+  - **Environment variables** (`TF_VAR_` prefix).
+
+---
+
+## **2. Code Breakdown: Input Variables**
+Each **variable block** defines a Terraform input variable.
+
+### **Variable 1: `business_unit`**
+```terraform
+variable "business_unit" {
+  description = "Business Unit Name"
+  type = string
+  default = "hr"
+}
+```
+- **Purpose:** Identifies the **business unit** that owns the infrastructure.
+- **Type:** `string` (only accepts text values).
+- **Default Value:** `"hr"` (Human Resources).
+- **Usage in Terraform Code:**
+  ```terraform
+  name = "${var.business_unit}-${var.environment}-${var.resoure_group_name}"
+  ```
+  If the `business_unit` is overridden (e.g., `"it"`), the final name of resources will be adjusted accordingly.
+
+---
+
+### **Variable 2: `environment`**
+```terraform
+variable "environment" {
+  description = "Environment Name"
+  type = string
+  default = "poc"
+}
+```
+- **Purpose:** Defines the **deployment environment** (e.g., dev, test, prod).
+- **Type:** `string`
+- **Default Value:** `"poc"` (Proof of Concept).
+- **Usage in Terraform Code:**
+  ```terraform
+  name = "${var.business_unit}-${var.environment}-${var.resoure_group_name}"
+  ```
+  Example Output:
+  ```
+  hr-poc-myrg
+  ```
+  If overridden with `"dev"`, it would become:
+  ```
+  hr-dev-myrg
+  ```
+
+---
+
+### **Variable 3: `resoure_group_name`** *(Typo Alert: Should be `resource_group_name`)*
+```terraform
+variable "resoure_group_name" {
+  description = "Resource Group Name"
+  type = string
+  default = "myrg"
+}
+```
+- **Purpose:** Specifies the name of the **Azure Resource Group**.
+- **Type:** `string`
+- **Default Value:** `"myrg"`
+- **Usage in Terraform Code:**
+  ```terraform
+  name = "${var.business_unit}-${var.environment}-${var.resoure_group_name}"
+  ```
+  **Example Output:**
+  ```
+  hr-poc-myrg
+  ```
+
+> **Issue:**  
+- There's a **typo** in the variable name: `"resoure_group_name"` instead of `"resource_group_name"`.  
+- **Fix:** Update the variable definition:
+  ```terraform
+  variable "resource_group_name" {
+    description = "Resource Group Name"
+    type = string
+    default = "myrg"
+  }
+  ```
+
+---
+
+### **Variable 4: `resoure_group_location`** *(Typo Alert: Should be `resource_group_location`)*
+```terraform
+variable "resoure_group_location" {
+  description = "Resource Group Location"
+  type = string
+  default = "East US"
+}
+```
+- **Purpose:** Specifies the **Azure region** where resources will be created.
+- **Type:** `string`
+- **Default Value:** `"East US"`
+- **Usage in Terraform Code:**
+  ```terraform
+  location = var.resoure_group_location
+  ```
+  This ensures all resources are provisioned in the same **Azure region**.
+
+> **Issue:**  
+- There's a **typo**: `"resoure_group_location"` should be `"resource_group_location"`.
+- **Fix:**
+  ```terraform
+  variable "resource_group_location" {
+    description = "Resource Group Location"
+    type = string
+    default = "East US"
+  }
+  ```
+
+---
+
+### **Variable 5: `virtual_network_name`**
+```terraform
+variable "virtual_network_name" {
+  description = "Virtual Network Name"
+  type = string 
+  default = "myvnet"
+}
+```
+- **Purpose:** Specifies the **Azure Virtual Network (VNet) Name**.
+- **Type:** `string`
+- **Default Value:** `"myvnet"`
+- **Usage in Terraform Code:**
+  ```terraform
+  name = "${var.business_unit}-${var.environment}-${var.virtual_network_name}"
+  ```
+  Example Output:
+  ```
+  hr-poc-myvnet
+  ```
+
+---
+
+## **3. How Terraform Uses These Variables**
+These variables are used in resource definitions like **Resource Groups** and **Virtual Networks**.
+
+### **Example: Azure Resource Group (`c3-resource-group.tf`)**
+```terraform
+resource "azurerm_resource_group" "myrg" {
+  name     = "${var.business_unit}-${var.environment}-${var.resoure_group_name}"
+  location = var.resoure_group_location
+}
+```
+If we override variables like:
+```terraform
+business_unit = "it"
+environment = "dev"
+resource_group_name = "rg"
+```
+The **generated resource group name** will be:
+```
+it-dev-rg
+```
+
+---
+
+## **4. Overriding Default Values**
+The default values in `c2-variables.tf` can be **overridden** using:
+
+### **(A) `terraform.tfvars` File**
+```terraform
+business_unit = "it"
+environment = "dev"
+resource_group_name = "rg"
+virtual_network_name = "vnet"
+```
+This results in:
+```
+it-dev-rg
+it-dev-vnet
+```
+
+### **(B) Command-Line Arguments**
+```bash
+terraform apply -var="business_unit=it" -var="environment=dev" -var="resource_group_name=rg"
+```
+
+### **(C) Environment Variables**
+```bash
+export TF_VAR_business_unit="it"
+export TF_VAR_environment="dev"
+export TF_VAR_resource_group_name="rg"
+```
+
+---
+
+## **5. Why Use Input Variables?**
+| **Benefit** | **Description** |
+|------------|---------------|
+| **Reusability** | Terraform code can be used for multiple environments (dev, test, prod) without changes. |
+| **Flexibility** | Users can easily override values using `terraform.tfvars`, CLI, or environment variables. |
+| **Consistency** | Ensures all resources follow naming conventions automatically. |
+| **Automation** | Useful for CI/CD pipelines where values can be dynamically injected. |
+
+---
+
+## **6. Summary**
+| **Variable Name** | **Purpose** | **Default Value** | **Example Output** |
+|------------------|------------|-----------------|----------------|
+| `business_unit` | Business Unit identifier | `"hr"` | `"hr-poc-myrg"` |
+| `environment` | Deployment environment | `"poc"` | `"hr-poc-myrg"` |
+| `resource_group_name` (Fix typo) | Resource Group name | `"myrg"` | `"hr-poc-myrg"` |
+| `resource_group_location` (Fix typo) | Azure Region | `"East US"` | `"East US"` |
+| `virtual_network_name` | Virtual Network name | `"myvnet"` | `"hr-poc-myvnet"` |
+
+By using Terraform variables effectively, we **avoid hardcoding** values, making our code more **scalable, maintainable, and reusable**! 🚀
