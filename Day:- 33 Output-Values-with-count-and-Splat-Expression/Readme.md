@@ -192,12 +192,8 @@ terraform validate
 Error Output:
 
 │ Error: Missing resource instance key
-│ 
-│   on c5-outputs.tf line 16, in output "virtual_network_name":
-│   16:   value = azurerm_virtual_network.myvnet.name 
-│ 
-│ Because azurerm_virtual_network.myvnet has a "count" set, its attributes must be
-│ accessed on specific instances.
+
+![image](https://github.com/user-attachments/assets/92beae0b-d233-43cd-a9df-6a7c31e26a4a)
 
 Why the error?
 
