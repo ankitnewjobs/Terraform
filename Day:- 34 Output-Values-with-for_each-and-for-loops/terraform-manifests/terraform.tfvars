@@ -5,9 +5,9 @@ virtual_network_name = "vnet"
 
 -------------------------------------------------------------------------------------------------------------------------------------------\
 
-#Explanation: - 
+# Explanation: - 
 
-These lines appear to be defining variables or configurations in Terraform (HCL - HashiCorp Configuration Language). 
+These lines appear to define variables or configurations in Terraform (HCL - HashiCorp Configuration Language). 
 
 Let's break them down in detail.  
 
@@ -15,7 +15,7 @@ Let's break them down in detail.
 
 - This assigns a string value "it" to the variable business_unit.
 - It is likely used to categorize resources by department or function within an organization.
-- Example use case: Naming conventions for resources like resource groups, storage accounts, or tags.
+- Example use case: Naming conventions for resource groups, storage accounts, or tags.
 
 Example usage in Terraform:
 
