@@ -117,7 +117,7 @@ output "virtual_network_name" {
 }
 ```
 
-## Step-06: Execute Terraform Commands
+## Step-08: Execute Terraform Commands
 ```t
 # Initialize Terraform
 terraform init
@@ -138,7 +138,7 @@ terraform apply -auto-approve
 1. Review the outputs in CLI Output
 ```
 
-## Step-07: Query Terraform Outputs
+## Step-09: Query Terraform Outputs
 - Terraform will load the project state in state file, so that using `terraform output` command we can query the state file. 
 ```t
 # Terraform Output Commands
@@ -148,7 +148,7 @@ terraform output virtual_network_name
 ```
 
 
-## Step-08: Output Values - Suppressing Sensitive Values in Output
+## Step-10: Output Values - Suppressing Sensitive Values in Output
 - We can redact the sensitive outputs using `sensitve = true` in output block
 - This will only redact the cli output for terraform plan and apply
 - When you query using `terraform output`, you will be able to fetch exact values from `terraform.tfstate` files
@@ -174,13 +174,13 @@ Observation:
 1. You should get non-redacted original value from terraform.tfstate file
 ```
 
-## Step-09: Generate machine-readable output
+## Step-11: Generate machine-readable output
 ```t
 # Generate machine-readable output
 terraform output -json
 ```
 
-## Step-10: Destroy Resources
+## Step-12: Destroy Resources
 ```t
 # Destroy Resources
 terraform destroy -auto-approve
