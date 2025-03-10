@@ -139,7 +139,7 @@ resource "azurerm_resource_group" "myrg"
 
 |      Feature            |                    Description                                 |
 |-------------------------|----------------------------------------------------------------|
-| Dynamic Resource Naming | Uses `locals` to generate names (hr-dev-myrg).                 |
+| Dynamic Resource Naming | Uses locals to generate names (hr-dev-myrg).                 |
 | Reusable Variables      | Avoids hardcoded values by using var. resource_group_location. |
 | Common Tags             | Uses local.common_tags to apply standardized metadata.         |
 
