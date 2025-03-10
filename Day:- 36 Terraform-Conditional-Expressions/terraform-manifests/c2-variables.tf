@@ -121,7 +121,7 @@ variable "resoure_group_name"
 - Type: string.
 - Default Value: "myrg".
 
-🔴 Typo Alert: The variable name has a misspelled "resoure" instead of "resource". It should be:
+Typo Alert: The variable name has a misspelled "resoure" instead of "resource". It should be:
 
 variable "resource_group_name"
 
