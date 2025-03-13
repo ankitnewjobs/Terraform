@@ -33,10 +33,3 @@ output "ds_vnet_address_space"
 --------------------------------------------------------------------------------------------------------------------------------------
 
 # Explanation: - 
-
-
-# 3. Virtual Network address_space from Datasource
-output "ds_vnet_address_space" {
-  value = data.azurerm_virtual_network.vnetds.address_space
-}
-
