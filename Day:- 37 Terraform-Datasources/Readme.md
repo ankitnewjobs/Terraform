@@ -155,6 +155,216 @@ rm -rf terraform.tfstate*
 ## References
 - [Terraform Datasource](https://www.terraform.io/docs/language/data-sources/index.html)
 
-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------------------------
 
 # Explanation: - 
+
+### Overview
+
+This Terraform setup demonstrates the use of data sources to fetch information about existing Azure resources.
+
+1. Resource Groups (azurerm_resource_group)
+2. Virtual Networks (azurerm_virtual_network)
+3. Subscription Information (azurerm_subscription)
+
+## Step-01: Introduction
+
+- What are Terraform Data Sources?
+  
+  - Terraform data sources allow us to query existing infrastructure instead of creating new resources.
+  - This is useful for referencing resources created outside Terraform or in a different Terraform configuration.
+
+- Use Case
+  
+  - Fetch details about:
+    
+    - Resource Group (azurerm_resource_group)
+    - Virtual Network (azurerm_virtual_network)
+    - Subscription (azurerm_subscription)
+
+## Step-02: Fetching Resource Group Details (c6-datasource-resource-group.tf)
+
+# Datasources
+
+data "azurerm_resource_group" "rgds"
+{
+  depends_on = [ azurerm_resource_group.myrg ]
+  name = local.rg_name 
+}
+
+### Explanation
+
+- data "azurerm_resource_group" "rgds" → Defines a data source for an existing Azure Resource Group.
+- depends_on = [ azurerm_resource_group.myrg ] → Ensures the resource group myrg is created first before referencing it.
+- name = local.rg_name → Uses a local variable (local.rg_name) instead of hardcoding the Resource Group name.
+
+### Outputs
+
+output "ds_rg_name"
+{
+  value = data.azurerm_resource_group.rgds.name
+}
+output "ds_rg_location" 
+{
+  value = data.azurerm_resource_group.rgds.location
+}
+output "ds_rg_id"
+{
+  value = data.azurerm_resource_group.rgds.id
+}
+
+- Displays:
+  
+  - The Resource Group Name (ds_rg_name)
+  - The Resource Group Location (ds_rg_location)
+  - The Resource Group ID (ds_rg_id)
+
+## Step-03: Fetching Virtual Network Details (c7-datasource-virtual-network.tf)
+
+# Datasources
+
+data "azurerm_virtual_network" "vnetds" 
+{
+  depends_on = [ azurerm_virtual_network.myvnet ]
+  name = local.vnet_name
+  resource_group_name = local.rg_name
+}
+
+### Explanation
+
+- data "azurerm_virtual_network" "vnetds" → Fetches details about an existing Azure Virtual Network.
+- depends_on = [ azurerm_virtual_network.myvnet ] → Ensures the Virtual Network (myvnet) exists before querying.
+- name = local.vnet_name → Uses a local variable (local.vnet_name) for the VNet name.
+- resource_group_name = local.rg_name → References the Resource Group where the VNet is deployed.
+
+### Outputs
+
+output "ds_vnet_name" 
+{
+  value = data.azurerm_virtual_network.vnetds.name 
+}
+output "ds_vnet_id"
+{
+  value = data.azurerm_virtual_network.vnetds.id 
+}
+output "ds_vnet_address_space" 
+{
+  value = data.azurerm_virtual_network.vnetds.address_space
+}
+
+- Displays:
+  
+  - The Virtual Network Name (ds_vnet_name)
+  - The Virtual Network ID (ds_vnet_id)
+  - The VNet Address Space (ds_vnet_address_space)
+
+## Step-04: Fetching Subscription Details (c8-datasource-subscription.tf)
+
+# Datasources
+
+data "azurerm_subscription" "current"
+{
+}
+
+### Explanation
+
+- data "azurerm_subscription" "current" → Fetches information about the current Azure subscription.
+
+### Outputs
+
+output "current_subscription_display_name"
+{
+  value = data.azurerm_subscription.current.display_name
+}
+output "current_subscription_id"
+{
+  value = data.azurerm_subscription.current.subscription_id
+}
+output "current_subscription_spending_limit"
+{
+  value = data.azurerm_subscription.current.spending_limit
+}
+
+- Displays:
+  
+  - The Subscription Display Name
+  - The Subscription ID
+  - The Subscription Spending Limit
+
+## Step-05: Running Terraform Commands
+
+### Commands
+
+# Initialize Terraform: terraform init
+
+# Validate the Terraform configuration files: terraform validate
+
+# Format Terraform files: terraform fmt
+
+# Preview the changes before applying: terraform plan 
+
+# Apply the changes (Optional): terraform apply -auto-approve
+
+### Observations
+
+- Verify the Resource Group outputs.
+- Verify the Virtual Network outputs.
+- Verify the Subscription outputs.
+
+## Step-06: Fetching an Existing Resource Group (c9-datasource-resource-group-existing.tf)
+
+> Pre-requisite: Manually create a Resource Group dsdemo in Azure.
+
+# Datasources
+
+data "azurerm_resource_group" "rgds1"
+{
+  name = "dsdemo"
+}
+
+### Explanation
+
+- Fetches details about an existing Azure Resource Group (dsdemo).
+
+### Outputs
+
+output "ds_rg_name1" 
+{
+  value = data.azurerm_resource_group.rgds1.name
+}
+output "ds_rg_location1"
+{
+  value = data.azurerm_resource_group.rgds1.location
+}
+output "ds_rg_id1"
+{
+  value = data.azurerm_resource_group.rgds1.id
+}
+
+- Displays:
+
+   - The name of dsdemo.
+  - The location of the dsdemo.
+  - The resource ID of dsdemo.
+
+## Step-07: Running Terraform for the Existing Resource Group
+
+### Commands
+
+# Preview the changes: terraform plan
+
+### Expected Output
+
+- Terraform should fetch details of the manually created dsdemo Resource Group.
+
+> Note: Once verified, comment out c9-datasource-resource-group-existing.tf to prevent unnecessary lookups.
+
+## Step-08: Cleanup
+
+### Destroy Resources: terraform destroy -auto-approve
+
+### Remove Terraform State Files: rm -rf .terraform
+
+rm -rf terraform.tfstate*
+
+This ensures Terraform does not retain any sensitive state information.
