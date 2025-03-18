@@ -9,7 +9,7 @@ description: Learn about Terraform Datasources
 2. Datasource [azurerm_virtual_network](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/virtual_network)
 3. Datasource [azurerm_subscription](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/subscription)
 
-## Step-02: c6-datasource-resource-group.tf
+## Step-02: c6-data source-resource-group.tf
 ```t
 # Datasources
 data "azurerm_resource_group" "rgds" {
@@ -184,7 +184,7 @@ This Terraform setup demonstrates the use of data sources to fetch information a
 
 ## Step-02: Fetching Resource Group Details (c6-datasource-resource-group.tf)
 
-# Datasources
+# Data sources
 
 data "azurerm_resource_group" "rgds"
 {
