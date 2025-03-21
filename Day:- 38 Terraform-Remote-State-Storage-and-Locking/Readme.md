@@ -321,5 +321,5 @@ common_tags =
 {
   Service = local.service_name
   Owner   = local.owner
-  # Tag = "demo-tag1"  
+  Tag = "demo-tag1"  
 }
