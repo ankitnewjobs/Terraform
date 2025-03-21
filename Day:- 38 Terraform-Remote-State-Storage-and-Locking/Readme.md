@@ -146,185 +146,179 @@ rm -rf .terraform*
 
 # Explanation: - 
 
-### **Detailed Explanation of the Terraform Code and Steps**
+### Detailed Explanation of the Terraform Code and Steps
 
-This guide walks through setting up **Terraform remote state storage** using **Azure Storage Account** and enabling backend configurations. Below is a detailed explanation of each step:
+This guide walks through setting up Terraform remote state storage using Azure Storage Account and enabling backend configurations. 
 
----
+## Step-01: Introduction
 
-## **Step-01: Introduction**
-### **Understanding Terraform Backends**
-- **Terraform State File (`terraform.tfstate`)**: 
-  - Terraform uses this file to store the **current state** of the infrastructure.
-  - By default, it is stored locally, but it can be **remotely stored** to support **collaboration** in a team environment.
-- **Remote State Storage Advantages:**
-  - Enables **state locking** (prevents multiple users from making conflicting changes).
-  - Helps in **team collaboration** (state file is centrally stored).
-  - Provides **versioning** (previous states can be retrieved if needed).
-- **Azure Storage as Backend:**
-  - Using an **Azure Storage Account** allows **secure storage and management** of the Terraform state file.
+### Understanding Terraform Backends
 
----
+- Terraform State File (terraform.tfstate):
+ 
+  - Terraform uses this file to store the current state of the infrastructure.
+  - By default, it is stored locally but can be remotely stored to support collaboration in a team environment.
+    
+- Remote State Storage Advantages:
+  
+  - Enables state locking (prevents multiple users from making conflicting changes).
+  - Helps in team collaboration (state file is centrally stored).
+  - Provides versioning (previous states can be retrieved if needed).
 
-## **Step-02: Create Azure Storage Account**
+- Azure Storage as Backend: Using an Azure Storage Account allows secure storage and management of the Terraform state file.
 
-### **Step-02-01: Create Resource Group**
-A **resource group** is a container that holds all related Azure resources.
+## Step-02: Create Azure Storage Account
 
-- Go to Azure Portal → **Resource Groups** → Click **Add**
+### Step-02-01: Create Resource Group
+
+A resource group is a container that holds all related Azure resources.
+
+- Go to Azure Portal → Resource Groups → Click Add
+  
 - Enter:
-  - **Resource Group Name:** `terraform-storage-rg`
-  - **Region:** `East US`
-- Click **Review + Create**, then **Create**.
+  
+  - Resource Group Name: terraform-storage-rg
+  - Region: East US
+- Click Review + Create, then Create.
 
----
+### Step-02-02: Create Azure Storage Account: A storage account is needed to store the terraform.tfstate file.
 
-### **Step-02-02: Create Azure Storage Account**
-A **storage account** is needed to store the `terraform.tfstate` file.
+- Go to Storage Accounts → Click Add
 
-- Go to **Storage Accounts** → Click **Add**
 - Set the following values:
-  - **Resource Group:** `terraform-storage-rg`
-  - **Storage Account Name:** `terraformstate201` (**Must be globally unique**)
-  - **Region:** `East US`
-  - **Performance:** `Standard`
-  - **Redundancy:** `Geo-Redundant Storage (GRS)` (for high availability)
-  - **Enable Versioning for Blobs** (for tracking state changes)
-- Click **Review + Create**, then **Create**.
+  
+  - Resource Group: terraform-storage-rg
+  - Storage Account Name: terraformstate201 (Must be globally unique)
+  - Region: East US
+  - Performance: Standard
+  - Redundancy: Geo-Redundant Storage (GRS) (for high availability)
+  - Enable Versioning for Blobs (for tracking state changes)
+- Click Review + Create, then Create.
 
----
+### Step-02-03: Create a Container in the Storage Account
 
-### **Step-02-03: Create a Container in the Storage Account**
-A **container** is a logical unit to hold blobs.
+A container is a logical unit to hold blobs.
 
-- Navigate to **Storage Account** → `terraformstate201` → **Containers** → Click `+Container`
+- Navigate to Storage Account → terraformstate201 → Containers → Click +Container
+  
 - Set:
-  - **Name:** `tfstatefiles`
-  - **Public Access Level:** `Private (no anonymous access)`
-- Click **Create**.
+  
+  - Name: tfstatefiles
+  - Public Access Level: Private (no anonymous access)
+- Click Create.
 
----
+## Step-03: Configure Terraform Backend
 
-## **Step-03: Configure Terraform Backend**
-### **Modify `c1-versions.tf` to use Remote State Storage**
-- Add the following **backend block** inside `terraform` settings:
+### **Modify c1-versions.tf to use Remote State Storage
 
-```hcl
+- Add the following backend block inside terraform settings:
+
 # Terraform State Storage to Azure Storage Container
-terraform {
-  backend "azurerm" {
+
+terraform
+{
+  backend "azurerm" 
+  {
     resource_group_name   = "terraform-storage-rg"
     storage_account_name  = "terraformstate201"
     container_name        = "tfstatefiles"
     key                   = "terraform.tfstate"
   } 
 }
-```
 
-### **Explanation:**
-- `resource_group_name`: Specifies the **resource group** that holds the storage account.
-- `storage_account_name`: Specifies the **storage account** that stores the Terraform state.
-- `container_name`: Specifies the **container** inside the storage account.
-- `key`: The filename of the Terraform state file (`terraform.tfstate`).
+### Explanation:
+- resource_group_name: Specifies the resource group that holds the storage account.
+- storage_account_name: Specifies the storage account that stores the Terraform state.
+- container_name: Specifies the container inside the storage account.
+- key: The filename of the Terraform state file (terraform.tfstate).
 
----
+## Step-04: Review Terraform Configuration Files
 
-## **Step-04: Review Terraform Configuration Files**
 Several Terraform configuration files define the infrastructure:
-1. **c1-versions.tf** → Defines Terraform versions and backend settings.
-2. **c2-variables.tf** → Declares input variables.
-3. **c3-locals.tf** → Defines local values (common tags, naming conventions).
-4. **c4-resource-group.tf** → Creates a resource group.
-5. **c5-virtual-network.tf** → Creates a virtual network.
-6. **c6-linux-virtual-machine.tf** → Deploys a Linux VM.
-7. **c7-outputs.tf** → Defines output values (e.g., VM public IP).
-8. **terraform.tfvars** → Defines variable values.
 
----
+1. c1-versions.tf → Defines Terraform versions and backend settings.
+2. c2-variables.tf → Declares input variables.
+3. c3-locals.tf → Defines local values (common tags, naming conventions).
+4. c4-resource-group.tf → Creates a resource group.
+5. c5-virtual-network.tf → Creates a virtual network.
+6. c6-linux-virtual-machine.tf → Deploys a Linux VM.
+7. c7-outputs.tf → Defines output values (e.g., VM public IP).
+8. terraform.tfvars → Defines variable values.
 
-## **Step-05: Initialize Terraform with Remote Backend**
-### **Run Terraform Commands**
-```sh
-# Initialize Terraform
-terraform init
-```
-**Observations:**
-- Terraform **downloads necessary provider plugins**.
-- It **configures the backend** and confirms remote state storage.
-- Terraform checks Azure Storage for an existing `terraform.tfstate`.
+## Step-05: Initialize Terraform with Remote Backend
 
-### **Validate Configuration**
-```sh
-terraform validate
-```
-- Ensures that the Terraform code is **syntactically correct**.
+### Run Terraform Commands
 
-### **Plan the Deployment**
-```sh
-terraform plan
-```
-**Observations:**
-- Terraform acquires a **state lock** to prevent conflicts.
-- It **compares** the current state with the desired state.
+# Initialize Terraform: terraform init
 
-### **Apply the Configuration**
-```sh
-terraform apply -auto-approve
-```
-**Observations:**
-- Deploys resources **automatically**.
-- The **state file (`terraform.tfstate`) is stored in Azure Storage**.
+Observations:
 
-### **Access the Deployed Application**
-```sh
+- Terraform downloads necessary provider plugins.
+- It configures the backend and confirms remote state storage.
+- Terraform checks Azure Storage for an existing terraform.tfstate.
+
+### Validate Configuration: terraform validate
+
+- Ensures that the Terraform code is syntactically correct.
+
+### Plan the Deployment: terraform plan
+
+Observations:
+
+- Terraform acquires a state lock to prevent conflicts.
+- It compares the current state with the desired state.
+
+### Apply the Configuration: terraform apply -auto-approve
+
+Observations:
+
+- Deploys resources automatically.
+- The state file (terraform.tfstate) is stored in Azure Storage.
+
+### Access the Deployed Application
+
 http://<Public-IP>
-```
-- Retrieve the **public IP** of the deployed VM and **access the application**.
 
----
+- Retrieve the public IP of the deployed VM and access the application.
 
-## **Step-06: Storage Account Container Versioning Test**
-Terraform **state versioning** ensures that previous versions are available.
+## Step-06: Storage Account Container Versioning Test
 
-### **Modify `c3-locals.tf`**
-Uncomment the `demo-tag1`:
-```hcl
-common_tags = {
+Terraform state versioning ensures that previous versions are available.
+
+### Modify c3-locals.tf
+
+Uncomment the demo-tag1:
+
+common_tags = 
+{
   Service = local.service_name
   Owner   = local.owner
   Tag = "demo-tag1"  # Uncomment during step-05
 }
-```
 
-### **Apply the Changes**
-```sh
+### Apply the Changes
+
 terraform plan
 terraform apply -auto-approve
-```
-**Observations:**
-1. A **new version** of `terraform.tfstate` is created.
-2. Terraform **locks the state** (Lease State = "Leased") to prevent concurrent changes.
-3. After `terraform apply` completes, the lease **returns to "Available"**.
 
----
+Observations:
 
-## **Step-07: Destroy Resources**
-To **clean up** the infrastructure:
+1. A new version of terraform.tfstate is created.
+2. Terraform locks the state (Lease State = "Leased") to prevent concurrent changes.
+3. After terraform apply completes, the lease returns to "Available".
 
-### **Destroy All Resources**
-```sh
-terraform destroy -auto-approve
-```
+## Step-07: Destroy Resources: To clean up the infrastructure:
 
-### **Remove Terraform State Files Locally**
-```sh
-rm -rf .terraform*
-```
+### Destroy All Resources: terraform destroy -auto-approve
 
-### **Comment Out the Demo Tag**
-Revert `c3-locals.tf`:
-```hcl
-common_tags = {
+### Remove Terraform State Files Locally: rm -rf .terraform*
+
+### Comment Out the Demo Tag
+
+Revert c3-locals.tf:
+
+common_tags = 
+{
   Service = local.service_name
   Owner   = local.owner
   # Tag = "demo-tag1"  
