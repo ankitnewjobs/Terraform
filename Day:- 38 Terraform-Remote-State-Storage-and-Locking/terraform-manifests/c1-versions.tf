@@ -52,13 +52,14 @@ terraform
 {
   required_version = ">= 1.0.0"
 
-- This enforces that Terraform version **1.0.0 or later** must be used.
+- This enforces that Terraform version 1.0.0 or later must be used.
 
 ### Required Providers
 
   required_providers 
 {
-    azurerm = {
+    azurerm =
+{
       source = "hashicorp/azurerm"
       version = ">= 2.0" 
     }
@@ -91,9 +92,9 @@ terraform
     key                   = "terraform.tfstate"
   } 
 
-- Backend configuration is used to store the Terraform state file remotely instead of locally.
+- Backend configuration stores the Terraform state file remotely instead of locally.
 
-- The Azure Storage Account is used as the backend to store the Terraform state.
+- The Azure Storage Account is the backend to store the Terraform state.
 
   - resource_group_name: The resource group containing the storage account (terraform-storage-rg).
   - storage_account_name: The name of the storage account (terraformstate201).
