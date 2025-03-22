@@ -94,7 +94,7 @@ variable "virtual_machine_name" {
 
 3. Best Practices
    - Use consistent naming conventions (camelCase or snake_case).
-   - Avoid hardcoding default values for variables that **should vary per environment (e.g., resource_group_name).
+   - Avoid hardcoding default values for variables that should vary per environment (e.g., resource_group_name).
 
 ## Usage Example
 
