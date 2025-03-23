@@ -31,132 +31,116 @@ resource "azurerm_linux_virtual_machine" "mylinuxvm" {
 
 # Explanation: - 
 
-This Terraform code provisions an **Azure Linux Virtual Machine** (`azurerm_linux_virtual_machine`) using Infrastructure as Code (IaC). Below is a detailed breakdown of the configuration, covering each attribute and its significance.
+This Terraform code provisions an Azure Linux Virtual Machine (azurerm_linux_virtual_machine) using Infrastructure as Code (IaC).
 
----
+## 1. Defining an Azure Linux Virtual Machine
 
-## **1. Defining an Azure Linux Virtual Machine**
-### **Resource Block: `azurerm_linux_virtual_machine`**
-Terraform uses this resource to define and configure a **Linux-based virtual machine** in Azure.
+### Resource Block: azurerm_linux_virtual_machine
 
-```hcl
-resource "azurerm_linux_virtual_machine" "mylinuxvm" {
-```
-- The **resource type** is `azurerm_linux_virtual_machine`, which means the VM will run a Linux operating system.
-- The **resource name** is `mylinuxvm`, a unique identifier within the Terraform configuration.
+Terraform uses this resource to define and configure a Linux-based virtual machine in Azure.
 
----
+resource "azurerm_linux_virtual_machine" "mylinuxvm" 
 
-## **2. Basic Configuration**
-These properties define the **basic identity** and placement of the VM.
+- The resource type is azurerm_linux_virtual_machine, which means the VM will run a Linux operating system.
+- The resource name is mylinuxvm, a unique identifier within the Terraform configuration.
 
-```hcl
+## 2. Basic Configuration
+
+These properties define the basic identity and placement of the VM.
+
   name                = local.vm_name
   computer_name       = local.vm_name # Hostname of the VM
   resource_group_name = azurerm_resource_group.myrg.name
   location            = azurerm_resource_group.myrg.location
-```
 
-- `name`: The **logical name** of the VM in Azure, stored in the `local.vm_name` variable.
-- `computer_name`: The **hostname** of the VM (how it appears inside the OS). It matches `vm_name`.
-- `resource_group_name`: The VM is created in the specified **Azure resource group** (`myrg`).
-- `location`: Ensures deployment in the **same Azure region** as the resource group.
+- name: The logical name of the VM in Azure, stored in the local.vm_name variable.
+- computer_name: The hostname of the VM (how it appears inside the OS). It matches vm_name.
+- resource_group_name: The VM is created in the specified Azure resource group (myrg).
+- location: Ensures deployment in the same Azure region as the resource group.
 
----
+## 3. VM Size Selection
 
-## **3. VM Size Selection**
-```hcl
   size = "Standard_DS1_v2"
-```
-- Defines the **VM size** or SKU.
-- `"Standard_DS1_v2"` offers **1 vCPU, 3.5GB RAM**, and supports **Premium SSD**.
 
----
+- Defines the VM size or SKU.
 
-## **4. Network Configuration**
-```hcl
+- "Standard_DS1_v2" offers 1 vCPU, 3.5GB RAM, and supports Premium SSD.
+
+## 4. Network Configuration
+
   network_interface_ids = [ azurerm_network_interface.myvmnic.id ]
-```
-- Associates the VM with a **network interface card (NIC)**.
-- The NIC (`myvmnic`) allows the VM to communicate over the **Azure Virtual Network (VNet)**.
-- The **public IP address** (from NIC) enables external access.
 
----
+- Associates the VM with a network interface card (NIC).
+- The NIC (myvmnic) allows the VM to communicate over the Azure Virtual Network (VNet).
+- The public IP address (from NIC) enables external access.
 
-## **5. Admin Credentials & SSH Key Authentication**
-```hcl
+## 5. Admin Credentials & SSH Key Authentication
+
   admin_username = "azureuser"
-```
-- Defines the **Linux user** (`azureuser`) for SSH login.
 
-```hcl
-  admin_ssh_key {
+- Defines the Linux user (azureuser) for SSH login.
+
+  admin_ssh_key
+{
     username   = "azureuser"
     public_key = file("${path.module}/ssh-keys/terraform-azure.pub")
   }
-```
-- `admin_ssh_key`: Sets up **SSH key-based authentication** (recommended for security).
-- `public_key`: Loads an **existing SSH public key** from the file `terraform-azure.pub`.
-- `file("${path.module}/ssh-keys/terraform-azure.pub")`: Reads the SSH key stored in the Terraform module directory.
 
-> 🚀 **Security Best Practice:** Using SSH keys eliminates the need for **password-based authentication**, reducing security risks.
+- admin_ssh_key: Sets up SSH key-based authentication (recommended for security).
+- public_key: Loads an existing SSH public key from the file terraform-azure.pub.
+- file("${path.module}/ssh-keys/terraform-azure.pub"): Reads the SSH key stored in the Terraform module directory.
 
----
+> Security Best Practice: Using SSH keys eliminates the need for password-based authentication, reducing security risks.
 
-## **6. OS Disk Configuration**
-```hcl
-  os_disk {
+## 6. OS Disk Configuration
+
+  os_disk 
+{
     name = "osdisk${random_string.myrandom.id}"
     caching              = "ReadWrite"
     storage_account_type = "Standard_LRS"
   }
-```
-- `name`: The OS disk is dynamically named (`osdisk` + random ID) to ensure **uniqueness**.
-- `caching = "ReadWrite"`: Optimizes performance for **read/write** operations.
-- `storage_account_type = "Standard_LRS"`:
-  - Uses **Standard HDD (LRS)** for cost-efficiency.
-  - If **better performance is needed**, **`Premium_LRS`** (SSD) is preferred.
 
----
+- name: The OS disk is dynamically named (osdisk + random ID) to ensure uniqueness.
+- caching = "ReadWrite": Optimizes performance for read/write operations.
+- storage_account_type = "Standard_LRS":
+  - Uses Standard HDD (LRS) for cost-efficiency.
+  - If better performance is needed, Premium_LRS (SSD) is preferred.
 
-## **7. OS Image Selection**
-```hcl
-  source_image_reference {
+## 7. OS Image Selection
+
+  source_image_reference 
+{
     publisher = "RedHat"
     offer     = "RHEL"
     sku       = "83-gen2"
     version   = "latest"
   }
-```
-- Specifies the **OS image** for the VM.
-- **`publisher = "RedHat"`** → The VM uses **Red Hat Enterprise Linux (RHEL)**.
-- **`offer = "RHEL"`** → The selected OS is RHEL.
-- **`sku = "83-gen2"`** → Specifies **RHEL 8.3 (Generation 2)**.
-- **`version = "latest"`** → Always provisions the **latest available version**.
 
----
+- Specifies the OS image for the VM.
+- publisher = "RedHat" → The VM uses Red Hat Enterprise Linux (RHEL).
+- offer = "RHEL" → The selected OS is RHEL.
+- sku = "83-gen2" → Specifies RHEL 8.3 (Generation 2).
+- version = "latest" → Always provisions the latest available version.
 
-## **8. Cloud-Init for Bootstrapping**
-```hcl
+## 8. Cloud-Init for Bootstrapping
+
   custom_data = filebase64("${path.module}/app-scripts/app1-cloud-init.txt")
-```
-- Uses **Cloud-Init** to run scripts **at first boot**.
-- `custom_data`:
-  - Loads a startup script from `app1-cloud-init.txt`.
-  - Encodes the script in **Base64** for Azure compatibility.
 
-> ✅ **Example Use Case:** Installing dependencies, configuring users, setting up Docker, or deploying applications automatically on first startup.
+- Uses Cloud-Init to run scripts at first boot.
 
----
+- custom_data:
+  - Loads a startup script from app1-cloud-init.txt.
+  - Encode the script in Base64 for Azure compatibility.
 
-## **9. Tagging for Resource Management**
-```hcl
+> Example Use Case: Installing dependencies, configuring users, setting up Docker, or deploying applications automatically on the first startup.
+
+## 9. Tagging for Resource Management
+
   tags = local.common_tags
-```
-- Assigns metadata **tags** to help with **organization and cost tracking**.
-- `local.common_tags`: Likely contains standard labels like `environment`, `owner`, etc.
 
----
+- Assign metadata tags to help with organization and cost tracking.
+- local.common_tags: Likely contains standard labels like environment, owner, etc.
 
 ## Summary
 
@@ -169,4 +153,3 @@ These properties define the **basic identity** and placement of the VM.
 | OS Image       | Deploys RHEL 8.3 (Gen 2).                      |
 | Cloud-Init     | Executes custom scripts on startup.            |
 | Tagging        | Uses local.common_tags for resource management.|
-
