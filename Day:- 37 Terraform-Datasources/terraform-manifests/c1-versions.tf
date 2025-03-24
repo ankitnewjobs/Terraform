@@ -25,9 +25,8 @@ This Terraform code snippet defines the Terraform block and the provider block f
 
 The Terraform block sets the global configuration for your Terraform project. This includes specifying the required Terraform version and defining providers that Terraform will use to manage resources.
 
-#### Explanation:
-
-terraform {
+terraform 
+{
   required_version = ">= 1.0.0"
   required_providers {
     azurerm = {
