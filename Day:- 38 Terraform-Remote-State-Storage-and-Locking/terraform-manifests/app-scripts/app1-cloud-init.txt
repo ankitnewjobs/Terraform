@@ -23,3 +23,130 @@ runcmd:
 
 # Explanation: - 
 
+This script is a cloud-init configuration file (#cloud-config) used to automate the setup of an Apache web server on a Linux virtual machine. 
+
+It is commonly used in Terraform, AWS EC2 user data, or Azure VM cloud-init to bootstrap virtual machines at startup.
+
+# Cloud-Init Overview
+
+Cloud-init is a tool used to automate the initialization of cloud instances. It runs during the first boot of a virtual machine and can:
+
+- Install & configure packages (e.g., httpd for Apache).
+- Write files to the filesystem.
+- Run commands after the instance starts.
+
+# Code Breakdown and Detailed Explanation
+
+### Package Installation
+
+package_upgrade: false
+packages:
+  - httpd
+
+Explanation:
+
+- package_upgrade: false → Prevents the automatic update of system packages.
+- packages: → Installs required software (in this case, httpd, which is Apache Web Server).
+
+Practical Usage:
+- Ensures Apache Web Server is available on the instance.
+- If package_upgrade: true were used, the system would update all packages before installation.
+
+### Writing Files to the Web Server Directory
+
+write_files:
+  - owner: root:root 
+    path: /var/www/html/index.html
+    content: |
+      <h1>Welcome to StackSimplify - APP-1</h1>
+
+Explanation:
+
+- write_files: → Creates files on the instance.
+- owner: root:root → Sets ownership to root user and group.
+- path: /var/www/html/index.html → Creates an HTML file for the web server.
+- content: → Specifies the HTML content displayed when the server is accessed.
+
+Practical Usage:
+
+- When a user accesses the server's IP, this index.html will be displayed.
+
+### Creating a Custom Web Page in a Subdirectory
+
+  - owner: root:root 
+    path: /var/www/html/app1/index.html
+    content: |
+      <!DOCTYPE html> 
+      <html> 
+      <body style="background-color:rgb(250, 210, 210);"> 
+      <h1>Welcome to Stack Simplify - APP-1</h1> 
+      <p>Terraform Demo</p> 
+      <p>Application Version: V1</p> 
+      </body>
+      </html> 
+
+Explanation:
+
+- Creates a subdirectory (app1/) inside /var/www/html/.
+- Writes an HTML file (index.html) inside /app1/.
+- This page displays the application version (V1) and a Terraform demo message.
+
+Practical Usage:
+
+- Useful for multi-version application deployments (V1, V2 versions).
+- Users accessing http://<vm-ip>/app1/ will see this custom page.
+
+### Running Commands at Startup
+
+runcmd:
+
+  - sudo systemctl start httpd  
+  - sudo systemctl enable httpd
+  - sudo systemctl stop firewalld
+  - sudo mkdir /var/www/html/app1 
+  - [sudo, curl, -H, "Metadata:true", --noproxy, "*", "http://169.254.169.254/metadata/instance?api-version=2020-09-01", -o, /var/www/html/app1/metadata.html]
+
+Explanation:
+
+- runcmd: → Specifies commands to run after instance boot.
+- sudo systemctl start httpd → Starts the Apache web server.
+- sudo systemctl enable httpd → Enables Apache to start on reboot.
+- sudo systemctl stop firewalld → Disables the firewall (prevents blocking web traffic).
+- sudo mkdir /var/www/html/app1 → Creates the app1 directory (if not already created).
+- sudo curl -H "Metadata:true" --noproxy "*" "http://169.254.169.254/metadata/instance?api-version=2020-09-01" -o /var/www/html/app1/metadata.html`
+  - Retrieves VM metadata from the Azure Instance Metadata Service (IMDS).
+  - Stores metadata in /var/www/html/app1/metadata.html.
+
+Practical Usage:
+
+- Ensures Apache runs on startup.
+- Disables the firewall so that the server is accessible externally.
+- Stores VM metadata, which can help with debugging or logging.
+
+# How This Works in Terraform or Cloud Platforms
+
+If you use this in Terraform for an Azure VM, it can be applied like this:
+
+resource "azurerm_linux_virtual_machine" "example" 
+{
+  name                = "example-vm"
+  resource_group_name = azurerm_resource_group.example.name
+  location            = azurerm_resource_group.example.location
+  size               = "Standard_B1s"
+  admin_username     = "azureuser"
+
+  custom_data = base64encode(file("cloud-config.yaml"))
+}
+
+- cloud-config.yaml → The file containing the cloud-init script.
+- base64encode(file(...)) → Converts it to a format Azure VM can read.
+
+# Summary
+
+|                       Feature                        |              Purpose                            |   Example Value |
+|------------------------------------------------------|-------------------------------------------------|-----------------|
+| package_upgrade: false                               | Prevents OS updates before package installation | false           |
+| packages: | Installs required packages               | httpd                                           |
+| write_files: | Creates HTML files for the web server | /var/www/html/index.html                        |
+| runcmd: | Executes commands at startup               | systemctl start httpd                           |
+| Metadata service | Retrieves Azure VM metadata       | /var/www/html/app1/metadata.html                |
