@@ -142,6 +142,7 @@ rm -rf .terraform*
 
 ----------------------------------------------------------------------------------------------------------------------------------------
 
+
 # Explanation: - 
 
 This guide explains how to use the Terraform Remote State Datasource to share infrastructure outputs between two separate Terraform projects:
