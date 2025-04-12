@@ -16,7 +16,6 @@ resource "azurerm_resource_group" "myrg"
 
 # Explanation: - 
 
-
 #### resource "azurerm_resource_group" "myrg"
 
 - This line defines a Terraform resource block.
