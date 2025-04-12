@@ -1,6 +1,6 @@
 ---
 title: Terraform State Commands
-description: Master Terraform State Commands
+Description: Master Terraform State Commands
 ---
 
 ## Step-00: Introduction
@@ -389,7 +389,85 @@ resource "azurerm_virtual_network" "myvent9" {
 - [Manipulating Terraform State](https://www.terraform.io/docs/cli/state/index.html)
 - [Additional Reference](https://www.hashicorp.com/blog/detecting-and-managing-drift-with-terraform)
 
----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------------------------
 
 # Explanation: - 
 
+### terraform state mv
+
+Purpose: Move a resource in the state file (e.g., rename or reorganize module/resource structure).
+
+Use case: When you refactor resource names or move resources between modules without recreating them.
+
+terraform state mv aws_instance.old_name aws_instance.new_name
+
+Best Practices:
+
+- Always run a terraform plan first to ensure no unintended changes.
+- Back up your state file before running it.
+- Useful when adopting new naming conventions or reorganizing code.
+
+### terraform state rm
+
+Purpose: Removes a resource from the state file without deleting the actual infrastructure.
+
+Use case: You want Terraform to “forget” a resource and stop managing it.
+
+terraform state rm aws_instance.example
+
+Best Practices:
+
+- Common when you want to manage a resource manually or shift it to another workspace/module.
+- Be cautious—you lose the ability to track changes with Terraform afterward unless re-imported.
+
+### terraform taint
+
+Purpose: Marks a resource for forced recreation on the next application.
+
+Use case: Resource is misbehaving, corrupt, or not reflecting the desired config.
+
+terraform taint aws_instance.example
+
+Best Practices:
+
+- Use this when you know the resource needs to be destroyed/recreated.
+- Good for force-updating ephemeral resources or things like VMs, instances, etc.
+
+### terraform untaint
+
+Purpose: Reverses a taint—you’ve changed your mind and want to keep the resource.
+
+terraform untaint aws_instance.example
+
+Best Practices: Useful in testing or CI/CD pipelines where tainting may be conditional.
+
+### -target
+
+Purpose: Apply or plan changes to specific resources only.
+
+Use case: You want to apply changes incrementally or debug a specific issue.
+
+terraform plan -target=aws_instance.example
+terraform apply -target=aws_instance.example
+
+Best Practices:
+
+- Use sparingly—can lead to drift if dependencies aren't also targeted.
+- Great for debugging or bootstrapping a specific service.
+
+### Backend State Management
+
+Concept: Decouples your .tfstate from your local machine. Stores it remotely (e.g., in Azure Blob Storage, S3, etc.) for team collaboration and consistency.
+
+Example (Azure backend):
+
+terraform 
+{
+  backend "azurerm" 
+  {
+    resource_group_name  = "rg-terraform-state"
+    storage_account_name = "tfstateprod"
+    container_name       = "tfstate"
+    key                  = "prod.terraform.tfstate"
+  }
+}
