@@ -114,3 +114,95 @@ rm -rf terraform.tfstate*
 ------------------------------------------------------------------------------------------------------------------------------------------
 
 # Explanation: - 
+
+## Step-01: Introduction
+
+### Concept of terraform refresh and terraform apply -refresh-only
+
+- Terraform State is central to Terraform’s operation. Terraform uses the source of truth to determine what’s been deployed and what needs to change.
+  
+- terraform apply -refresh-only is a command that reconciles the state file with real infrastructure: It checks whether real-world infrastructure has changed outside of Terraform (e.g., someone manually added a tag via the Azure portal).
+  
+  - It updates only the state file, not the infrastructure.
+    
+  - It is very useful for detecting drift (difference between what Terraform expects vs. what is deployed).
+
+# Terminology:
+
+- Desired State: Defined in .tf files (Terraform configuration)
+- Current State: Actual state of resources in your cloud (Azure, in this case)
+- Terraform State File (terraform.tfstate): Internal file used by Terraform to track resource states
+
+## Step-02: Review Terraform Config Files
+
+Files in use:
+
+- c1-versions.tf – likely contains required provider versions.
+- c2-resource-group.tf – defines a resource group in Azure with tags.
+
+## Step-03: Execute Terraform Commands
+
+### Terraform Basic Commands:
+
+terraform init                 # Initializes the working directory and downloads required providers
+terraform validate             # Validates syntax and configuration
+terraform plan                 # Previews the actions to match the real infrastructure with the .tf config
+terraform apply -auto-approve  # Applies the changes without interactive approval
+
+At this stage, the infrastructure is created and deployed correctly, and the state file matches the real cloud resources.
+
+## Step-04: Manual Change on Azure
+
+You manually add a tag:
+
+"tag3" = "my-tag-3"
+
+via Azure Portal. This creates a drift between Terraform's state file and the actual resource configuration.
+
+## Step-05: Run terraform plan
+
+You run: terraform plan
+
+Expected Behavior:
+
+- Terraform does not update the .tfstate file.
+- The plan output shows differences (i.e., tag3 exists in real infra but not in state or .tf files).
+- But no actual state update or infra change happens.
+- Terraform compares the in-memory desired vs. current state, without syncing to the disk yet.
+
+## Step-06: Run terraform apply -refresh-only
+
+This is the core step: terraform apply -refresh-only
+
+- This updates the Terraform.tfstate file to include the tag3 that was manually added.
+- Terraform doesn’t touch or change your actual infrastructure.
+- You can verify this using: terraform show
+    
+  and see that the new tag now appears in the state file.
+
+## Step-07: Update TF Configuration to Match State
+
+After syncing the state file, your .tf files still don’t reflect the tag.
+Terraform sees this as a configuration drift and may try to remove tag3 on the next apply.
+
+### Fix:
+Edit c2-resource-group.tf and add tag3 manually:
+
+tags = 
+{
+  "tag1" = "my-tag-1"
+  "tag2" = "my-tag-2"
+  "tag3" = "my-tag-3"
+}
+
+### Now:
+
+- Desired State == Current State == State File
+- Running terraform plan now shows no changes, which is the goal.
+
+## Step-08: Clean Up
+
+To destroy everything and clean the working directory:
+
+terraform destroy -auto-approve       # Deletes all managed resources
+rm -rf .terraform terraform.tfstate   # Deletes all state and cache files
