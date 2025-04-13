@@ -1,0 +1,161 @@
+#cloud-config
+
+package_upgrade: false
+packages:
+  - httpd
+write_files:
+  - owner: root:root 
+    path: /var/www/html/index.html
+    content: |
+      <h1>Welcome to StackSimplify - APP-1</h1>
+  - owner: root:root 
+    path: /var/www/html/app1/index.html
+    content: |
+      <!DOCTYPE html> <html> <body style="background-color:rgb(250, 210, 210);"> <h1>Welcome to Stack Simplify - APP-1</h1> <p>Terraform Demo</p> <p>Application Version: V1</p> </body></html>      
+runcmd:
+  - sudo systemctl start httpd  
+  - sudo systemctl enable httpd
+  - sudo systemctl stop firewalld
+  - sudo mkdir /var/www/html/app1 
+  - [sudo, curl, -H, "Metadata:true", --noproxy, "*", "http://169.254.169.254/metadata/instance?api-version=2020-09-01", -o, /var/www/html/app1/metadata.html]
+
+------------------------------------------------------------------------------------------------------------------------------------------
+
+# Explanation: - 
+
+Absolutely! Let's break down this cloud-init configuration line by line, explaining what each part does, why it's used, and how it fits into the VM provisioning process.
+
+### cloud-config
+
+#cloud-config
+
+This is a mandatory header that tells the cloud-init service:
+
+> "This is a cloud-init config file, and here's what to do during the VM’s initial boot."
+
+Without this line, cloud-init might not interpret the file correctly.
+
+### Disable Package Upgrade
+
+package_upgrade: false
+
+- Prevents automatic updates of all system packages during provisioning.
+- Set to false to speed up boot time and ensure consistent package versions.
+- Useful when you're deploying demo apps or in controlled environments where predictability matters more than having the latest patches.
+
+### Install Apache HTTP Server
+
+packages:
+  - httpd
+
+- This installs the Apache web server (httpd is the package name on RHEL-based systems like CentOS, Amazon Linux, etc).
+
+- Once installed, Apache can serve files from /var/www/html.
+
+### Write HTML Files to Web Server Root
+
+write_files:
+
+  - owner: root: root 
+    path: /var/www/html/index.html
+    content: |
+      <h1>Welcome to StackSimplify - APP-1</h1>
+
+#### Purpose:
+
+- Creates an index.html file as the default home page.
+
+- Apache will display this when someone visits the server's IP.
+
+  - owner: root: root 
+    path: /var/www/html/app1/index.html
+    content: |
+      <!DOCTYPE html> <html> <body style="background-color:rgb(250, 210, 210);"> <h1>Welcome to Stack Simplify - APP-1</h1> <p>Terraform Demo</p> <p>Application Version: V1</p> </body></html>
+
+#### Purpose:
+
+- Adds a custom web page under /app1, which mimics a sub-application or service.
+
+- It has a light red background and includes:
+  - App name
+  - A demo label
+  - Version number
+
+This file will be accessible at: http://<vm-ip>/app1/index.html
+
+### Commands to Run After Setup
+
+runcmd:
+  - sudo systemctl start httpd  
+  - sudo systemctl enable httpd
+  - sudo systemctl stop firewalld
+  - sudo mkdir /var/www/html/app1 
+  - [sudo, curl, -H, "Metadata:true", --noproxy, "*", "http://169.254.169.254/metadata/instance?api-version=2020-09-01", -o, /var/www/html/app1/metadata.html]
+
+This block runs shell commands **after packages and files have been handled**.
+
+Let’s go one by one:
+
+#### 1. Start Apache
+
+sudo systemctl start httpd
+
+Starts the Apache web server, so it begins serving files from /var/www/html.
+
+#### 2. Enable Apache on Boot
+
+sudo systemctl enable httpd
+
+Ensures Apache starts automatically every time the VM is rebooted.
+
+#### 3. Stop the Firewall
+
+sudo systemctl stop firewalld
+
+Disables the default firewall (firewalld) so that HTTP (port 80) traffic can flow freely.
+
+> Note: Disabling firewalls is okay for internal tests or demos, but not recommended for production environments.
+
+#### 4. Create a Directory for App1 (Optional/Redundant)
+
+sudo mkdir /var/www/html/app1
+
+Creates the app1 folder manually.
+
+Note: This is technically redundant here because:
+
+- The write_files block already writes to /var/www/html/app1/index.html, and cloud-init automatically creates parent directories if needed.
+
+- But it’s included likely as a safety net.
+
+#### 5. Fetch VM Metadata (Azure Specific)
+
+[sudo, curl, -H, "Metadata:true", --noproxy, "*", "http://169.254.169.254/metadata/instance?api-version=2020-09-01", -o, /var/www/html/app1/metadata.html]
+
+This command:
+
+- Uses curl to call Azure's Instance Metadata Service (IMDS),
+
+- The Metadata: true header is required by Azure to serve this API.
+
+- The metadata response includes info like:
+  - Region
+  - VM size
+  - Tags
+  - Network interfaces
+
+- Saves the output to /var/www/html/app1/metadata.html so it can be viewed in a browser at:
+
+http://<vm-ip>/app1/metadata.html
+
+This is often used to verify the deployment or to test how an app reads cloud metadata dynamically.
+
+## Summary Table
+
+|   Section         |                                  Purpose                                                   |
+|-------------------|--------------------------------------------------------------------------------------------|
+| cloud-config      |                           Declares file format                                             |
+| package_upgrade   |                           Avoids time-consuming updates                                    |
+| packages          |                           Installs Apache                                                  |
+| write_files       |                           Creates homepage and app1 page                                   |
+| runcmd            |  Starts and enables Apache, disables firewall, creates directories, fetches Azure metadata |
