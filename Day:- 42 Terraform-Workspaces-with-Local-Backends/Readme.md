@@ -214,6 +214,134 @@ rm -rf terraform.tfstate*
 - [Terraform Workspaces](https://www.terraform.io/docs/language/state/workspaces.html)
 - [Managing Workspaces](https://www.terraform.io/docs/cli/workspaces/index.html)
 
-  ----------------------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------------------------
 
-  # Explanation:-
+# Explanation:-
+
+### Step-01: Introduction
+
+You are setting up Terraform Local Backend and using Workspaces to manage multiple environments (like dev, default, etc.) without duplicating code.
+
+#### What are Workspaces?
+
+- Workspaces in Terraform allow you to maintain multiple state files in the same directory.
+  
+- Each workspace has its separate state, allowing you to deploy the same Terraform configuration for different environments (e.g., dev, test, prod) using the same code base.
+
+### Step-02: Review Terraform Configs
+
+You are starting from a previously created Terraform project (38-Terraform-Remote-State-Storage-and-Locking) and now adapting it to support multiple workspaces locally (instead of a remote backend in Azure Storage).
+
+### Step-03: c1-versions.tf
+
+You remove the backend block to use local state instead of storing it in a remote location like an Azure Storage account.
+
+backend "azurerm" 
+{
+
+}
+
+This is skipped when using the local backend, which is the default if no backend is specified.
+
+### Step-04: c3-locals.tf
+
+Here, ${terraform.workspace} is used to dynamically pull the current workspace name (like dev, prod, or default).
+
+#### Why is this useful?
+
+- Helps differentiate resources by environment.
+- Avoids hardcoding "dev" in your resource names or tags.
+- Ensures unique naming conventions and prevents collisions.
+
+You changed: rg_name = "${var.business_unit}-${terraform.workspace}-${var.resoure_group_name}"
+
+Which becomes:
+
+- it-dev-rg in the dev workspace
+- it-default-rg in the default workspace
+
+### Step-05: c5-virtual-network.tf
+
+You update the domain_name_label in the public IP to include the current workspace. 
+
+This ensures that: domain_name_label = "app1-${terraform.workspace}-${random_string.myrandom.id}"
+
+Results in a unique FQDN per workspace, such as:
+
+- app1-dev-xyz123
+- app1-default-xyz123
+
+This makes each VM publicly accessible with its own DNS name per environment.
+
+### Step-06: Create resources in the default workspace
+
+Here you:
+
+- Initialize Terraform: terraform init.
+- Show the current workspace: terraform workspace show → default
+- Plan & Apply the configuration: `terraform apply -auto-approve`
+
+Outcome: Resources will have names like:
+
+- it-default-rg
+- it-default-vnet
+- it-default-vm
+
+- This helps distinguish resources deployed in the default environment.
+
+### Step-07: Create a New Workspace and Provision Infra
+
+Commands:
+
+terraform workspace new dev
+terraform workspace select dev
+
+- Each workspace has its folder structure: terraform.tfstate.d/dev/terraform.tfstate
+
+- This keeps each environment's state isolated.
+
+Then you run:
+
+terraform plan
+terraform apply -auto-approve
+
+Outcome:
+
+- Resources are deployed with names like it-dev-rg, it-dev-vnet, etc.
+- Public DNS and VM names will reflect the dev workspace.
+
+### Step-08: Switch Workspace and Destroy Resources
+
+Switch to default workspace: terraform workspace select default
+
+Then clean up: terraform destroy -auto-approve
+
+Why?: - You only destroy the resources related to the selected workspace — safe cleanup per environment.
+
+### Step-09: Delete dev workspace
+
+To safely delete a workspace:
+
+1. Switch to a different workspace (like the default)
+2. Destroy all resources in the workspace you want to delete
+3. Delete the workspace: terraform workspace delete dev
+
+- You cannot delete the currently active workspace.
+
+### Step 10: Clean-Up Local folder
+
+rm -rf .terraform
+rm -rf terraform.tfstate
+
+This removes all local backend files and state.
+
+###  Summary of Key Concepts
+
+|       Concept          |                       Purpose                                    |
+|------------------------|------------------------------------------------------------------|
+|  Local Backend         |  Store state locally on disk (default backend)                   |
+|  Workspace             |  Separate environments with isolated state files                 |
+|  terraform.workspace   |  Refers to the name of the active workspace (e.g., dev, default) |
+|  Naming with Workspace |  Avoid resource name conflicts across environments               |
+|  State File Isolation  |  Helps avoid overwriting environments accidentally               |
+|  Commands Mastered     |  workspace list, new, select, delete, show                       |
