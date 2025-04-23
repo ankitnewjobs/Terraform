@@ -25,6 +25,12 @@ output "virtual_network_name"
 # 3. Output Values - Virtual Machine
 
 output "vm_public_ip_address" 
+
+-------------------------------------------------------------------------------------------------------------------------------------------
+
+# Explanation: - 
+
+
 {
   description = "My Virtual Machine Public IP"
   value = azurerm_linux_virtual_machine.mylinuxvm.public_ip_address
