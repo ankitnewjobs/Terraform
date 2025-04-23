@@ -66,3 +66,8 @@ rm -rf .terraform*
 ## References
 - [Terraform Workspaces](https://www.terraform.io/docs/language/state/workspaces.html)
 - [Managing Workspaces](https://www.terraform.io/docs/cli/workspaces/index.html)
+
+-------------------------------------------------------------------------------------------------------------------------------------------
+
+# Explanation: - 
+
