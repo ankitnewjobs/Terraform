@@ -23,7 +23,7 @@ locals
   # Use-case-2: Common tags to be assigned to all resources
 
   service_name = "Demo Services"
-  owner = "Kalyan Reddy Daida"
+  owner = "Ankit Ranjan"
   common_tags = 
 {
     Service = local.service_name
