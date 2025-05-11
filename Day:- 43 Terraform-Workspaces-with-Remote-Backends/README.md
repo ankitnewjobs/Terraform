@@ -71,11 +71,7 @@ rm -rf .terraform*
 
 # Explanation: - 
 
-Here’s a detailed breakdown of the code and steps you’ve shared. This workflow demonstrates how to **configure and manage Terraform Remote Backends using Azure Storage**, especially when using **multiple workspaces**.
-
----
-
-## 🧩 **Step-01: Introduction**
+## Step-01: Introduction
 
 * **Goal**: Manage Terraform state files in **Azure Storage** and use **multiple workspaces** (`dev`, `staging`, `prod`) to isolate environments.
 * **Why?**:
