@@ -71,3 +71,142 @@ rm -rf .terraform*
 
 # Explanation: - 
 
+Here’s a detailed breakdown of the code and steps you’ve shared. This workflow demonstrates how to **configure and manage Terraform Remote Backends using Azure Storage**, especially when using **multiple workspaces**.
+
+---
+
+## 🧩 **Step-01: Introduction**
+
+* **Goal**: Manage Terraform state files in **Azure Storage** and use **multiple workspaces** (`dev`, `staging`, `prod`) to isolate environments.
+* **Why?**:
+
+  * Remote backend ensures the **Terraform state is stored centrally** and securely.
+  * Using workspaces allows for **environment separation** without needing multiple folders.
+
+---
+
+## ⚙️ **Step-02: c1-versions.tf**
+
+This step configures **Terraform backend** with Azure.
+
+### 📄 Backend Configuration Block:
+
+```hcl
+backend "azurerm" {
+  resource_group_name   = "terraform-storage-rg"
+  storage_account_name  = "terraformstate201"
+  container_name        = "tfstatefiles"
+  key                   = "cliworkspaces-terraform.tfstate"
+}
+```
+
+### 🔍 Explanation:
+
+| Field                  | Purpose                                    |
+| ---------------------- | ------------------------------------------ |
+| `azurerm`              | Specifies the backend provider (Azure)     |
+| `resource_group_name`  | Resource Group containing the storage      |
+| `storage_account_name` | Azure Storage Account where state is saved |
+| `container_name`       | Blob container to hold the state files     |
+| `key`                  | The name prefix of the state file          |
+
+* **Terraform will automatically suffix this key** with the current workspace name (e.g., `cliworkspaces-terraform.tfstate:dev`).
+* The default workspace doesn't get a suffix—it uses the key as is.
+
+---
+
+## 🛠️ **Step-03: Create Workspaces and Verify**
+
+### 📌 Terraform Initialization
+
+```sh
+terraform init
+```
+
+* Initializes the backend and connects to the Azure storage.
+* Creates `.terraform` directory locally and uploads the state file to the blob storage.
+
+### 🔍 Azure Portal Observation:
+
+* Navigate to your storage account:
+
+  * `terraform-storage-rg` > `terraformstate201` > `tfstatefiles`
+* You will find the state file named:
+
+  * `cliworkspaces-terraform.tfstate` (for `default` workspace)
+
+---
+
+### 🔁 Workspace Commands
+
+```sh
+terraform workspace list
+terraform workspace show
+```
+
+* Lists existing workspaces.
+* Shows the currently selected workspace.
+
+### ➕ Create New Workspaces
+
+```sh
+terraform workspace new dev
+terraform workspace new staging
+terraform workspace new prod
+```
+
+* Each command:
+
+  * Creates a new workspace
+  * Triggers Terraform to store a separate state file:
+
+    * `cliworkspaces-terraform.tfstate:dev`
+    * `cliworkspaces-terraform.tfstate:staging`
+    * `cliworkspaces-terraform.tfstate:prod`
+
+This allows you to use the **same codebase** but deploy **separate environments** (isolated infrastructure per workspace).
+
+---
+
+### ❌ Delete Workspaces
+
+```sh
+terraform workspace select default
+terraform workspace delete dev
+terraform workspace delete staging
+terraform workspace delete prod
+```
+
+* Switch back to the `default` workspace (since you can't delete the current one).
+* Delete the custom workspaces.
+* Terraform deletes their corresponding state files from Azure Blob storage.
+
+> ✅ **Default workspace** and its state file (`cliworkspaces-terraform.tfstate`) will remain.
+
+---
+
+## 🧹 **Step-04: Clean-Up Local Folder**
+
+```sh
+rm -rf .terraform*
+```
+
+* Deletes local `.terraform` directories and plugin cache.
+* Useful when:
+
+  * Re-initializing
+  * Moving to a fresh setup
+  * Ensuring clean state during CI/CD runs
+
+---
+
+## ✅ Summary
+
+| Feature                               | Benefit                                                        |
+| ------------------------------------- | -------------------------------------------------------------- |
+| Remote Backend                        | Centralized and safe state storage                             |
+| Azure Blob Storage                    | Durable and scalable                                           |
+| Workspaces                            | Logical separation for environments (`dev`, `staging`, `prod`) |
+| Unique `.tfstate` files per workspace | Prevents cross-environment state corruption                    |
+
+Would you like a diagram to visually show how the workspaces map to different `.tfstate` files in Azure storage?
