@@ -75,7 +75,7 @@ rm -rf .terraform*
 
 * Goal: Manage Terraform state files in Azure Storage and use multiple workspaces (dev, staging, prod) to isolate environments.
 
-* Why?:
+* Why?
 
   * Remote backend ensures the Terraform state is stored centrally and securely.
   * Using workspaces allows for environment separation without needing multiple folders.
@@ -85,7 +85,6 @@ rm -rf .terraform*
 This step configures the Terraform backend with Azure.
 
 ### Backend Configuration Block:
-
 
 backend "azurerm"
 {
@@ -106,6 +105,7 @@ backend "azurerm"
 |  key                   |  The name prefix of the state file          |
 
 * Terraform will automatically suffix this key with the current workspace name (e.g., cliworkspaces-terraform.tfstate: dev).
+  
 * The default workspace doesn't get a suffix—it uses the key as is.
 
 ## Step-03: Create Workspaces and Verify
@@ -119,9 +119,9 @@ backend "azurerm"
 
 * Navigate to your storage account:
 
-  * terraform-storage-rg > terraformstate201 > tfstatefiles
+* terraform-storage-rg > terraformstate201 > tfstatefiles
     
-* You will find the state file named: cliworkspaces-terraform.tfstate (for default workspace)
+* You will find the state file named: cliworkspaces-terraform.tfstate (for the default workspace)
 
 ###  Workspace Commands
 
@@ -142,9 +142,9 @@ terraform workspace new prod
   * Creates a new workspace
   * Triggers Terraform to store a separate state file:
 
-    * `cliworkspaces-terraform.tfstate: dev
-    * `cliworkspaces-terraform.tfstate: staging
-    * `cliworkspaces-terraform.tfstate: prod
+    * cliworkspaces-terraform.tfstate: dev
+    * cliworkspaces-terraform.tfstate: staging
+    * cliworkspaces-terraform.tfstate: prod
 
 This allows you to use the same codebase but deploy separate environments (isolated infrastructure per workspace).
 
