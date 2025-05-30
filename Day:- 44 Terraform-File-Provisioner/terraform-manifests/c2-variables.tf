@@ -39,7 +39,7 @@ variable "publicip_name" {
   description = "Public IP Name"
   type = string 
 }
-# 8. Network Interfance
+# 8. Network Interface
 variable "network_interface_name" {
   description = "Network Interface Name"
   type = string 
@@ -50,3 +50,7 @@ variable "virtual_machine_name" {
   description = "Virtual Machine Name"
   type = string 
 }
+
+-------------------------------------------------------------------------------------------------------------------------------------------
+
+# Explanation: - 
