@@ -28,3 +28,7 @@ output "vm_admin_user" {
   description = "My Virtual Machine Admin User"
   value = azurerm_linux_virtual_machine.mylinuxvm.admin_username
 }
+
+-------------------------------------------------------------------------------------------------------------------------------------------
+
+# Explanation: - 
