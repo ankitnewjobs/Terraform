@@ -4,3 +4,7 @@ resource "azurerm_resource_group" "myrg" {
   location = var.resoure_group_location
   tags = local.common_tags
 }
+
+-------------------------------------------------------------------------------------------------------------------------------------------
+
+# Explanation: - 
