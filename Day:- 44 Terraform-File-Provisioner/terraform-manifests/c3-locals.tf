@@ -1,4 +1,5 @@
 # Local Values Block
+
 locals {
   # Use-case-1: Shorten the names for more readability
   #rg_name = "${var.business_unit}-${var.environment}-${var.resoure_group_name}"
@@ -25,3 +26,7 @@ locals {
     #Tag = "demo-tag1"
   }
 }
+
+-------------------------------------------------------------------------------------------------------------------------------------------
+
+# Explanation: - 
