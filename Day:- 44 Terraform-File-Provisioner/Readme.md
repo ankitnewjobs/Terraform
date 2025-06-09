@@ -266,3 +266,7 @@ resource "azurerm_linux_virtual_machine" "mylinuxvm" {
     command = "echo 'Destroy-time provisioner'"
   }
 }
+
+------------------------------------------------------------------------------------------------------------------------------------------
+
+# Explanation: - 
