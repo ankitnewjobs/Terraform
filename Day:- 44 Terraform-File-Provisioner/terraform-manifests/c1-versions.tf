@@ -117,3 +117,4 @@ This value can be used dynamically in other resources—for example, to make nam
 |   terraform                |  Specifies Terraform version and required providers  |
 |   provider "azurerm"       |  Configures the AzureRM provider                     |
 |   resource "random_string" |  Generates a random lowercase string of 6 characters |
+
