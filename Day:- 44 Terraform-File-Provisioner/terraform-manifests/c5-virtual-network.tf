@@ -183,13 +183,3 @@ resource "azurerm_network_interface" "myvmnic"
 | terraform. workspace                                         |  Built-in value that gives the current Terraform workspace.      |
 | random_string.myrandom.id                                    |  Probably a resource that generates a random string (not shown). |
 | local.common_tags                                            |  Common tags to maintain consistency across resources.           |
-
-## Summary:
-
-|      Resource             |            Purpose                          |
-| ------------------------- | ------------------------------------------- |
-| azurerm_virtual_network   |  Defines the network range.                 |
-| azurerm_subnet            |  Defines a subnet within the network.       |
-| azurerm_public_ip         |  Provides a static external IP address.     |
-| azurerm_network_interface |  Connects a VM to the subnet and public IP. |
-
