@@ -94,20 +94,20 @@ resource "azurerm_linux_virtual_machine" "mylinuxvm"
 
 # Explanation: - 
 
-##  Resource Block: `azurerm_linux_virtual_machine`
+##  Resource Block: azurerm_linux_virtual_machine
 
-This defines a **Linux VM** resource in Azure using the AzureRM provider.
+This defines a Linux VM resource in Azure using the AzureRM provider.
 
 ###  Basic Configuration
 
-| Attribute             | Description                                       |
-| --------------------- | ------------------------------------------------- |
-| `name`                | VM name, retrieved from `local.vm_name`.          |
-| `computer_name`       | Hostname inside the OS, same as the VM name.      |
-| `resource_group_name` | The resource group where the VM will be deployed. |
-| `location`            | Azure region from the resource group.             |
-| `size`                | VM SKU - "Standard\_DS1\_v2" (1 vCPU, 3.5GB RAM). |
-| `admin_username`      | Admin user for SSH login.                         |
+|    Attribute         |              Description                           |
+| -------------------- | ---------------------------------------------------|
+|  name                |  VM name, retrieved from local.vm_name.            |
+|  computer_name       |  Hostname inside the OS, same as the VM name.      |
+|  resource_group_name |  The resource group where the VM will be deployed. |
+|  location            |  Azure region from the resource group.             |
+|  size                |  VM SKU  "Standard\_DS1\_v2" (1 vCPU, 3.5GB RAM).  |
+|  admin_username      |  Admin user for SSH login.                         |
 
 name                = local.vm_name
 computer_name       = local.vm_name
@@ -129,7 +129,6 @@ admin_ssh_key
   username   = "azureuser"
   public_key = file("${path.module}/ssh-keys/terraform-azure.pub")
 }
-```
 
 * Specifies the public SSH key file used for secure login.
 
@@ -142,9 +141,9 @@ os_disk
   storage_account_type = "Standard_LRS"
 }
 
-* `os_disk`: Defines disk properties.
+* os_disk: Defines disk properties.
 * Uses a random string to make the disk name unique.
-* Disk caching is set to `ReadWrite` and uses Standard HDD (LRS).
+* Disk caching is set to ReadWrite and uses Standard HDD (LRS).
 
 ### Image Selection
 
@@ -156,13 +155,13 @@ source_image_reference
   version   = "latest"
 }
 
-* The VM will be created using the latest **RHEL 8.3 Gen2** image.
+* The VM will be created using the latest RHEL 8.3 Gen2 image.
 
 ### Custom Initialization (Cloud-Init)
 
 custom_data = filebase64("${path.module}/app-scripts/app1-cloud-init.txt")
 
-* Base64-encoded file is provided to the VM's **cloud-init** process to run initialization scripts at first boot.
+* Base64-encoded file is provided to the VM's cloud-init process to run initialization scripts at first boot.
 
 ### Tags
 
@@ -183,7 +182,7 @@ connection
 * Defines how Terraform connects to the VM for provisioning:
 
   * SSH via public IP
-  * Username: `azureuser`
+  * Username: azureuser
   * Private key: used for authentication
 
 ## File Provisioners
@@ -198,7 +197,7 @@ provisioner "file"
   destination = "/tmp/file-copy.html"
 }
 
-* Uploads `file-copy.html` into `/tmp/`.
+* Uploads file-copy.html into /tmp/.
 
 ### Provisioner 2 – Create a File from a String
 
@@ -218,7 +217,7 @@ provisioner "file"
   destination = "/tmp"
 }
 
-* Uploads the entire `app1` folder to `/tmp/app1`.
+* Uploads the entire app1 folder to /tmp/app1.
 
 ### Provisioner 4 – Copy Folder Contents Only
 
@@ -228,7 +227,7 @@ provisioner "file"
   destination = "/tmp"
 }
 
-* Only contents of `app2/` are copied (not the folder itself).
+* Only the contents of app2/ are copied (not the folder itself).
 
 ### (Optional) Provisioner 5 – Copy to Restricted Path
 
@@ -238,6 +237,3 @@ provisioner "file"
   destination = "/var/www/html/file-copy.html"
   #on_failure  = continue
 }
-
-* Tries to copy a file to `/var/www/html/` (requires sudo).
-* If uncommented and `on_failure = continue` is enabled, Terraform will **not fail** even if this step fails (useful for testing or permissions issues).
