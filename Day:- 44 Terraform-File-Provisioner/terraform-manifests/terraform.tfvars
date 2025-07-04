@@ -81,3 +81,4 @@ virtual_machine_name = "vm"
 |  publicip_name             |  "publicip" |  Name of the Public IP resource                        |
 |  network_interface_name    |  "nic"      |  Name of the Network Interface Card (NIC)              |
 |  virtual_machine_name      |   "vm"      |  Name of the Virtual Machine                           |
+
