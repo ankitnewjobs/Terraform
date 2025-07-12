@@ -23,58 +23,40 @@ runcmd:
 
 # Explanation: - 
 
-This is a **Cloud-Init script** written in YAML format, typically used in Linux VMs (especially in cloud environments like AWS EC2, Azure VM, OpenStack, etc.) to perform initial configuration tasks at the time of instance creation.
-
-Here’s a **detailed breakdown** of each section in the code:
-
----
-
-### 🔹 `#cloud-config`
+### cloud-config
 
 * This is the required first line in any cloud-init configuration file. It tells the cloud-init interpreter that this file is a cloud-config file using YAML syntax.
 
----
+### package_upgrade: false
 
-### 🔹 `package_upgrade: false`
+* Purpose: Controls whether all packages on the system should be upgraded during instance boot.
+* false means: Do not upgrade all installed packages when the instance starts (to speed up the setup and avoid unexpected changes).
 
-* **Purpose**: Controls whether all packages on the system should be upgraded during instance boot.
-* **`false`** means: Do **not** upgrade all installed packages when the instance starts (to speed up the setup and avoid unexpected changes).
+### packages:
 
----
+* This section tells cloud-init which Linux packages to install during boot.
 
-### 🔹 `packages:`
+packages:  httpd
 
-* This section tells cloud-init which **Linux packages** to install during boot.
+* httpd: This installs the Apache HTTP server (commonly used on RHEL/CentOS/Amazon Linux systems).
 
-```yaml
-packages:
-  - httpd
-```
-
-* **`httpd`**: This installs the Apache HTTP server (commonly used on RHEL/CentOS/Amazon Linux systems).
-
----
-
-### 🔹 `write_files:`
+### write_files: 
 
 * This section creates or updates files on the VM with specified content and permissions.
 
 #### First file:
 
-```yaml
-  - owner: root:root 
+  - owner: root: root 
     path: /var/www/html/index.html
     content: |
       <h1>Welcome to StackSimplify - APP-1</h1>
-```
 
-* Creates `/var/www/html/index.html`, the default landing page for Apache, owned by root.
+* Creates /var/www/html/index.html, the default landing page for Apache, owned by root.
 * Adds a simple HTML header.
 
 #### Second file:
 
-```yaml
-  - owner: root:root 
+  - owner: root: root 
     path: /var/www/html/app1/index.html
     content: |
       <!DOCTYPE html> <html> <body style="background-color:rgb(250, 210, 210);"> 
@@ -82,47 +64,27 @@ packages:
       <p>Terraform Demo</p> 
       <p>Application Version: V1</p> 
       </body></html>
-```
 
-* Creates a more styled HTML page at `/var/www/html/app1/index.html` for the sub-path `/app1`.
+* Creates a more styled HTML page at /var/www/html/app1/index.html for the sub-path /app1.
 
----
+### runcmd:
 
-### 🔹 `runcmd:`
+* Runs shell commands sequentially after everything else is done (like cloud-init’s "post-boot script").
 
-* Runs shell commands **sequentially** after everything else is done (like cloud-init’s "post-boot script").
-
-```yaml
   - sudo systemctl start httpd  
-```
 
 * Starts the Apache HTTP server.
 
-```yaml
   - sudo systemctl enable httpd
-```
 
-* Enables Apache to **start automatically** on every boot.
+* Enables Apache to start automatically on every boot.
 
-```yaml
   - sudo systemctl stop firewalld
-```
 
 * Stops the firewall service, potentially to avoid port blocking (for example, HTTP port 80).
 
-```yaml
   - sudo mkdir /var/www/html/app1 
-```
 
-* Creates the `/var/www/html/app1` directory (for the custom HTML page). Though it might make more sense to run this before the `write_files` section that writes into this directory.
+* Creates the /var/www/html/app1 directory (for the custom HTML page). However, it might make more sense to run this before the write_files section that writes into this directory.
 
-```yaml
   - [sudo, curl, -H, "Metadata:true", --noproxy, "*", "http://169.254.169.254/metadata/instance?api-version=2020-09-01", -o, /var/www/html/app1/metadata.html]
-```
-
-* This command:
-
-  * Uses `curl` to fetch metadata from the instance metadata service (available at `169.254.169.254`).
-  * Sends an HTTP GET request with a special header (`Metadata:true`) required by Azure metadata service.
-  * Saves the metadata response as an HTML file (`metadata.html`) inside the `app1` folder.
-  * `--noproxy "*"` ensures this request doesn’t use any proxy.
