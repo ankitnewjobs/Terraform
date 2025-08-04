@@ -184,3 +184,4 @@ provisioner "remote-exec"
 |  Provisioners   |  Runs actions after deployment (copy files, execute commands remotely)    |
 |  Cloud-init     |  Runs scripts for first-boot app/server setup                             |
 |  Tags           |  Applies labels for resource management and cost allocation               |
+
