@@ -20,7 +20,8 @@ resource "azurerm_linux_virtual_machine" "mylinuxvm"
     caching              = "ReadWrite"
     storage_account_type = "Standard_LRS"
   }
-  source_image_reference {
+  source_image_reference 
+{
     publisher = "RedHat"
     offer     = "RHEL"
     sku       = "83-gen2"
@@ -44,5 +45,9 @@ resource "azurerm_linux_virtual_machine" "mylinuxvm"
     working_dir = "local-exec-output-files/"
   }
 }
+
+----------------------------------------------------------------------------------------------------------------------------------------
+
+# Explanation: - 
 
 
