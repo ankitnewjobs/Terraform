@@ -83,5 +83,6 @@ Result: A random 6-character lowercase alphabetical string.
 |  Block                    |        Purpose                              |                 Key Points                                    |
 |---------------------------|---------------------------------------------|---------------------------------------------------------------|
 |  terraform                |  Sets version & providers                   |  Ensures correct plugin and Terraform versions                |
-|  provider "azurerm"       |  Configures Azure provider                  |  Must include `features {}` with new azurerm versions         |
+|  provider "azurerm"       |  Configures Azure provider                  |  Must include features {} with new azurerm versions           |
 |  resource "random_string" |  Creates random string                      |  6 lowercase letters, no numbers or special characters        |
+
