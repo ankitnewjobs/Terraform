@@ -22,9 +22,14 @@ locals
 
   service_name = "Demo Services"
   owner = "Kalyan Reddy Daida"
-  common_tags = {
+  common_tags = 
+{
     Service = local.service_name
     Owner   = local.owner
     #Tag = "demo-tag1"
   }
 }
+
+----------------------------------------------------------------------------------------------------------------------------------------
+
+# Explanation: - 
