@@ -61,7 +61,7 @@ variable "publicip_name"
   type = string 
 }
 
-# 8. Network Interfance
+# 8. Network Interface
 
 variable "network_interface_name"
 {
@@ -77,10 +77,7 @@ variable "virtual_machine_name"
   type = string 
 }
 
+----------------------------------------------------------------------------------------------------------------------------------------
 
-
-
-
-
-
+# Explanation: - 
 
