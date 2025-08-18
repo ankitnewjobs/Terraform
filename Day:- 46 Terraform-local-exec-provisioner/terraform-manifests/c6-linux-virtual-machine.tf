@@ -50,4 +50,66 @@ resource "azurerm_linux_virtual_machine" "mylinuxvm"
 
 # Explanation: - 
 
+# Resource: Azure Linux Virtual Machine
+resource "azurerm_linux_virtual_machine" "mylinuxvm" 
 
+- resource: Defines a resource type (azurerm_linux_virtual_machine) to be created in Azure.
+- "mylinuxvm": This is the local Terraform resource name, which you can reference elsewhere inside Terraform code.
+
+### 1. VM Basics
+
+- name: The Azure VM name (fetched from locals).
+- computer_name: The hostname inside the VM (same as VM name).
+- resource_group_name: References the previously created resource group.
+- location: Uses the same location as the resource group.
+- size: Defines the VM SKU/size (Standard_DS1_v2 = 1 vCPU, 3.5GB RAM).
+
+### 2. Authentication (Admin Login)
+
+- Sets the admin username that will be used to log in to the VM.
+- Attaches the VM to a network interface (NIC) called myvmnic.
+
+### 3. SSH Key Authentication
+
+- Instead of passwords, login is done through SSH key authentication.
+- file() reads the public key file generated earlier (terraform-azure.pub).
+- This ensures secure and passwordless login.
+
+### 4. OS Disk Configuration
+
+- os_disk: Defines the VM’s operating system disk.
+- name: Unique name generated using a random string.
+- caching: ReadWrite mode for balanced performance.
+- storage_account_type: Standard_LRS (Locally Redundant Standard Storage).
+
+### 5. Operating System Image
+
+- Specifies the base VM image from Azure Marketplace.
+- Publisher: "Red Hat" (RHEL OS).
+- Offer: "RHEL".
+- SKU: "83-gen2" → RHEL 8.3 Generation 2 VM.
+- Version: Always use the latest available version.
+
+### 6. Cloud-init / Custom Data
+
+- custom_data: Cloud-init script to automatically configure the VM on startup.
+- The script is read, Base64 encoded, and passed to Azure.
+- Example use: install packages, configure software, run initial setup.
+
+### 7. Tags
+
+- Attaches standard metadata/tags to the VM (like environment, project, etc.).
+
+### 8. Provisioners
+
+#### Creation-Time Provisioner
+
+- Runs a local command on the machine where Terraform is executed, not inside the VM.
+- Here, it writes the VM’s public IP address to a file called creation-time.txt.
+- Stores it in a directory local-exec-output-files/.
+
+#### Destroy-Time Provisioner
+
+- Triggered only when the resource is destroyed.
+- Appends a message to destroy-time.txt.
+- Helps in logging or notifying when the VM gets deleted.
