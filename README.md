@@ -4,7 +4,7 @@ Terraform Complete Hands-On Guides.
 
 ![My Terraform Associate Certificate](https://github.com/user-attachments/assets/617ee4e7-1b87-4c2e-9023-abce9eafd2b7) 
 
--------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------------------
 
 # Terraform
 
