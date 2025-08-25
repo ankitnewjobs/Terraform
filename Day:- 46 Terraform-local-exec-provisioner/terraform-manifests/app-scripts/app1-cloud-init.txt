@@ -22,3 +22,88 @@ runcmd:
 ----------------------------------------------------------------------------------------------------------------------------------------
 
 # Explanation: - 
+
+### 1. cloud-config
+
+- This line tells the system that the file is a cloud-init configuration script.
+- Cloud-init will parse and execute these instructions at first boot.
+
+### 2. package_upgrade: false
+
+- Prevents cloud-init from upgrading all system packages during initialization.
+- If set to true, yum upgrade or apt-get upgrade (depending on OS) would run, which may be time-consuming.
+
+### 3. packages:
+
+packages: httpd
+
+- Installs the Apache HTTP Server (httpd) package automatically.
+- httpd is the package name for Apache on RHEL/CentOS/Amazon Linux (on Ubuntu, it would be apache2).
+
+### 4. write_files: This section writes custom files onto the VM at first boot.
+
+#### File 1:
+
+  - owner: root:root 
+    path: /var/www/html/index.html
+    content: |
+      <h1>Welcome to StackSimplify - APP-1</h1>
+
+- Creates /var/www/html/index.html (the default web server homepage).
+- Owned by root:root.
+- Content is a simple HTML header message.
+
+#### File 2:
+
+  - owner: root:root 
+    path: /var/www/html/app1/index.html
+    content: |
+      <!DOCTYPE html> <html> <body style="background-color:rgb(250, 210, 210);"> 
+      <h1>Welcome to Stack Simplify - APP-1</h1> 
+      <p>Terraform Demo</p> 
+      <p>Application Version: V1</p> 
+      </body></html>
+
+- Creates a second HTML page in /var/www/html/app1/index.html.
+- This is more styled, with background color and additional text like "Terraform Demo" and "Application Version: V1".
+- Useful for testing a sub-application.
+
+### 5. runcmd: This section runs commands after all packages & files are set up.
+
+Commands are executed in order:
+
+  - sudo systemctl start httpd: Starts the Apache web server immediately.
+
+  - sudo systemctl enable httpd: Ensures Apache starts automatically on boot.
+
+  - sudo systemctl stop firewalld: Stops the firewall (common in CentOS/RHEL). This ensures port 80 (HTTP) traffic is accessible to external users.
+
+  - sudo mkdir /var/www/html/app1: Manually creates the /var/www/html/app1 folder (to ensure it exists before writing/serving files).  
+(However, cloud-init’s write_files would auto-create it if missing, so this is extra safety.)
+
+  - [sudo, curl, -H, "Metadata:true", --noproxy, "*", "http://169.254.169.254/metadata/instance?api-version=2020-09-01", -o, /var/www/html/app1/metadata.html]
+
+➡ Uses curl to fetch the VM’s instance metadata from the special link-local address http://169.254.169.254.  
+
+- H "Metadata: true" → Required header for Azure/AWS/Azure Fabric.
+- noproxy "*" → Ensures request is made directly (ignoring proxy settings).
+- o /var/www/html/app1/metadata.html → Saves the metadata response (JSON format) into a file inside the website.  
+
+So, when you visit: http://<server-ip>/app1/metadata.html. You can see VM-specific metadata (compute name, subscription ID, location, etc., depending on cloud provider).
+
+## Putting It All Together: When a VM boots with this cloud-init:
+
+1. Installs Apache web server.
+2. Creates:
+   - A homepage (/index.html).
+   - An app-specific page (/app1/index.html).
+3. Configures Apache to start immediately and on reboot.
+4. Disables the firewall (to allow direct access).
+5. Creates /var/www/html/app1/metadata.html by fetching live instance metadata.
+6. result → You can open in a browser:
+
+   - http://<server-ip>/ → shows “Welcome to StackSimplify - APP-1”
+   - http://<server-ip>/app1/index.html → shows styled "App-1" page with Terraform + version info
+   - http://<server-ip>/app1/metadata.html → shows instance metadata file.
+
+- Purpose of this script:  This is a ready-to-use cloud-init template to set up a simple web application (APP-1) and automatically configure the system for a Terraform/Cloud demo.
