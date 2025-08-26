@@ -32,6 +32,7 @@ output "vm_public_ip_address"
 }
 
 # 4. Output Values - Virtual Machine Admin User
+
 output "vm_admin_user" 
 {
   description = "My Virtual Machine Admin User"
