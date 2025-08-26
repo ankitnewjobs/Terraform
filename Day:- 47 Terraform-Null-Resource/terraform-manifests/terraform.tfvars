@@ -1,6 +1,7 @@
 # Generic Variables
 
 business_unit = "it"
+
 #environment = "dev"
 
 # Resource Variables
