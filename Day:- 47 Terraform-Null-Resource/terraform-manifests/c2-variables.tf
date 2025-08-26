@@ -1,6 +1,7 @@
 # Input Variables
 
 # 1. Business Unit Name
+
 variable "business_unit" 
 {
   description = "Business Unit Name"
