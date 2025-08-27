@@ -188,4 +188,9 @@ rm -rf terraform.tfstate*
 
 ## References
 - [Resource: time_sleep](https://registry.terraform.io/providers/hashicorp/time/latest/docs/resources/sleep)
+  
+----------------------------------------------------------------------------------------------------------------------------------------
+
+# Explanation: - 
+
 - [Time Provider](https://registry.terraform.io/providers/hashicorp/time/latest/docs)
