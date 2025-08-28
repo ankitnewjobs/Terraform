@@ -195,3 +195,183 @@ rm -rf terraform.tfstate*
 ----------------------------------------------------------------------------------------------------------------------------------------
 
 # Explanation: - 
+
+## 🔹 Step-01: Introduction
+Here we define the **purpose** of the configuration:
+
+1. **Providers**:
+   - **Null Provider:**  
+     It provides resources like `null_resource`, mostly used for provisioners or forcing changes without affecting infrastructure.  
+   - **Time Provider (time_sleep):**  
+     Lets you introduce delays/wait periods into your deployment. Useful when the target resource (like a VM) needs some time to finish initialization.
+
+2. **Use case**:
+   - You want to copy application files (`apps/app1`) into an **Azure Linux VM** after it has been provisioned.
+   - To ensure the VM has **Apache webserver directories ready (`/var/www/html`)**, you add a delay (`time_sleep`).
+   - Then you use a **null_resource** with provisioners:
+     - `file` provisioner → copies files from local directory to VM.
+     - `remote-exec` provisioner → moves those files into the Apache web server directory.
+
+3. **Key Learning Aspects**:
+   - How **null_resource** works.
+   - How to use **triggers** with `timestamp()` → which forces Terraform to re-run the resource each time you apply (used to sync updated files).
+   - Using `time_sleep` to delay provisioning.
+
+***
+
+## 🔹 Step-02: Define **Null Provider** in `c1-versions.tf`
+
+```t
+null = {
+  source  = "hashicorp/null"
+  version = ">= 3.0.0"
+}
+```
+
+- This ensures Terraform downloads and uses the **Null Provider**.
+- Null provider itself doesn’t directly create infrastructure but is a handy way to run provisioners.
+
+***
+
+## 🔹 Step-03: Define **Time Provider**  
+
+```t
+time = {
+  source  = "hashicorp/time"
+  version = ">= 0.6.0"
+}
+```
+
+- This adds the **Time Provider** which includes utilities like `time_sleep`.
+
+***
+
+## 🔹 Step-04: Configuration (`c8-null-resource.tf`)
+This is the core file.
+
+### 📌 Step-04-01: **time_sleep Resource**
+```t
+resource "time_sleep" "wait_90_seconds" {
+  depends_on      = [azurerm_linux_virtual_machine.mylinuxvm]
+  create_duration = "90s"
+}
+```
+- Ensures provisioning waits **90 seconds** after VM creation.  
+- Purpose: to allow Apache and `/var/www/html` to be properly available before copying files.
+
+***
+
+### 📌 Step-04-02: **null_resource with triggers and provisioners**
+
+```t
+resource "null_resource" "sync_app1_static" {
+  depends_on = [ time_sleep.wait_90_seconds ]
+
+  triggers = {
+    always-update = timestamp()
+  }
+```
+
+- `null_resource` doesn’t create infrastructure; here it’s used as a **file syncing mechanism**.
+- The **triggers block** with `timestamp()` ensures **a new timestamp each time you apply Terraform**, which means the resource forces recreation → the provisioners re-run.
+- This way, any updated local files are pushed to the VM.
+
+***
+
+#### Connection Block
+```t
+connection {
+  type        = "ssh"
+  host        = azurerm_linux_virtual_machine.mylinuxvm.public_ip_address
+  user        = azurerm_linux_virtual_machine.mylinuxvm.admin_username
+  private_key = file("${path.module}/ssh-keys/terraform-azure.pem")
+}
+```
+- Defines how the provisioners connect to the VM.
+- Uses SSH with a private key (`terraform-azure.pem`).
+
+***
+
+#### File Provisioner
+```t
+provisioner "file" {
+  source      = "apps/app1"
+  destination = "/tmp"
+}
+```
+- Copies entire **local folder** (`apps/app1`) → to remote VM `/tmp`.
+
+***
+
+#### Remote Exec Provisioner
+```t
+provisioner "remote-exec" {
+  inline = [
+    "sudo cp -r /tmp/app1 /var/www/html"
+  ]
+}
+```
+- After copying files to `/tmp`, moves them into **Apache’s default webserver folder** (`/var/www/html`).  
+- This makes the files accessible via a web browser.
+
+***
+
+## 🔹 Step-05: Terraform Workflow
+
+```t
+terraform init      # Initialize providers (null, time, azurerm, etc.)
+terraform validate  # Validate syntax
+terraform fmt       # Format code
+terraform plan      # Preview what will happen
+terraform apply     # Apply changes (deploy VM + sync static files)
+```
+
+**Verification**:  
+- SSH into VM and check `/tmp/app1` and `/var/www/html/app1`.
+- Access in browser → `http://<public-ip>/app1/file1.html`
+
+***
+
+## 🔹 Step-06: Updating Static Content
+
+Suppose you add `app1-file3.html` and update `app1-file1.html`.  
+
+Terraform detects change because `timestamp()` forces replacement:
+
+```log
+-/+ resource "null_resource" "sync_app1_static" {
+      ~ triggers = {
+          - "always-update" = "old-timestamp"
+        } -> (new timestamp)
+}
+```
+
+- This means Terraform will **destroy + recreate only the null_resource**, re-running provisioners to sync changed files.  
+- VM remains untouched, only **static content is refreshed**.
+
+***
+
+## 🔹 Step-07: Apply Updates
+
+```t
+terraform plan
+terraform apply -auto-approve
+```
+
+- Only `null_resource.sync_app1_static` gets replaced.
+- Files are re-synced → now `/var/www/html/app1` will include new `file3.html` and updated `file1.html`.
+
+***
+
+## 🔹 Step-08: Clean-Up
+```t
+terraform destroy -auto-approve   # Destroys VM + time_sleep + null_resource
+rm -rf .terraform* terraform.tfstate*  # Clean local Terraform files
+```
+
+***
+
+## 🔹 Step-09: Rollback
+- Delete the `app1-file3.html`.  
+- Revert changes in `app1-file1.html`.  
+- Run `terraform apply` again → only the `null_resource` is reapplied, rolling back VM’s static content.
