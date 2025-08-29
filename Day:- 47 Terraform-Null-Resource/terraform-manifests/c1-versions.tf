@@ -95,3 +95,4 @@ This can be used to generate unique resource names, passwords, or identifiers du
 |  provider "azurerm"    |  Adds Azure support                           | features {}                  |       --               |
 |  random_string         |  Generates a 6-letter lowercase string        | length=6, lower-case only    |       --               |
 
+
