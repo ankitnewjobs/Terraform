@@ -11,8 +11,6 @@ resource "azurerm_resource_group" "myrg"
 
 # Explanation: - 
 
-## Code Breakdown
-
 ### Resource Block Declaration
 
 - The line resource "azurerm_resource_group" "myrg" defines a resource of type azurerm_resource_group named myrg.
