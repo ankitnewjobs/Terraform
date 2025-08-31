@@ -39,7 +39,6 @@ locals {
    
 }
 
-
 * The locals block in Terraform is used to define local values (similar to variables but only scoped inside the module/config).
 * Think of locals as helper variables to simplify code and avoid repeating long expressions.
 
