@@ -23,3 +23,94 @@ runcmd:
 
 # Explanation: - 
 
+### Cloud-Config Header
+
+#cloud-config
+
+- This declares that the file is in cloud-init format, which cloud-init interprets during the VM’s first boot.  
+- Cloud-init is supported on most cloud platforms (Azure, AWS, GCP) and automates early configuration like package installation, file creation, or command execution.
+
+### Package Management
+
+package_upgrade: false
+
+packages: httpd
+
+- package_upgrade: false → Skips upgrading all system packages on boot (this can speed up provisioning).  
+
+- packages: Installs the listed packages via the default package manager.  
+  - Here, it installs httpd (Apache web server) so the VM can host web pages.
+
+### Write Files Section
+
+write_files:
+
+  - owner: root:root 
+    path: /var/www/html/index.html
+    content: |
+      <h1>Welcome to StackSimplify - APP-1</h1>
+  - owner: root:root 
+    path: /var/www/html/app1/index.html
+    content: |
+      <!DOCTYPE html> <html> <body style="background-color:rgb(250, 210, 210);"> 
+      <h1>Welcome to Stack Simplify - APP-1</h1> 
+      <p>Terraform Demo</p> 
+      <p>Application Version: V1</p> 
+      </body></html>
+
+- write_files: Creates or modifies files directly on the VM.  
+
+- First File: path: /var/www/html/index.html
+
+  - Simple HTML page saying “Welcome to StackSimplify - APP-1”.  
+
+- Second File: path: /var/www/html/app1/index.html
+
+  - Creates an app1 subdirectory page with a styled HTML document, application description, and version info.  
+
+- owner: root:root → Files are owned by the root user.  
+
+- content: | → Multi-line content block for the file.
+
+### Run Commands
+
+runcmd:
+  - sudo systemctl start httpd  
+  - sudo systemctl enable httpd
+  - sudo systemctl stop firewalld
+  - sudo mkdir /var/www/html/app1 
+  - [sudo, curl, -H, "Metadata:true", --noproxy, "*", "http://169.254.169.254/metadata/instance?api-version=2020-09-01", -o, /var/www/html/app1/metadata.html]
+
+- runcmd: Runs shell commands during the late boot phase. Commands execute in order.  
+
+## Commands explained:
+
+1. sudo systemctl start httpd: Starts Apache service immediately.  
+
+2. sudo systemctl enable httpd: Ensures Apache auto-starts on reboot.  
+
+3. sudo systemctl stop firewalld: Stops the firewall service so HTTP traffic (port 80) is accessible without extra rules (common in simple demos). Not recommended for production.  
+
+4. sudo mkdir /var/www/html/app1: Creates the directory intended to host app1 content (needed before the second HTML file is written).  
+
+5. curl metadata command: curl -H "Metadata:true" --noproxy "*" "http://169.254.169.254/metadata/instance?api-version=2020-09-01" -o /var/www/html/app1/metadata.html
+   
+   - Fetches Azure Instance Metadata (details about the VM such as name, resource group, location, etc.) from Azure’s local metadata endpoint (169.254.169.254).  
+
+   - Writes the JSON metadata output to /var/www/html/app1/metadata.html so it’s viewable in the browser.  
+
+### Workflow Summary
+
+1. Install Apache (httpd) on the VM.  
+2. Create index.html and app1/index.html files with sample application content.  
+3. Start and enable Apache so the web server is running persistently.  
+4. Stop the firewall for accessibility.  
+5. Fetch Azure instance metadata and make it visible at /app1/metadata.html.  
+
+After boot, if you browse the VM’s public IP address:
+
+- http://<vm-public-ip>/ → Shows the welcome page.  
+- http://<vm-public-ip>/app1/ → Shows the styled app1 page.  
+- http://<vm-public-ip>/app1/metadata.html → Shows VM metadata details in JSON.  
+
+
