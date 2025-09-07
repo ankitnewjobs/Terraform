@@ -85,4 +85,4 @@ When this command is run, Terraform updates its state file to include this resou
 
 - Resource name consistency: The symbolic resource name (e.g., myrg) must match between the .tf file and the import command.
 
-- Use Case**: Useful for adopting Terraform in an environment with pre-existing Azure resources without recreating them.
+- Use Case: Useful for adopting Terraform in an environment with pre-existing Azure resources without recreating them.
