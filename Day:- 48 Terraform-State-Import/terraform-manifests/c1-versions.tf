@@ -43,12 +43,12 @@ terraform
 - required_version = ">= 1.0.0"  
   This ensures only Terraform CLI versions 1.0.0 or above can run this configuration, guaranteeing compatibility and features.
 
-- required_providers
-  
-Lists providers required by the module. Here, azurerm is:
+- required_providers: - Lists providers required by the module. Here, azurerm is:
 
   - Assigned a local name (azurerm).
+
   - Fetched from source "hashicorp/azurerm (HashiCorp Registry official Azure provider).
+
   - Needs a version*>= 2.0, meaning any version 2.x or higher is acceptable, helping avoid deprecated plugins and ensuring compatibility with newer Azure resources.
 
 ## Provider Block
