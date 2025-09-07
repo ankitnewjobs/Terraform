@@ -64,9 +64,9 @@ provider "azurerm"
 
 ## Summary Table
 
-| Section            | Purpose                                                     | Key Fields                 | Example Value                 |
-|--------------------|------------------------------------------------------------|----------------------------|-------------------------------|
-| terraform          | Global requirements/settings                                | required_version           | ">= 1.0.0"        [6]     |
-| required_providers | Ensure correct provider and minimum version used            | source, version            | "hashicorp/azurerm", ">= 2.0"|
-| provider           | Provider-specific settings & features (for azurerm here)    | features                   | {}                [4]     |
+|     Section         |                 Purpose                                   |   Key Fields      |        Example Value          |
+|---------------------|-----------------------------------------------------------|-------------------|-------------------------------|
+|  terraform          |  Global requirements/settings                             | required_version  |  ">= 1.0.0"                   |
+|  required_providers |  Ensure correct provider and minimum version used         | source, version   |  "hashicorp/azurerm", ">= 2.0"|
+|  provider           |  Provider-specific settings & features (for azurerm here) | features          |  {}                           |
 
