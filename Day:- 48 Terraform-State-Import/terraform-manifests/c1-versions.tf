@@ -41,6 +41,7 @@ terraform
 
 
 - required_version = ">= 1.0.0"  
+
   This ensures only Terraform CLI versions 1.0.0 or above can run this configuration, guaranteeing compatibility and features.
 
 - required_providers: - Lists providers required by the module. Here, azurerm is:
