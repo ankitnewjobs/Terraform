@@ -26,20 +26,6 @@ provider "azurerm"
 
 ## Terraform Block: - This section sets requirements and metadata for Terraform execution
 
-terraform 
-{
-  required_version = ">= 1.0.0"
-  required_providers 
-  {
-    azurerm =
-{
-      source = "hashicorp/azurerm"
-      version = ">= 2.0" 
-    }     
-  }
-}
-
-
 - required_version = ">= 1.0.0"  
 
   This ensures only Terraform CLI versions 1.0.0 or above can run this configuration, guaranteeing compatibility and features.
