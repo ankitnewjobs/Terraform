@@ -109,19 +109,19 @@ Change-1: c2-resource-group.tf
 
 - After importing, resources are tracked by Terraform’s state file (terraform.tfstate), letting Terraform manage, update, and destroy them like any other resource.
 
-## Workflow Steps
+# Workflow Steps
 
-### Step 1: Introduction
+# Step 1: Introduction
 
 - Importing enables Terraform to take over management of existing resources for automation and lifecycle control.
 
-### Step 2: Create a Resource Group Manually
+# Step 2: Create a Resource Group Manually
 
 - Create the Azure Resource Group (myrg1) in the Azure portal in the East US region.
 
 - This emulates a typical scenario where resources were created outside Terraform.
 
-### Step 3: Write Minimal Terraform Code
+# Step 3: Write Minimal Terraform Code
 
 - Create minimal Terraform configs: a provider file (like c1-versions.tf) and a resource group stub (c2-resource-group.tf):
 
@@ -129,7 +129,7 @@ resource "azurerm_resource_group" "myrg"
 
 - The empty resource block is needed so Terraform knows what type and local name will be referenced during import. This matches Terraform’s internal address and does not make changes yet.
 
-### Step 4: Run Terraform Import
+# Step 4: Run Terraform Import
 
 - Initialize Terraform: terraform init
 
@@ -139,13 +139,13 @@ resource "azurerm_resource_group" "myrg"
   
 - Use terraform state list to see the imported resource in the state file.
 
-#### Observations
+# Observations
 
 - On import, the terraform.tfstate file now tracks the Azure Resource Group.
   
 - No configuration (.tf file) changes are made automatically; only the state reflects the imported object.
 
-### Step 5: Update and Match Configuration
+# Step 5: Update and Match Configuration
 
 - Review the imported state and update the Terraform resource block to match all important arguments, e.g.:
 
@@ -157,7 +157,7 @@ resource "azurerm_resource_group" "myrg"
 
 - Run Terraform plan repeatedly and adjust the .tf file until Terraform reports No changes. Infrastructure is up-to-date, meaning configuration and real-world resources match.
 
-### Step 6: Manage as Terraform Resource
+# Step 6: Manage as Terraform Resource
 
 - Now, enhance or modify as desired, e.g., add tags:
 
@@ -168,15 +168,15 @@ tags =
 
 - Run terraform plan, then terraform apply auto-approve to propagate changes.
 
-### Step 7: Execute Terraform Commands
+# Step 7: Execute Terraform Commands
 
 - Running terraform plan and terraform apply applies only configuration file changes (like tags) going forward; everything is now fully managed by Terraform.
 
-### Step 8: Destroy/Remove the Resource
+# Step 8: Destroy/Remove the Resource
 
 - Use terraform destroy auto-approve to delete the Azure Resource Group via Terraform and clean up the state and config files locally.
 
-## Key Concepts
+# Key Concepts
 
 - Importing does not modify the actual infrastructure; it only recognizes it in Terraform’s state.
   
@@ -184,7 +184,7 @@ tags =
 
 - Deleting/untracking configuration will remove the resource if not careful; always review the plan's output.
 
-## Summary Table
+# Summary Table
 
 |    Step   |              Purpose                        |                        Command/Code Example                               |
 |-----------|---------------------------------------------|---------------------------------------------------------------------------|
