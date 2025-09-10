@@ -59,4 +59,8 @@ output "virtual_network_address_space"
   value = module.vnet.vnet_address_space
 }  
 
+----------------------------------------------------------------------------------------------------------------------------------------
+
+# Explanation: - 
+
 
