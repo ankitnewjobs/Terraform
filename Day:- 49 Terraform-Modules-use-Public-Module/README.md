@@ -165,4 +165,127 @@ rm -rf terraform.tfstate*
 
 
 ## Step-10: Discuss about Module Sources
-- [Module Sources](https://www.terraform.io/docs/language/modules/sources.html)   
+- [Module Sources](https://www.terraform.io/docs/language/modules/sources.html)
+
+----------------------------------------------------------------------------------------------------------------------------------------
+
+# Explanation: - 
+
+### Introduction: Terraform Modules
+
+- Root Module: The primary module in a Terraform configuration. It’s the starting point for resource definitions (usually what’s in your working directory).
+- Child Module: Custom or third-party modules called inside your root module to encapsulate logic/reuse code. For example, an Azure VNET module that creates a virtual network with subnets.
+- Published Modules: Modules available publicly, such as on the Terraform Registry. Example: Azure/vnet/azurerm.
+
+### Module Basics
+
+- Defining a Child Module: A block that points to a source, often from the Terraform Registry (source), may specify a version, and can support meta-arguments (count, for_each, providers, depends_on).
+- Accessing Module Output Values: Output variables from a module can be referenced in other code by using module.<name>.<output>, e.g., module.vnet.vnet_id.
+- Tainting Resources: Terraform allows marking resources for recreation via the taint command, but for modules, resources must be tainted individually.
+
+### Defining a Child Module (Azure VNET Example)
+
+Source and Version
+- The source points to "Azure/vnet/azurerm", indicating you're using the official Azure VNET module from the registry.
+- version as "2.5.0" locks the module to a specific, stable version.
+
+Input Parameters
+- You pass variables for VNET name, resource group, address space, subnet properties, and tags.
+- depends_on ensures the VNET is created only after its resource group exists.
+
+module "vnet" 
+{
+  source              = "Azure/vnet/azurerm"
+  version             = "2.5.0"
+  vnet_name           = local.vnet_name
+  resource_group_name = azurerm_resource_group.myrg.name
+  address_space       = ["10.0.0.0/16"]
+  subnet_prefixes     = ["10.0.1.0/24", "10.0.2.0/24", "10.0.3.0/24"]
+  subnet_names        = ["subnet1", "subnet2", "subnet3"]
+  subnet_service_endpoints = {
+    subnet2 = ["Microsoft.Storage", "Microsoft.Sql"],
+    subnet3 = ["Microsoft.AzureActiveDirectory"]
+  }
+  tags =
+  {
+    environment = "dev"
+    costcenter  = "it"
+  }
+  depends_on = [azurerm_resource_group.myrg]
+}
+
+This block replaces explicit resource definitions for VNET and subnets making code more DRY and modular.
+
+### Network Interface Changes
+
+The NIC now references the subnet created by the VNET module:
+
+resource "azurerm_network_interface" "myvmnic"
+{
+  name                = local.nic_name
+  location            = azurerm_resource_group.myrg.location
+  resource_group_name = azurerm_resource_group.myrg.name
+  ip_configuration 
+  {
+    name                          = "internal"
+    subnet_id                     = module.vnet.vnet_subnets[0]
+    private_ip_address_allocation = "Dynamic"
+    public_ip_address_id          = azurerm_public_ip.mypublicip.id 
+  }
+  tags = local.common_tags
+}
+
+Instead of hardcoding a subnet resource reference, it calls the array output module.vnet.vnet_subnets, which links this NIC to the first subnet in your VNET module.
+
+### VM Resource Reference
+
+- The VM resource only refers to the NIC, so there’s no change required here because the NIC code above takes care of the correct subnet linkage.
+
+### Output Values
+
+This block exposes useful properties of the VNET module for downstream consumption or visibility:
+
+Outputs allow referencing details of built infrastructure elsewhere within CI/CD, documentation, or other module dependencies.
+
+### Executing Commands
+
+- terraform init: Initializes the working directory and downloads modules and providers.
+- terraform validate: Checks for config syntax errors and basic correctness.
+- terraform fmt: Auto-formats code in standard style.
+- terraform plan: Shows what changes will occur if you apply this code.
+- terraform apply auto-approve: Applies the changes, building infrastructure.
+- Verification in the Azure Portal confirms resources are created.
+
+### Tainting Resources
+
+- terraform state list: Shows resources in the current state file.
+- terraform taint: Marks a resource for destruction and recreation in the next apply cycle. For module resources, target them individually, e.g., terraform taint module.vnet.azurerm_subnet.subnet.
+- Running terraform plan afterward will show the resource marked for recreation, and terraform apply will execute it.
+
+### Clean-Up Procedure
+
+- terraform destroy auto-approve: Tears down all infrastructure managed by your state file.
+- Manual cleanup: Delete local Terraform-related directories and files with rm-rf .terraform, terraform.tfstate to reset your working environment.
+
+### Meta-Arguments
+
+Meta-arguments for modules (such as count, for_each, depends_on, providers, and lifecycle) allow further control over resource behaviors, just like with standalone resources.
+
+|  Meta-Argument |               Purpose                        |
+|----------------|----------------------------------------------|
+|  count         |  Create multiple module instances            |
+|  for_each      |  Index module instances by key               |
+|  providers     |  Specify module/provider binding             |
+|  depends_on    |  Manage resource creation order              |
+|  lifecycle     |  Control resource replacement and recreation |
+
+### Module Sources
+
+Terraform modules can be sourced from various locations, including local file paths, VCS repositories, and published registries.
+
+|  Source Type    |      Example               |
+|-----------------|----------------------------|
+|  Registry       |  "Azure/vnet/azurerm"      |
+|  Local path     |  "../modules/vnet"         |
+|  GitHub         |  "github.com/foo/bar"      |
+
