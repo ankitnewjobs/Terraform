@@ -70,7 +70,6 @@ output "resource_group_id"
   description = "Resource Group ID"
   value       = azurerm_resource_group.myrg.id
 }
-```
 
 - output block: Defines a value that Terraform will print after execution.  
 - resource_group_id: The label/name for the output.  
