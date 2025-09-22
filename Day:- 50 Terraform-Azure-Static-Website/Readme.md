@@ -249,3 +249,6 @@ rm -rf terraform.tfstate*
 - Using above terraform configurations we have hosted a static website in Azure Storage Account in seconds. 
 - In next step, we will convert these **terraform configuration files** to a Module which will be re-usable just by calling it.
 
+----------------------------------------------------------------------------------------------------------------------------------------
+
+
