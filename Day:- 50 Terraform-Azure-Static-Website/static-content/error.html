@@ -10,3 +10,51 @@
 ----------------------------------------------------------------------------------------------------------------------------------------
 
 # Explanation: - 
+
+#### <!DOCTYPE html>
+- This declaration tells the browser that the document is written in HTML5.
+- It ensures modern browsers interpret the document correctly (without quirks mode).
+
+#### <html>
+- This is the root element of the HTML document.
+- Everything inside it belongs to the webpage structure.
+
+#### <body style="background-color:rgb(210, 176, 157);">
+- <body> is the main container that holds all of the visible content on the webpage.
+- The style attribute applies inline CSS styling directly to the body.
+- background-color: rgb(210, 176, 157); sets the background color of the entire page using RGB values:
+  - Red = 210
+  - Green = 176
+  - Blue = 157
+- The combination produces a soft beige/tan color as the page background.
+
+#### <h1>Welcome to Stack Simplify - APP-1</h1>
+- <h1> defines a top-level heading (largest and boldest by default).
+- Text inside is "Welcome to Stack Simplify - APP-1".
+- This will appear large at the top of the page, usually used for the main title or header.
+
+#### <p>Terraform Modules Demo</p>
+- <p> stands for paragraph and is used to display blocks of text on a webpage.
+- Here, it displays "Terraform Modules Demo".
+- By default, paragraphs add spacing above and below themselves.
+
+#### <p>ERROR PAGE</p>
+- Another paragraph element.
+- Shows text "ERROR PAGE".
+- This indicates that the page is probably being used as a custom error page in a web application, perhaps when something goes wrong.
+
+#### </body> and </html>
+- </body> closes the body section of the HTML document.
+- </html> closes the overall HTML document.
+
+### How This Page Looks
+When loaded in a browser:
+- The background will be light beige (RGB(210,176,157)).
+- At the top, a large heading says: Welcome to Stack Simplify - APP-1.
+- Below it, two lines of text appear: Terraform Modules Demo and ERROR PAGE.
+
+### Purpose of the Page
+- This page is a simple HTML error page used in a Terraform demo setup.
+- Since it says "ERROR PAGE" and references "Terraform Modules Demo," it suggests that:
+  - It's being deployed as a test web page.
+  - It may serve as a placeholder or default error page for an application load balancer, server, or containerized app.
