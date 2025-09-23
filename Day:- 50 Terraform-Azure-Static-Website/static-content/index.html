@@ -10,3 +10,49 @@
 ----------------------------------------------------------------------------------------------------------------------------------------
 
 # Explanation: - 
+
+#### <!DOCTYPE html>
+
+- Declares the Document Type Definition (DTD).
+- Tells the browser that this is an HTML5 document.
+- If this declaration were missing or incorrect, the browser could render the page in quirks mode, leading to inconsistent rendering across browsers.
+
+#### <html>
+  
+- The root element of the HTML document.
+- Everything that makes up the webpage is written inside <html> ... </html> tags.
+- Browsers know that anything in between belongs to one HTML page structure.
+
+#### <body style="background-color:rgb(210, 189, 157);">
+  
+- <body> defines the main content area of the webpage — whatever you see displayed in the browser window.
+- The style attribute applies inline CSS styling (meaning the CSS is directly inside the HTML rather than in a separate .css file).
+- background-color:rgb(210, 189, 157) sets the entire page background color using the RGB color model:
+  - Red = 210
+  - Green = 189
+  - Blue = 157
+- This color combination produces a light beige/tan shade, making the background look soft and neutral.
+
+#### <h1>Welcome to Stack Simplify - APP-1</h1>
+  
+- <h1> is a heading element, used for top-level main titles.
+  
+- By default:
+  - It has the largest font size compared to other heading tags (h2, h3, etc.).
+  - Browsers render it in bold.
+- The content displayed: Welcome to Stack Simplify - APP-1.
+- In practice, this is likely the title of an application or demo project.
+
+#### <p>Terraform Modules Demo</p>
+  
+- <p> defines a paragraph of text.
+- By default, paragraphs add white space before and after themselves, keeping text blocks nicely separated.
+- The content “Terraform Modules Demo” is displayed as regular text.
+- This line indicates the page is related to a Terraform demo (Infrastructure as Code concept).
+
+#### <p>Application Version: V1</p>
+  
+- Another paragraph element.
+- Displays Application Version: V1.
+- This line likely serves as versioning information, useful in deployments where multiple app versions may exist.
+- Including such text helps teams identify which version of the application is currently deployed by simply opening the browser.
