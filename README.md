@@ -55,11 +55,15 @@ Example:
 
 Configures the cloud provider and backend for remote state storage, which tracks deployed resources. This setup is crucial for collaborative workflows.
 
+Example:
+
 <img width="1048" height="1014" alt="image" src="https://github.com/user-attachments/assets/15b51efc-f3dc-4eb5-a027-4fe13a80b503" />
 
 # outputs. tf
 
 Defines output values, making it easy to retrieve information, like IP addresses or resource IDs, after deployment.
+
+Example:
 
 <img width="848" height="710" alt="image" src="https://github.com/user-attachments/assets/e8092908-fc24-4e7b-a34a-83a8fb975a4b" />
 
@@ -67,20 +71,17 @@ Defines output values, making it easy to retrieve information, like IP addresses
 
 Contains values for variables declared in variables. tf, tailored to this environment. Each environment (dev, staging, prod) will have its own .tfvars file.
 
+Example:
+
 <img width="666" height="562" alt="image" src="https://github.com/user-attachments/assets/f5d0521e-3408-486f-a1ab-c4df5a30b69f" />
 
-# The key features of Terraform are:
+#Centralized Modules Repository Breakdown
 
- **Infrastructure as Code**: Infrastructure is described using a high-level configuration syntax. This allows a blueprint of your data center to be versioned and treated as you would any other code. Additionally, infrastructure can be shared and reused.
+Modules are organized into folders by type (e.g., network, compute) within a separate repository. This structure allows consistent usage across environments by sourcing each module from a specific version tag in the central repository.
 
- **Execution Plans**: Terraform has a "planning" step where it generates an execution plan. The execution plan shows what Terraform will do when you call to apply. This lets you avoid any surprises when Terraform manipulates infrastructure.
+# Modules Directory Structure:
 
- **Resource Graph**: Terraform builds a graph of all your resources, and parallelizes the creation and modification of any non-dependent resources. Because of this, Terraform builds infrastructure as efficiently as possible, and operators get insight into dependencies in their infrastructure.
-
- **Change Automation**: Complex changesets can be applied to your infrastructure with minimal human interaction. With the previously mentioned execution plan and resource graph, you know exactly what Terraform will change and in what order, avoiding many possible human errors.
-
-For more information, refer to the [What is Terraform?](https://www.terraform.io/intro) page on the Terraform website.
-
+![Module Directory Structure](https://media.beehiiv.com/cdn-cgi/image/fit=scale-down,format=auto,onerror=redirect,quality=80/uploads/asset/file/a70941e1-5fb2-4a29-a70b-a671150e9298/directory_2.png?t=1730702773)
 --------------------------------------------------------------------------------------------------
 
 ## Getting Started & Documentation
