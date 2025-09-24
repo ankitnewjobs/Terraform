@@ -40,7 +40,8 @@ Defines core resources for the environment by referencing modules from the centr
 
 Example:
 
-![Main.tf]("C:\Users\Hp\OneDrive\Desktop\main.jpg") 
+![Main.tf]("<img width="1848" height="1014" alt="image" src="https://github.com/user-attachments/assets/96f3e376-de57-442d-8f91-cc9e97aa3bd6" />
+") 
 
 # Backends
 
