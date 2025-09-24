@@ -43,15 +43,35 @@ Example:
 <img width="1848" height="1014" alt="image" src="https://github.com/user-attachments/assets/96f3e376-de57-442d-8f91-cc9e97aa3bd6" />
  
 
-# Backends
+# variables. tf
 
-A backend determines where Terraform should store its state snapshots.
+Declares input variables, making the configuration adaptable. For example, instance_type might vary between environments (e.g., t2.micro in dev, t3.large in prod).
 
-As described above, the local backend also executes operations on behalf of most other backends. It uses a state manager (either statemgr.Filesystem if the local backend is being used directly, or an implementation provided by whatever backend is being wrapped) to retrieve the current state for the workspace specified in the operation, then uses the config loader to load and do initial processing/validation of the configuration specified in the operation. It then uses these, along with the other settings given in the operation, to construct a terraform.Context, which is the main object that actually performs Terraform operations.
+Example:
+
+<img width="972" height="1242" alt="image" src="https://github.com/user-attachments/assets/f19411ae-9274-43c0-9c8d-0318aa8a4559" />
+
+# provider. tf
+
+Configures the cloud provider and backend for remote state storage, which tracks deployed resources. This setup is crucial for collaborative workflows.
+
+<img width="1048" height="1014" alt="image" src="https://github.com/user-attachments/assets/15b51efc-f3dc-4eb5-a027-4fe13a80b503" />
+
+# outputs. tf
+
+Defines output values, making it easy to retrieve information, like IP addresses or resource IDs, after deployment.
+
+<img width="848" height="710" alt="image" src="https://github.com/user-attachments/assets/e8092908-fc24-4e7b-a34a-83a8fb975a4b" />
+
+# dev. tfvars (Environment-Specific Variables)
+
+Contains values for variables declared in variables. tf, tailored to this environment. Each environment (dev, staging, prod) will have its own .tfvars file.
+
+<img width="666" height="562" alt="image" src="https://github.com/user-attachments/assets/f5d0521e-3408-486f-a1ab-c4df5a30b69f" />
 
 # The key features of Terraform are:
 
- **Infrastructure as Code**: Infrastructure is described using a high-level configuration syntax. This allows a blueprint of your data center to be versioned and treated as you would any other code. Additionally, infrastructure can be shared and re-used.
+ **Infrastructure as Code**: Infrastructure is described using a high-level configuration syntax. This allows a blueprint of your data center to be versioned and treated as you would any other code. Additionally, infrastructure can be shared and reused.
 
  **Execution Plans**: Terraform has a "planning" step where it generates an execution plan. The execution plan shows what Terraform will do when you call to apply. This lets you avoid any surprises when Terraform manipulates infrastructure.
 
