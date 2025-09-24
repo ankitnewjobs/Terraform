@@ -19,6 +19,7 @@ Terraform Complete Hands-On Guides.
 <img alt="Terraform" src="https://www.datocms-assets.com/2885/1629941242-logo-terraform-main.svg" width="600px">
 
 # Introduction
+
 Terraform is a tool for building, changing, and versioning infrastructure safely and efficiently. Terraform can manage existing and popular service providers as well as custom in-house solutions.
 
 -------------------------------------------------------------------------------------------------------
@@ -79,9 +80,11 @@ Example:
 
 Modules are organized into folders by type (e.g., network, compute) within a separate repository. This structure allows consistent usage across environments by sourcing each module from a specific version tag in the central repository.
 
+
 # Modules Directory Structure:
 
 ![Module Directory Structure](https://media.beehiiv.com/cdn-cgi/image/fit=scale-down,format=auto,onerror=redirect,quality=80/uploads/asset/file/a70941e1-5fb2-4a29-a70b-a671150e9298/directory_2.png?t=1730702773)
+
 --------------------------------------------------------------------------------------------------
 
 ## Getting Started & Documentation
@@ -97,13 +100,23 @@ Show off your Terraform knowledge by passing a certification exam. Visit the [ce
 
 ----------------------------------------------------------------------------------------------------------------------
 
-## Developing Terraform
+## Points to consider while using modules:
 
-This repository contains only the Terraform core, which includes the command line interface and the main graph engine. Providers are implemented as plugins, and Terraform can automatically download providers that are published on [the Terraform Registry](https://registry.terraform.io). HashiCorp develops some providers, and other organizations produce others. For more information, see [Extending Terraform](https://www.terraform.io/docs/extend/index.html).
+1. Use versioned module tags.
 
-To learn more about compiling Terraform and contributing suggested changes, refer to [the contributing guide](.github/CONTRIBUTING.md).
+2. Centralize module source in a remote repository.
 
-To learn more about how we handle bug reports, refer to the [bug triage guide](./BUGPROCESS.md).
+3. Refactor modules for reusability as the project scales.
+
+4. Avoid hardcoding values; use variables for flexibility.
+
+5. Keep module logic focused on a single responsibility.
+
+6. Define clear input and output variables for each module.
+
+7. Document module usage and parameters in a README.
+
+8. Test modules independently before applying them in environments.
 
 ------------------------------------------------------------------------------------------------------
 
