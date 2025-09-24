@@ -75,8 +75,7 @@ Example:
 
 <img width="666" height="562" alt="image" src="https://github.com/user-attachments/assets/f5d0521e-3408-486f-a1ab-c4df5a30b69f" />
 
-
-#Centralized Modules Repository Breakdown
+# Centralized Modules Repository Breakdown
 
 Modules are organized into folders by type (e.g., network, compute) within a separate repository. This structure allows consistent usage across environments by sourcing each module from a specific version tag in the central repository.
 
