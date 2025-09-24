@@ -32,7 +32,7 @@ This setup follows a layered structure, separating resources by environment (dev
 
 Modules are kept in a central repository, allowing environments to source specific versions for controlled updates and consistent configurations.
 
-![Terraform Architecture]("C:\Users\Hp\OneDrive\Desktop\as.jpg")
+![Terraform Architecture]("https://media.beehiiv.com/cdn-cgi/image/fit=scale-down,format=auto,onerror=redirect,quality=80/uploads/asset/file/b606769d-187c-4f5f-b340-fb861e98ec86/directory_1.png?t=1730702748")
   
 # CLI (command package)
 
