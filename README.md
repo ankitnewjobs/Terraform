@@ -40,26 +40,7 @@ Defines core resources for the environment by referencing modules from the centr
 
 Example:
 
-module "network" {
-
-source = "git::https://github.com/terraform-aws-modules/terraform-aws-vpc.git//?ref=v3.19.0"
-
- 
-
-vpc_cidr = var.vpc_cidr
-
-}
-
-module "compute" {
-
-source = "git::https://github.com/terraform-aws-modules/terraform-aws-ec2-instance.git//?ref=v4.2.0"
-
-instance_count = var.instance_count
-
-instance_type = var.instance_type
-
-}
-  
+![Main.tf]("C:\Users\Hp\OneDrive\Desktop\main.jpg") 
 
 # Backends
 
