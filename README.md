@@ -24,11 +24,15 @@ Terraform is a tool for building, changing, and versioning infrastructure safely
 -------------------------------------------------------------------------------------------------------
 # Architecture
 
-# Terraform Request Flow
+# Guide to a Well-Structured Terraform Project
 
-- The following diagram shows an approximation of how a user command is executed in Terraform:
+- Why care about Terraform project structure? Simple—it keeps things organized so you can scale up, work well with your team, and keep everything secure. No fuss, just a setup that works.
 
-![Terraform Architecture](https://github.com/user-attachments/assets/7206cd1b-f4b2-47ed-b89f-e6136f76fa3c)
+This setup follows a layered structure, separating resources by environment (development, staging, production, etc.) and using centralized modules for reusable components.
+
+Modules are kept in a central repository, allowing environments to source specific versions for controlled updates and consistent configurations.
+
+![Terraform Architecture]("C:\Users\Hp\OneDrive\Desktop\as.jpg")
   
 # CLI (command package)
 
@@ -73,7 +77,7 @@ Show off your Terraform knowledge by passing a certification exam. Visit the [ce
 
 ## Developing Terraform
 
-This repository contains only the Terraform core, which includes the command line interface and the main graph engine. Providers are implemented as plugins, and Terraform can automatically download providers that are published on [the Terraform Registry](https://registry.terraform.io). HashiCorp develops some providers, and others are developed by other organizations. For more information, see [Extending Terraform](https://www.terraform.io/docs/extend/index.html).
+This repository contains only the Terraform core, which includes the command line interface and the main graph engine. Providers are implemented as plugins, and Terraform can automatically download providers that are published on [the Terraform Registry](https://registry.terraform.io). HashiCorp develops some providers, and other organizations produce others. For more information, see [Extending Terraform](https://www.terraform.io/docs/extend/index.html).
 
 To learn more about compiling Terraform and contributing suggested changes, refer to [the contributing guide](.github/CONTRIBUTING.md).
 
