@@ -34,13 +34,32 @@ Modules are kept in a central repository, allowing environments to source specif
 
 ![Enviornment Directory Structure](https://media.beehiiv.com/cdn-cgi/image/fit=scale-down,format=auto,onerror=redirect,quality=80/uploads/asset/file/b606769d-187c-4f5f-b340-fb861e98ec86/directory_1.png?t=1730702748) 
   
-# CLI (command package)
+# Main.tf
 
-Each time a user runs the terraform program, aside from some initial bootstrapping in the root package (not shown in the diagram) execution transfers immediately into one of the "command" implementations in the command package. The mapping between the user-facing command names and their corresponding command package types can be found in the commands.go file in the root of the repository.
+Defines core resources for the environment by referencing modules from the central repository. Each module is tagged to ensure a specific version is used.
 
-The full flow illustrated above does not actually apply to all commands, but it applies to the main Terraform workflow commands terraform plan and terraform apply, along with a few others.
+Example:
 
-For these commands, the role of the command implementation is to read and parse any command line arguments, command line options, and environment variables that are needed for the given command and use them to produce a backend.Operation object that describes an action to be taken.
+module "network" {
+
+source = "git::https://github.com/terraform-aws-modules/terraform-aws-vpc.git//?ref=v3.19.0"
+
+ 
+
+vpc_cidr = var.vpc_cidr
+
+}
+
+module "compute" {
+
+source = "git::https://github.com/terraform-aws-modules/terraform-aws-ec2-instance.git//?ref=v4.2.0"
+
+instance_count = var.instance_count
+
+instance_type = var.instance_type
+
+}
+  
 
 # Backends
 
