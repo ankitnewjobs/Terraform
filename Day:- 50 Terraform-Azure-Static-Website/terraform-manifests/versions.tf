@@ -62,7 +62,7 @@ Inside, we define each provider we’ll use:
 #### 5. random provider
 
 * random → This provider is used to generate random values like strings, numbers, or UUIDs.
-  * Example: a random password, a unique resource name, etc.
+* Example: a random password, a unique resource name, etc.
 
 * source = "hashicorp/random" → Download from HashiCorp’s registry.
 * version = ">= 3.0" → Must use version **3.0 or newer.
