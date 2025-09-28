@@ -251,4 +251,123 @@ rm -rf terraform.tfstate*
 
 ----------------------------------------------------------------------------------------------------------------------------------------
 
+# Explanation 
 
+# Step-00: Introduction
+
+* End Goal: Learn how to build a Terraform local module that can host a static website on Azure.
+  
+* Learning Path:
+
+  1. Create a Terraform module.
+  2. Pass inputs using variables.
+  3. Reuse outputs.
+     
+* Use case: Host a static website in an Azure Storage Account by:
+
+  * Creating a storage account.
+  * Enabling Static Website Hosting.
+  * Uploading static files (index.html, error.html).
+    
+* Approach:
+
+  * Section 1: Do it manually in Azure Portal.
+  * Section 2: Automate with Terraform resources.
+  * Section 3: Wrap it in a reusable Terraform module.
+
+# Module-1: Manual Approach
+
+### Step-01: Create Azure Storage Account
+
+* Go to Azure Portal → Storage Accounts → Create.
+  
+* Provide values:
+
+  * Resource Group: myrg-sw-1
+  * Storage Account Name: staticwebsitek123 (must be globally unique).
+  * Region: East US
+  * Performance: Standard
+  * Redundancy: LRS
+    
+* Deploy.
+
+### Step-02: Enable Static Website
+
+* Navigate: Storage Account → Data Management → Static Website.
+* Set Enabled.
+* Provide:
+
+  * Index document name: index.html
+  * Error document path: error.html.
+
+### Step-03: Upload Static Content
+
+* Navigate: Storage Account → Data Storage → Containers → $web.
+* Upload files:
+
+  * index.html
+  * error.html.
+
+### Step-05: Access Website
+
+* Copy Primary Endpoint from the Static Website blade:
+
+  https://staticwebsitek123.z13.web.core.windows.net/
+
+* Manual setup complete.
+
+#  Module-2: Terraform Automation
+
+Instead of repeating the manual steps, you automate with Terraform.
+
+## Step-01: versions.tf
+
+* Locks Terraform to v1.0+.
+* Requires AzureRM, random, and null providers.
+
+## Step-02: variables.tf
+
+Defines input variables for reusability:
+
+## Step-03: main.tf
+
+# Resource Group
+
+# Storage Account with Static Website enabled
+
+Key Points:
+
+* random_string ensures unique storage account names (Azure requires global uniqueness).
+* Storage account is tied to resource group + location.
+* Static website hosting is enabled with index + error documents.
+
+## Step-04: terraform.tfvars
+
+Provides default values for variables:
+
+## Step-05: outputs.tf
+
+Defines outputs so values are visible after apply:
+
+## Step-06: Terraform Commands
+
+1. terraform init → download providers, init workspace.
+2. terraform validate → check syntax.
+3. terraform fmt → format code.
+4. terraform plan → preview resources.
+5. terraform apply -auto-approve → build infra.
+6. Upload static files manually (or via script).
+7. Test website via endpoint.
+
+## Step-07: Destroy and Clean-Up
+
+Cleans infra + state files.
+
+##  Step-08: Conclusion
+
+* Manual static website hosting → automated with Terraform.
+* Benefits:
+
+  * Repeatable.
+  * Faster.
+  * Reusable across environments.
