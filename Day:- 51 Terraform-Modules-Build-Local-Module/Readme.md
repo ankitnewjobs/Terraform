@@ -171,7 +171,297 @@ ls -lrt .terraform/modules
 - When installing a remote module, Terraform will download it into the `.terraform` directory in your configuration's root directory. 
 - When installing a local module, Terraform will instead refer directly to the source directory. 
 - Because of this, Terraform will automatically notice changes to local modules without having to re-run `terraform init` or `terraform get`.
+------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+# Explanation: - 
+
+#  Step-01: Introduction — What You’re Building
+
+You are learning how to:
+
+* **Build a local Terraform module** that provisions an **Azure Storage Account** configured for **static website hosting**.
+* **Use that module** inside a **Root module** (your main Terraform configuration).
+* Understand how:
+
+  * **Module inputs** (`variables.tf`) become **arguments** in the `module` block.
+  * **Module outputs** (`outputs.tf`) are **referenced** in the root module.
+  * Terraform handles module dependencies with commands like `terraform get` and `terraform init`.
+
+### 🧠 Key Concept
+
+A **Terraform Module** = A collection of `.tf` files (main.tf, variables.tf, outputs.tf, etc.) that perform a specific function and can be reused across projects.
+
+Example:
+
+> You build a module to create a Storage Account → You can reuse this same module in 10 different environments (dev, test, prod).
+
+---
+
+## 📁 Step-02: Folder Structure — Setting Up the Module
+
+Terraform project structure:
+
+```
+51-Terraform-Modules-Build-Local-Module/
+│
+└── terraform-manifests/
+    ├── c1-versions.tf
+    ├── c2-variables.tf
+    ├── c3-static-website.tf
+    ├── c4-outputs.tf
+    └── modules/
+        └── azure-static-website/
+            ├── main.tf
+            ├── variables.tf
+            ├── outputs.tf
+            ├── versions.tf
+            ├── README.md
+            └── LICENSE
+```
+
+### Explanation:
+
+* **Root Module (`terraform-manifests`)** — where you run Terraform commands (`init`, `apply`, etc.).
+* **Local Module (`modules/azure-static-website`)** — reusable logic for provisioning Azure Storage + static website setup.
+
+You copy:
+
+* `main.tf` → contains resource definitions (RG, Storage Account)
+* `variables.tf` → input variables for flexibility
+* `outputs.tf` → output variables to expose key information
+* `versions.tf` → provider and Terraform version requirements
+
+---
+
+## ⚙️ Step-03: Root Module — `c1-versions.tf`
+
+This defines **Terraform** and **Provider** setup for the root configuration.
+
+```hcl
+terraform {
+  required_version = ">= 1.0.0"
+  required_providers {
+    azurerm = {
+      source  = "hashicorp/azurerm"
+      version = ">= 2.0"
+    }
+  }
+}
+
+provider "azurerm" {
+  features {}
+}
+```
+
+### Breakdown:
+
+* `required_version` ensures Terraform CLI version compatibility.
+* `required_providers` lists which provider plugins to use:
+
+  * `azurerm` → Azure Resource Manager provider
+  * Terraform automatically downloads it during `terraform init`.
+* `provider "azurerm"` defines how Terraform interacts with Azure.
+
+  * `features {}` must be included, even if left empty (required for the AzureRM provider).
+
+---
+
+## 🧾 Step-04: `c2-variables.tf` (Placeholder)
+
+This is a placeholder for root-level variables (optional).
+
+* You can later define variables like environment name, or region here.
+* For now, it’s left empty to keep focus on the **module usage**.
+
+---
+
+## 🌐 Step-05: Calling the Module — `c3-static-website.tf`
+
+This file **calls** your local module and passes in variable values.
+
+```hcl
+module "azure_static_website" {
+  source = "./modules/azure-static-website"
+
+  # Resource Group
+  location            = "eastus"
+  resource_group_name = "myrg1"
+
+  # Storage Account
+  storage_account_name              = "staticwebsite"
+  storage_account_tier              = "Standard"
+  storage_account_replication_type  = "LRS"
+  storage_account_kind              = "StorageV2"
+  static_website_index_document     = "index.html"
+  static_website_error_404_document = "error.html"
+}
+```
+
+### Explanation:
+
+* `module "azure_static_website"` — defines a reusable module block.
+* `source = "./modules/azure-static-website"` — tells Terraform this module is local (within your repo).
+* Inside this block, every line maps to a **variable** defined in the module’s `variables.tf`.
+* Example mapping:
+
+  * `location` → `variable "location"` in module
+  * `storage_account_name` → `variable "storage_account_name"` in module
+
+So effectively, you are **passing data** into the module.
+
+---
+
+## 📤 Step-06: Outputs — `c4-outputs.tf`
+
+After running Terraform, you’ll want to see or reuse the created resource values (IDs, names, etc.).
+These are defined in the **Root Module** by referencing the **Module Outputs**.
+
+```hcl
+output "root_resource_group_id" {
+  description = "resource group id"
+  value       = module.azure_static_website.resource_group_id
+}
+
+output "root_storage_account_name" {
+  description = "storage account name"
+  value       = module.azure_static_website.storage_account_name
+}
+```
+
+### Explanation:
+
+* The values come from the **module’s output variables** (`outputs.tf` inside `azure-static-website`).
+* For example:
+
+  * Module output: `output "storage_account_name" {...}`
+  * Root usage: `module.azure_static_website.storage_account_name`
+
+So Terraform connects the dots between the root and module outputs.
+
+---
+
+## 🧠 Step-07: Running Terraform Commands
+
+### 1️⃣ `terraform init`
+
+* Initializes the working directory.
+* Downloads:
+
+  * **Providers** (e.g., `azurerm` plugin)
+  * **Modules** (in this case, your local `azure-static-website`)
+
+Check `.terraform/` directory:
+
+```
+.terraform/
+├── providers/
+└── modules/
+```
+
+### 2️⃣ `terraform validate`
+
+* Checks syntax and logical correctness of your `.tf` files.
+
+### 3️⃣ `terraform fmt`
+
+* Formats `.tf` files into canonical Terraform style.
+
+### 4️⃣ `terraform plan`
+
+* Shows what Terraform *will do* before making any changes.
+
+### 5️⃣ `terraform apply -auto-approve`
+
+* Actually provisions resources in Azure.
+
+Then you can:
+
+* Go to the **Azure Portal**
+* Navigate to:
+
+  * `Resource Group`
+  * `Storage Account → $web container`
+  * Upload your static website content (`index.html`, `error.html`)
+* Access your live website using the **Primary Endpoint**:
+
+  ```
+  https://staticwebsite123.z13.web.core.windows.net/
+  ```
+
+---
+
+## 🧹 Step-08: Cleanup
+
+To destroy all resources:
+
+```bash
+terraform destroy -auto-approve
+```
+
+Then remove Terraform state files:
+
+```bash
+rm -rf .terraform* terraform.tfstate*
+```
+
+---
+
+## ⚡ Step-09: Understanding `terraform get`
+
+### 🔹 `terraform init`
+
+* Initializes the working directory.
+* Downloads **providers**, **backends**, and **modules**.
+* Must be run before any Terraform action.
+
+### 🔹 `terraform get`
+
+* Specifically **downloads or updates modules only**.
+* Does **not** reinitialize the backend or providers.
+
+### Example:
+
+If you add a new module *after initialization*:
+
+```bash
+terraform get
+```
+
+This command will:
+
+* Refresh local `.terraform/modules`
+* Pull down new module code
+
+### Difference:
+
+| Command          | Purpose                         | Downloads Providers? | Downloads Modules? | Initializes Backend? |
+| ---------------- | ------------------------------- | -------------------- | ------------------ | -------------------- |
+| `terraform init` | Full setup of working directory | ✅                    | ✅                  | ✅                    |
+| `terraform get`  | Update modules only             | ❌                    | ✅                  | ❌                    |
+
+---
+
+## 🌍 Step-10: Local vs Remote Modules
+
+| Feature  | Local Module                             | Remote Module                                                |
+| -------- | ---------------------------------------- | ------------------------------------------------------------ |
+| Source   | `./modules/azure-static-website`         | `git::https://github.com/...` or `registry.terraform.io/...` |
+| Storage  | On your local filesystem                 | Downloaded to `.terraform/modules`                           |
+| Updates  | Automatically detected when files change | Must re-run `terraform init` or `terraform get`              |
+| Best Use | Prototyping, team local projects         | Production-grade reusable modules                            |
+
+---
+
+## ✅ Summary
+
+| Concept                       | Explanation                                                                     |
+| ----------------------------- | ------------------------------------------------------------------------------- |
+| **Terraform Module**          | A reusable component (like a function) in Terraform.                            |
+| **Local Module**              | A module stored within your project directory.                                  |
+| **Root Module**               | The main directory where Terraform commands are executed.                       |
+| **Inputs/Outputs**            | Variables and outputs connect modules and root configurations.                  |
+| **`terraform init` vs `get`** | Init = full setup; Get = update only modules.                                   |
+| **Use Case**                  | Hosting a static website on Azure Storage Account using modular Terraform code. |
 
 
 
