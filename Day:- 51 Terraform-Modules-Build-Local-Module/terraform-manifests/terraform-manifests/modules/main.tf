@@ -65,7 +65,7 @@ provider "azurerm"
 # Explanation:
 
 * provider "azurerm": This tells Terraform that we’re using the Azure Resource Manager (ARM) provides the plugin that allows Terraform to manage Azure resources.
-* features {}: A required block (even if empty).   It enables all the default provider features.
+* features {}: A required block (even if empty). It enables all the default provider features.
   For example, if you wanted to configure specific behaviors (like key vault purge protection), you’d do it here.
 
 # Purpose: This block authenticates and connects Terraform to Azure so it can create, modify, and delete Azure resources.
@@ -179,7 +179,7 @@ Then the final name might be "mystorageabcxyz", and your site would be accessibl
 * The random string must be created before the storage_account because of this line:
 \  name = "${var.storage_account_name}${random_string.myrandom.id}"
   
-Terraform’s **dependency graph* ensures proper creation order:
+Terraform’s dependency graph ensures proper creation order:
 
 random_string → resource_group → storage_account
 
