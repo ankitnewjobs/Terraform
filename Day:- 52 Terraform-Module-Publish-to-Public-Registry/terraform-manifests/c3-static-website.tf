@@ -1,4 +1,5 @@
 # Call our Custom Terraform Module, which we built earlier
+
 module "azure_static_website"
 {
   #source = "./modules/azure-static-website"  
