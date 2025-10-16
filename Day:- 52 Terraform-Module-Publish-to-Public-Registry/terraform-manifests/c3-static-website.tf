@@ -20,3 +20,7 @@ module "azure_static_website"
   static_website_index_document     = "index.html"
   static_website_error_404_document = "error.html"
 }
+
+----------------------------------------------------------------------------------------------------------------------------------------
+
+# Explanation: - 
