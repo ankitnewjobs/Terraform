@@ -26,5 +26,8 @@ output "storage_account_name"
   value       = module.azure_static_website.storage_account_name
 }
 
+----------------------------------------------------------------------------------------------------------------------------------------
+
+# Explanation: - 
 
 
