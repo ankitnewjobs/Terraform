@@ -10,3 +10,92 @@
 ----------------------------------------------------------------------------------------------------------------------------------------
 
 # Explanation: - 
+
+# <!DOCTYPE html>
+
+* This is called a DOCTYPE declaration.
+* It tells the web browser that this document is written in HTML5, which is the latest and standard version of HTML.
+* It’s not an HTML tag, but a special instruction that ensures the browser renders the page using standards mode, not quirks mode (which is used for old HTML versions).
+
+# <html>
+
+* This tag marks the beginning of the HTML document.
+* Everything inside <html> ... </html> is part of your web page.
+* It’s the root element, meaning every other tag lives inside it.
+
+Example: <html lang="en">
+
+# <body style="background-color:rgb(210, 189, 157);">
+
+* The <body> tag defines the main content area of your webpage, which users actually see in their browser.
+* Everything inside <body> gets displayed (text, images, links, etc.).
+
+# Inside the <body> tag, you have an inline CSS style: style="background-color:rgb(210, 189, 157);"
+
+##### Breakdown:
+
+* style= → an attribute used to apply CSS (Cascading Style Sheets) directly to a single element.
+* background-color: → a CSS property that changes the page’s background color.
+* rgb(210, 189, 157) → defines the color using Red, Green, Blue values:
+
+  * Red: 210
+  * Green: 189
+  * Blue: 157
+
+# <h1>Welcome to Stack Simplify - APP-1</h1>
+
+* <h1> stands for Heading 1, the most important (and largest) heading level in HTML.
+* It’s typically used for titles or main headers.
+
+# <p>Terraform Modules Demo</p>
+
+* <p> stands for paragraph.
+* It’s used to display blocks of text.
+* The text “Terraform Modules Demo” is shown below the heading in normal-sized font.
+
+# <p>Application Version: V1</p>
+
+* Another paragraph, this time displaying the version number of the app.
+* “Application Version: V1” indicates that this is the first release (version 1) of the demo application.
+
+In a DevOps or Terraform context:
+
+* This version info is often updated automatically (for example, through CI/CD pipelines).
+* You might later deploy a V2 or V3 version, and this small HTML change helps verify that the new version was successfully deployed.
+
+Example: <p>Application Version: V2</p>
+
+If you saw “V2” in the browser after deployment, you’d know the update worked.
+
+# </body>
+
+* This closes the <body> section.
+* Everything visible on your webpage must go inside the <body> tag — anything outside won’t be rendered by the browser.
+
+### </html>
+
+* This closes the entire HTML document.
+* It tells the browser that the file has ended.
+
+## Visual Summary
+
+
+|   Element     |        What You See                    |            Description                        |
+|-------------- | -------------------------------------- | --------------------------------------------- |
+|  Background   |  Light brown/beige background          |  Set by background-color:rgb(210, 189, 157)   |
+|  <h1>         |  Welcome to Stack Simplify - APP-1     |  Big bold heading                             |
+|  First <p>    |  Terraform Modules Demo                |  Paragraph text under heading                 |
+|  Second <p>   |  Application Version: V1               |  Displays version info                        |
+
+
+# Why This Page Exists (Terraform Context)
+
+In a Terraform demo, small static HTML pages like this are often used to:
+
+* Verify that deployment works correctly.
+
+  * For example, when Terraform deploys an Azure App Service or AWS S3 static website, you can open the URL and check that this page appears.
+  * Differentiate multiple apps/modules. e.g. APP-1, APP-2, etc.
+  * Show version numbers to confirm rolling updates or blue-green deployments are happening as expected.
+
+So, if you changed the version text and redeployed: <p>Application Version: V2</p> and saw “V2” live in the browser, you’d know Terraform   applied the new configuration correctly.
