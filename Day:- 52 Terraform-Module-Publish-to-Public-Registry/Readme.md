@@ -414,3 +414,5 @@ terraform apply
 |   destroy                         |   Clean-up infrastructure                            |
 |   Versioning (1.0.0 → 2.0.0)      |   Update modules safely over time                    |
 
+
+<img width="1536" height="1024" alt="image" src="https://github.com/user-attachments/assets/9938c398-b831-4322-aa0f-d04bad79ce43" />
