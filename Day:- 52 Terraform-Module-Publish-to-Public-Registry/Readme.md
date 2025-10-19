@@ -188,7 +188,7 @@ git push
 
 # Verify
 https://registry.terraform.io/modules/stacksimplify/staticwebsitepublic/azurerm/latest
-In Versions drop-down, you should notice 1.0.0 and 2.0.0(latest) tags
+In the Versions drop-down, you should notice 1.0.0 and 2.0.0(latest) tags
 
 # Update your Module Version tag to use new version of Module
 c3-static-website.tf
@@ -199,4 +199,218 @@ New:   version = "2.0.0"
 ----------------------------------------------------------------------------------------------------------------------------------------
 
 # Explanation: - 
+
+This is a Terraform module publishing workflow guide, not just code. It shows how to:
+
+* build a reusable Terraform module,
+* publish it to the Terraform Public Registry,
+* consume it from the root module, and
+* handle versioning for upgrades.
+
+# Step-01: Introduction
+
+You are setting up a Terraform Module lifecycle:
+
+* Create & version a GitHub repository: Terraform modules live in versioned Git repos (usually GitHub).
+* Publish Module to Terraform Registry: So others can use it with source = "username/module-name/provider".
+* Consume Module: You’ll reference the module from the registry in a root configuration.
+* Versioning: You’ll tag releases (v1.0.0, v2.0.0) so Terraform can download a specific version.
+
+> Concept: A “module” in Terraform = a folder with .tf files that define resources.
+
+> The “root module” is what you actually run Terraform on; it calls other modules using the module block.
+
+# Step-02: Create GitHub Repository
+
+You create a GitHub repository for your module.
+
+* Why:- Terraform Registry pulls module code directly from GitHub repositories, and your repo name must follow this pattern:
+
+terraform-<PROVIDER>-<MODULE_NAME>
+
+Example: terraform-azurerm-staticwebsitepublic
+
+Repo setup:
+
+* Public (so the registry can read it)
+* .gitignore → Terraform (to ignore .terraform/, .tfstate, etc.)
+* Optional: License → Apache 2.0 (open-source friendly)
+
+# Step-03: Clone Repository Locally
+
+Run: git clone https://github.com/<YOUR_GITHUB_ID>/<YOUR_REPO>.git
+
+This downloads the repo to your local machine, allowing you to add Terraform code and commit changes.
+
+# Step-04: Copy Module Code and Push
+
+Copy your module code files (from a local folder where you developed them earlier) into this repo.
+
+Then run: 
+
+git status       # See which files are new or changed
+git add.         # Stage all changes
+git commit -am "TF Module Files First Commit"
+git push         # Upload to GitHub
+
+This uploads your module to GitHub.
+
+# Step-05: Create Release Tag (v1.0.0)
+
+Terraform Registry uses Git tags to determine module versions.
+
+In GitHub:
+
+* Go to Releases → Create new release
+* Tag version: 1.0.0
+* Title: Release-1 terraform-azurerm-staticwebsitepublic
+* Description: Something like “Initial version for public registry”
+
+Click Publish Release. Now your module is versioned.
+
+# Step-06: Publish Module to Terraform Public Registry
+
+Go to [Terraform Registry](https://registry.terraform.io/):
+
+1. Log in with GitHub.
+2. Go to Publish → Module.
+3. Select your repo (terraform-azurerm-staticwebsitepublic).
+4. Accept the terms.
+5. Click Publish Module.
+
+Terraform Registry will detect:
+
+* The provider (azurerm)
+* Module name (staticwebsitepublic)
+* Latest version (1.0.0 tag)
+
+# Step-07: Review Published Module
+
+Now your module is live on: https://registry.terraform.io/modules/<YOUR_GITHUB_USERNAME>/staticwebsitepublic/azurerm/latest
+
+You’ll see:
+
+* README: Automatically pulled from your repo.
+* Inputs / Outputs / Resources / Dependencies: Parsed from your .tf files.
+* Versions: Lists 1.0.0 and future tags.
+
+# Step-08: Use the Module in a Root Configuration
+
+Now you consume your published module instead of a local one.
+
+File: c3-static-website.tf
+
+module "azure_static_website" 
+{
+  # Old local source:
+    # source = "./modules/azure-static-website"
+
+  # New registry source:
+  
+  source  = "stacksimplify/staticwebsitepublic/azurerm"
+  version = "1.0.0"
+
+  # Inputs:
+  
+  location                            = "eastus"
+  resource_group_name                 = "myrg1"
+  storage_account_name                = "staticwebsite"
+  storage_account_tier                = "Standard"
+  storage_account_replication_type    = "LRS"
+  storage_account_kind                = "StorageV2"
+  static_website_index_document       = "index.html"
+  static_website_error_404_document   = "error.html"
+}
+
+# Explanation:
+
+>  The source points to the Terraform Registry.
+>  The version ensures reproducibility (you get the same code every time).
+>  The rest are module input variables defined in your module’s variables.tf.
+
+# Step-09: Execute Terraform Commands
+
+Run these in the root module folder: terraform init
+
+* Downloads providers (azurerm) and the remote module from the Registry.
+* Creates .terraform/modules locally.
+
+terraform validate              # Check syntax and logic
+terraform fmt                   # Auto-format code
+terraform plan                  # Preview infrastructure
+terraform apply -auto-approve   # Create resources
+
+Then manually:
+
+1. Upload website files to Azure Storage ($web container).
+2. Visit your static site via the Azure endpoint.
+
+Verification:
+
+* Resource group and storage account are created.
+* Static website hosting is enabled.
+* Files are uploaded.
+* You can access the live site URL.
+
+# Step-10: Clean-Up
+
+Destroy everything created:
+
+terraform destroy -auto-approve
+rm -rf .terraform
+rm -rf terraform.tfstate
+
+This removes your infra and local state files.
+
+# Step-11: Manage Module in Terraform Registry
+
+From your module’s registry page, you can:
+
+1. Resync Module (if you made README or code changes)
+2. Delete Version
+3. Delete Provider
+4. Delete Module
+
+You must be logged in with the same GitHub account.
+
+# Step-12: Module Versioning (Upgrade to v2.0.0)
+
+When you modify your module code:
+
+1. Commit changes locally:
+
+   git add.
+   git commit -am "2.0.0 Commit"
+   git push
+   
+2. Create a new release (2.0.0) in GitHub.
+3. Registry automatically picks up this version.
+
+Now your module page shows both 1.0.0 and 2.0.0.
+
+If your root module wants to use the new version:
+
+module "azure_static_website"
+{
+  source  = "stacksimplify/staticwebsitepublic/azurerm"
+  version = "2.0.0"
+}
+
+Then re-run:
+
+terraform init -upgrade
+terraform apply
+
+# Summary
+
+|          Concept                  |                    Purpose                           |
+| --------------------------------- | ---------------------------------------------------- |
+|   GitHub Repo                     |   Stores module code and versions                    |
+|   Release Tag                     |   Creates module versions for Registry               |
+|   Terraform Registry              |   Public catalog for Terraform modules               |
+|   Root Module                     |   Uses the published module in a real infrastructure |
+|   Version Pinning                 |   Ensures consistent deployments                     |
+|   terraform init / plan / apply   |   Lifecycle commands for execution                   |
+|   destroy                         |   Clean-up infrastructure                            |
+|   Versioning (1.0.0 → 2.0.0)      |   Update modules safely over time                    |
 
