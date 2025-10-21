@@ -98,8 +98,9 @@ module "azure_static_website" {
 
 This step provides context; it’s about Terraform Module Sources, i.e., where Terraform modules come from.
 
-A Terraform module is a reusable collection of Terraform resources (e.g., a prebuilt Azure static website deployment).
-A module source tells Terraform where to fetch that module from.
+→ A Terraform module is a reusable collection of Terraform resources (e.g., a prebuilt Azure static website deployment).
+
+→ A module source tells Terraform where to fetch that module from.
 
  A local path (./modules/...)
  A Terraform Registry
@@ -111,11 +112,10 @@ A module source tells Terraform where to fetch that module from.
 
 This file calls a module; it imports and uses a reusable module to create infrastructure.
 
-Here’s the detailed breakdown
-
 module "azure_static_website" {
 
 * module keyword: defines a module block.
+  
 * "azure_static_website": local name of the module that you can reference its outputs using this name (e.g., module.azure_static_website.output_name).
 
 # Local Module Source
@@ -123,6 +123,7 @@ module "azure_static_website" {
 #source = "./modules/azure-static-website"
 
 * This would tell Terraform to load the module from a local path; typically, a folder in your repo containing main.tf, variables.tf, etc.
+
 * Use this when you’re building and testing your own module locally.
 
 # Terraform Public Registry
@@ -136,11 +137,11 @@ module "azure_static_website" {
   e.g., stacksimplify/staticwebsitepb/azurerm
           version specifies which release to use.
 
-When you run terraform init, Terraform downloads this module into the .terraform/modules/ folder.
+→ When you run terraform init, Terraform downloads this module into the .terraform/modules/ folder.
 
 # GitHub via HTTPS
 
-source = "github.com/stacksimplify/terraform-azurerm-staticwebsitepublic"
+→ source = "github.com/stacksimplify/terraform-azurerm-staticwebsitepublic"
 
 * This clones the module code from a public GitHub repo over HTTPS.
 * No authentication is needed for public repos.
@@ -158,7 +159,7 @@ So here, this is the active source being used.
 
 # GitHub via HTTPS with Version Tag
 
-#source = "git::https://github.com/stacksimplify/terraform-azurerm-staticwebsitepublic.git?ref=1.0.0"
+# source = "git::https://github.com/stacksimplify/terraform-azurerm-staticwebsitepublic.git?ref=1.0.0"
 
 * Uses the git:: prefix explicitly (recommended syntax).
 * ?ref=1.0.0 checks out a specific tag, branch, or commit.
@@ -166,13 +167,15 @@ So here, this is the active source being used.
 
 # Input Variables
 
-Now we pass inputs to the module that match variable definitions inside the module.
+→ Now we pass inputs to the module that match variable definitions inside the module.
 
 # Resource Group
+
 location = "eastus"
 resource_group_name = "myrg1"
 
 # Storage Account
+
 storage_account_name = "staticwebsite"
 storage_account_tier = "Standard"
 storage_account_replication_type = "LRS"
@@ -212,132 +215,87 @@ cd ../../../
 
 You’ll see the downloaded module files there.
 
-Finally, cleanup: rm -rf .terraform*
+Finally, cleanup: rm -rf .terraform* → Deletes .terraform/ directory to reset state or reinitialize fresh.
 
-Deletes .terraform/ directory to reset state or reinitialize fresh.
-
-# 🌐 **Step 04: Other Terraform Module Source Examples**
+# Step 04: Other Terraform Module Source Examples
 
 You can pull modules from multiple locations:
 
-### 🔸 **GitHub SSH Example**
+# GitHub SSH Example
 
-```t
-module "azure_static_website" {
+module "azure_static_website"
+{
   source = "git@github.com:stacksimplify/terraform-azurerm-staticwebsitepb.git"
 }
-```
 
-### 🔸 **Bitbucket Example**
+# Bitbucket Example
 
-```t
-module "azure_static_website" {
+module "azure_static_website"
+{
   source = "bitbucket.org/stacksimplify/terraform-azurerm-staticwebsitepb"
 }
-```
 
 Other supported formats:
 
-* `git::https://...` (explicit Git syntax)
-* `s3::https://...` (for modules stored in S3)
-* `gcs::https://...` (Google Cloud Storage)
-* `hg::https://...` (Mercurial repos)
-* `registry.terraform.io/...` (Terraform public or private registries)
+* git::https://... (explicit Git syntax)
+* s3::https://... (for modules stored in S3)
+* gcs::https://... (Google Cloud Storage)
+* hg::https://... (Mercurial repos)
+* registry.terraform.io/... (Terraform public or private registries)
 
-📘 Reference: [Terraform Module Sources Documentation](https://www.terraform.io/docs/language/modules/sources.html)
+# Summary
 
----
+|   Source Type        |                        Example                                           |       Description               |
+| -------------------- | ------------------------------------------------------------------------ | ------------------------------- |
+|   Local              |  ./modules/azure-static-website                                          |   Local folder in your project  |
+|   Terraform Registry |  stacksimplify/staticwebsitepb/azurerm                                   |   Public module from registry   |
+|   GitHub HTTPS       |  github.com/stacksimplify/terraform-azurerm-staticwebsitepublic          |   Public repo over HTTPS        |
+|   GitHub SSH         |  git@github.com:stacksimplify/terraform-azurerm-staticwebsitepublic.git  |   Private repo using SSH        |
+|   Git Tag Version    |  git::https://github.com/...git?ref=v1.0.0                               |   Specific version/tag checkout |
+|   Bitbucket          |  bitbucket.org/stacksimplify/...                                         |   Clone from Bitbucket repo     |
 
-## 🧠 **Step 05: Exam Tip**
+# Folder structure of the module (terraform-azurerm-staticwebsitepublic)
 
-> “One question will come from this section for sure.”
-
-✅ Expect something like:
-
-> *Which of the following is a valid Terraform module source?*
-
-Example options:
-
-```
-A. source = "terraform.io/stacksimplify/azurerm"
-B. source = "github.com/stacksimplify/terraform-azurerm-staticwebsitepublic"
-C. source = "git@terraform.io:stacksimplify/azurerm"
-D. source = "./azure-static-website"
-```
-
-Correct answers → **B and D**
-
----
-
-## 🚀 **Summary**
-
-| Source Type        | Example                                                                  | Description                   |
-| ------------------ | ------------------------------------------------------------------------ | ----------------------------- |
-| Local              | `./modules/azure-static-website`                                         | Local folder in your project  |
-| Terraform Registry | `stacksimplify/staticwebsitepb/azurerm`                                  | Public module from registry   |
-| GitHub HTTPS       | `github.com/stacksimplify/terraform-azurerm-staticwebsitepublic`         | Public repo over HTTPS        |
-| GitHub SSH         | `git@github.com:stacksimplify/terraform-azurerm-staticwebsitepublic.git` | Private repo using SSH        |
-| Git Tag Version    | `git::https://github.com/...git?ref=v1.0.0`                              | Specific version/tag checkout |
-| Bitbucket          | `bitbucket.org/stacksimplify/...`                                        | Clone from Bitbucket repo     |
-
-Perfect 👏 — let’s open the box and see **what’s likely inside** that GitHub module
-`terraform-azurerm-staticwebsitepublic`.
-
-This will help you understand:
-
-* how **modules** work internally,
-* how **inputs** (variables) from your root module are **used**, and
-* how **outputs** are sent back to your root configuration.
-
-Let’s go step-by-step.
-
----
-
-## 🧩 Folder structure of the module (`terraform-azurerm-staticwebsitepublic`)
-
-When you open the repo or download it, you’ll usually see something like:
-
-```
 terraform-azurerm-staticwebsitepublic/
 │
 ├── main.tf
 ├── variables.tf
 ├── outputs.tf
 ├── README.md
-```
 
----
+# main.tf — Core Logic of the Module
 
-## ⚙️ **1️⃣ main.tf** — Core Logic of the Module
-
-This is where the actual Azure infrastructure is defined.
-
-Here’s what the **main.tf** might look like:
-
-```t
-terraform {
+terraform 
+{
   required_version = ">= 1.3.0"
 
-  required_providers {
-    azurerm = {
+  required_providers 
+  {
+    azurerm =
+    {
       source  = "hashicorp/azurerm"
       version = ">= 3.0.0"
     }
   }
 }
 
-provider "azurerm" {
+provider "azurerm"
+{
   features {}
 }
 
 # 1. Create a Resource Group
-resource "azurerm_resource_group" "rg" {
+
+resource "azurerm_resource_group" "rg" 
+{
   name     = var.resource_group_name
   location = var.location
 }
 
 # 2. Create a Storage Account
-resource "azurerm_storage_account" "sa" {
+
+resource "azurerm_storage_account" "sa" 
+{
   name                     = var.storage_account_name
   resource_group_name      = azurerm_resource_group.rg.name
   location                 = azurerm_resource_group.rg.location
@@ -346,143 +304,141 @@ resource "azurerm_storage_account" "sa" {
   account_kind             = var.storage_account_kind
   enable_https_traffic_only = true
 
-  static_website {
+  static_website 
+  {
     index_document = var.static_website_index_document
     error_404_document = var.static_website_error_404_document
   }
 
-  tags = {
+  tags = 
+  {
     Environment = "Dev"
     ManagedBy   = "Terraform"
   }
 }
 
 # 3. Get the Static Website Endpoint
-data "azurerm_storage_account" "sa_data" {
+
+data "azurerm_storage_account" "sa_data"
+{
   name                = azurerm_storage_account.sa.name
   resource_group_name = azurerm_storage_account.sa.resource_group_name
 }
-```
 
-### 🔍 What happens here:
+# What happens here:
 
 * The module creates:
 
-  1. A **Resource Group**
-  2. A **Storage Account** with **Static Website Hosting enabled**
-* It uses **variables** (`var.resource_group_name`, etc.) that are passed in from your `c3-static-website.tf`.
-* It outputs useful URLs via the `outputs.tf`.
+  1. A Resource Group
+  2. A Storage Account with Static Website Hosting enabled
 
----
+* It uses variables (var.resource_group_name, etc.) that are passed in from your c3-static-website.tf.
+  
+* It outputs useful URLs via the outputs.tf.
 
-## 🧾 **2️⃣ variables.tf** — Input Definitions
+# variables.tf — Input Definitions
 
-Here we define what input values the module expects from the user (your root module).
-
-```t
-variable "location" {
+variable "location" 
+{
   description = "Azure Region to deploy resources"
   type        = string
 }
 
-variable "resource_group_name" {
+variable "resource_group_name" 
+{
   description = "Name of the Resource Group"
   type        = string
 }
 
-variable "storage_account_name" {
+variable "storage_account_name"
+{
   description = "Name of the Storage Account"
   type        = string
 }
 
-variable "storage_account_tier" {
+variable "storage_account_tier" 
+{
   description = "Storage Account tier (Standard or Premium)"
   type        = string
   default     = "Standard"
 }
 
-variable "storage_account_replication_type" {
+variable "storage_account_replication_type" 
+{
   description = "Replication type (LRS, GRS, RAGRS, ZRS)"
   type        = string
   default     = "LRS"
 }
 
-variable "storage_account_kind" {
+variable "storage_account_kind"
+{
   description = "Kind of storage account"
   type        = string
   default     = "StorageV2"
 }
 
-variable "static_website_index_document" {
+variable "static_website_index_document" 
+{
   description = "Index document for static website"
   type        = string
   default     = "index.html"
 }
 
-variable "static_website_error_404_document" {
+variable "static_website_error_404_document" 
+{
   description = "Error document for static website"
   type        = string
   default     = "error.html"
 }
-```
 
-### 🔍 What happens here:
+# What happens here:
 
-* These variables **receive values** from your root module.
-* If you don’t provide a value, Terraform uses the `default` if specified.
-* Terraform validates the type (`string`, `bool`, `list`, etc.).
+* These variables receive values from your root module.
+* If you don’t provide a value, Terraform uses the default if specified.
+* Terraform validates the type (string, bool, list, etc.).
 
----
+# outputs.tf — Returning Useful Info to Root Module
 
-## 📤 **3️⃣ outputs.tf** — Returning Useful Info to Root Module
+→ This allows your root module to access important information after deployment.
 
-This allows your root module to access important information after deployment.
-
-```t
-output "resource_group_name" {
+output "resource_group_name" 
+{
   value = azurerm_resource_group.rg.name
 }
 
-output "storage_account_name" {
+output "storage_account_name"
+{
   value = azurerm_storage_account.sa.name
 }
 
-output "static_website_url" {
+output "static_website_url" 
+{
   description = "Primary endpoint of the static website"
   value       = azurerm_storage_account.sa.primary_web_endpoint
 }
 
-output "primary_blob_endpoint" {
+output "primary_blob_endpoint"
+{
   description = "Primary blob endpoint of the storage account"
   value       = azurerm_storage_account.sa.primary_blob_endpoint
 }
-```
 
-### 🔍 What happens here:
+# What happens here:
 
 * After Terraform creates the resources, you can use:
 
-  ```bash
-  terraform output static_website_url
-  ```
+    terraform output static_website_url
+  
+  to get your website URL or in another Terraform configuration:
 
-  to get your website URL.
-* Or in another Terraform configuration:
+  module.azure_static_website.static_website_url - to refer to it programmatically.
 
-  ```t
-  module.azure_static_website.static_website_url
-  ```
+# Putting It Together
 
-  to refer to it programmatically.
+Your root module (c3-static-website.tf) calls this module:
 
----
-
-## 🧠 **4️⃣ Putting It Together**
-
-Your root module (`c3-static-website.tf`) **calls** this module:
-
-```t
-module "azure_static_website" {
+module "azure_static_website" 
+{
   source = "github.com/stacksimplify/terraform-azurerm-staticwebsitepublic"
 
   location                       = "eastus"
@@ -494,28 +450,20 @@ module "azure_static_website" {
   static_website_index_document   = "index.html"
   static_website_error_404_document = "error.html"
 }
-```
 
 Terraform workflow:
 
-1. You run `terraform init`
-   → Downloads the module from GitHub.
+1. You run terraform init    → Downloads the module from GitHub.
 
-2. You run `terraform plan`
-   → Merges the module’s logic + your input values.
+2. You run terraform plan    → Merges the module’s logic + your input values.
    → Displays the Azure resources that will be created.
 
-3. You run `terraform apply`
-   → Deploys the resource group, storage account, and static website.
+3. You run terraform apply   → Deploys the resource group, storage account, and static website.
 
-4. You run `terraform output`
-   → Displays the website URL.
+4. You run terraform output  → Displays the website URL.
 
----
+# Typical Terraform Folder Relationship
 
-## 📦 **5️⃣ Typical Terraform Folder Relationship**
-
-```
 root-folder/
 │
 ├── c3-static-website.tf         ← Calls the module
@@ -523,18 +471,15 @@ root-folder/
 └── .terraform/
     └── modules/
         └── azure_static_website ← Downloaded from GitHub (contains main.tf, variables.tf, outputs.tf)
-```
 
----
+# Summary: How Everything Connects
 
-## ✅ **Summary: How Everything Connects**
-
-| File                   | Purpose                                     | Example Content                       |
-| ---------------------- | ------------------------------------------- | ------------------------------------- |
-| `main.tf`              | Defines **what resources** to create        | Azure RG + Storage Account            |
-| `variables.tf`         | Defines **what inputs** to accept           | Location, name, replication type      |
-| `outputs.tf`           | Defines **what outputs** to return          | Static website endpoint, storage name |
-| `c3-static-website.tf` | Calls the module and passes variable values | Source = GitHub, location = "eastus"  |
+|       File              |               Purpose                         |           Example Content               |
+| ----------------------- | --------------------------------------------- | --------------------------------------- |
+|  main.tf                |   Defines what resources to create            |   Azure RG + Storage Account            |
+|  variables.tf           |   Defines what inputs to accept               |   Location, name, replication type      |
+|  outputs.tf             |   Defines what outputs to return              |   Static website endpoint, storage name |
+|  c3-static-website.tf   |   Calls the module and passes variable values |   Source = GitHub, location = "eastus"  |
 
 
 <img width="1536" height="1024" alt="image" src="https://github.com/user-attachments/assets/649c6aba-0a25-48a0-9a6e-3a82e7a1d301" />
