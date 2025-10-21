@@ -89,3 +89,7 @@ module "azure_static_website" {
 ## Step-05: Exam Question
 - One question will come from this section for sure.
 - Asking us to select the right Terraform Module Source syntax. 
+
+----------------------------------------------------------------------------------------------------------------------------------------
+
+# Explanation: - 
