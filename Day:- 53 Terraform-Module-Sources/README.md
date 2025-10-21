@@ -157,14 +157,6 @@ So here, this is the active source being used.
 * Requires Git to be installed and SSH access configured.
 * Terraform runs a git clone internally using SSH.
 
-# GitHub via HTTPS with Version Tag
-
-# source = "git::https://github.com/stacksimplify/terraform-azurerm-staticwebsitepublic.git?ref=1.0.0"
-
-* Uses the git:: prefix explicitly (recommended syntax).
-* ?ref=1.0.0 checks out a specific tag, branch, or commit.
-* Very useful for version control, keeps your infrastructure reproducible.
-
 # Input Variables
 
 → Now we pass inputs to the module that match variable definitions inside the module.
