@@ -30,3 +30,7 @@ az login --service-principal -u CLIENT_ID -p CLIENT_SECRET --tenant TENANT_ID
 az login --service-principal -u ca208598-cae9-4b70-9ce6-a306e5e94d4a -p DY7WICGyz~rOZxm3tm6cQ.5qiMu.I7GyLU --tenant c81f465b-99f9-42d3-a169-8082d61c677a
 az account list-locations -o table
 az logout
+
+----------------------------------------------------------------------------------------------------------------------------------------
+
+# Explanation: - 
