@@ -275,3 +275,225 @@ Observation:
 
 # Explanation: - 
 
+# Step-01: Introduction
+
+This section defines the overall goal to:
+
+1. Host Terraform configuration files in GitHub.
+2. Use Terraform Cloud as the backend to run plans and apply automatically.
+3. Connect Terraform Cloud to Azure securely through Service Principal authentication.
+
+The idea is to shift from local Terraform execution (terraform apply on your machine) to remote execution in Terraform Cloud, where everything is automated, auditable, and team-friendly.
+
+# Step-02: Create GitHub Repository
+
+Purpose: To store Terraform configuration files in a version-controlled Git repository, which Terraform Cloud will monitor for any changes.
+
+Important points:
+
+* The repository name (terraform-cloud-azure-demo1) represents your demo project.
+* .gitignore ensures sensitive or generated files (like .terraform, terraform.tfstate) are not committed.
+* Adding a license (Apache 2.0) allows open usage and contribution.
+
+Why it matters: Terraform Cloud connects directly to this repository, so any change in code triggers a new plan and applies automatically.
+
+# Step-03: Review .gitignore
+
+Terraform’s .gitignore ensures files such as:
+
+* .terraform/
+* *.tfstate
+* *.tfvars
+* Crash logs and backups are ignored, protecting sensitive information and reducing clutter in version control.
+
+# Step-04: Clone GitHub Repository Locally
+
+git clone https://github.com/<YOUR_GITHUB_ID>/<YOUR_REPO>.git
+
+# Explanation: 
+
+This copies the remote GitHub repository onto your local machine so you can work on it. You can use Visual Studio Code or any editor to modify Terraform configurations locally before pushing them back.
+
+# Step-05: Copy Terraform Configuration Files
+
+You copy Terraform files, such as:
+
+* c1-versions.tf → specifies Terraform version and provider.
+* c2-variables.tf → defines input variables.
+* c3-locals.tf → defines reusable local values.
+* c4-resource-group.tf to c6-linux-virtual-machine.tf → actual resource definitions.
+* c7-outputs.tf → defines what Terraform outputs after deployment.
+* dev.auto.tfvars → holds variable values automatically loaded during execution.
+* ssh-keys and app-scripts → supporting files for VM access and provisioning.
+
+Local verification:
+
+terraform init      # Initializes providers and modules
+terraform validate  # Checks for syntax or logical errors
+terraform plan      # Previews what Terraform will do
+
+Clean up before pushing: rm -rf .terraform  # Remove local cache files
+
+Then commit and push:
+
+git add.
+git commit -am "TF Files First Commit"
+git push
+
+# Step-06: Sign-Up for Terraform Cloud
+
+Create a free Terraform Cloud account at [https://app.terraform.io](https://app.terraform.io)
+
+This platform allows:
+
+* Remote state storage
+* Policy enforcement
+* Collaboration (team visibility)
+* Automatic CI/CD integration with GitHub
+
+# Step-07: Create Organization & Enable Free Trial
+
+Terraform Cloud organizes everything under Organizations (like a company or project group).
+
+Steps:
+
+1. Create an organization (e.g., hcta-azure-demo1).
+2. Enable the 30-day free trial to access paid features like private networking, advanced RBAC, and cost estimation.
+
+# Step-08: Create a Workspace
+
+A Workspace in Terraform Cloud is where all Terraform runs, states, and variables live.
+
+Steps:
+
+* Choose the Version Control Workflow (Terraform will automatically run on code commits).
+* Connect to GitHub → authorize Terraform Cloud.
+* Select the repository (terraform-cloud-azure-demo1).
+* Configure settings:
+
+  * Name: terraform-cloud-azure-demo1
+  * Working directory: terraform-manifests (the folder where .tf files are stored)
+  * Leave others as default.
+    
+* Click Create Workspace.
+
+# Result: Terraform Cloud fetches the configuration from GitHub and prepares for your first run.
+
+# Step-09: Authenticate Terraform Cloud with Azure
+
+Terraform needs permission to create Azure resources; this is achieved using a Service Principal.
+
+Commands explained:
+
+az login
+az account list                 # Find your subscription ID
+az account set --subscription <SUBSCRIPTION_ID>
+
+az ad sp create-for-rbac --role="Contributor" --scopes="/subscriptions/<SUBSCRIPTION_ID>"
+
+You’ll receive:
+
+* appId → Client ID
+* password → Client Secret
+* tenant → Tenant ID
+* Subscription ID → from previous command
+
+These four values will authenticate Terraform to Azure.
+
+# Step-10: Configure Environment Variables
+
+In Terraform Cloud → Workspace → Variables tab:
+
+Set these environment variables:
+
+|   Variable Name         |       Description                |
+| ----------------------- | -------------------------------- |
+|   ARM_CLIENT_ID         |   Azure Service Principal App ID |
+|   ARM_CLIENT_SECRET     |   Service Principal Password     |
+|   ARM_SUBSCRIPTION_ID   |   Azure Subscription ID          |
+|   ARM_TENANT_ID         |   Azure Tenant ID                |
+
+# Step-11: Queue Plan
+
+After Terraform Cloud loads the configuration:
+
+* Go to Runs → Queue Plan
+  
+* Terraform Cloud executes:
+
+  * terraform plan remotely
+  * Displays results, cost estimates
+
+* Click Confirm & Apply → resources will be created in Azure
+
+# Step-12: Review Terraform State
+
+Navigate to Workspace → States.
+
+This shows your current state stored remotely in Terraform Cloud — a safer and centralized alternative to local `terraform.tfstate`.
+
+# Step-13: Update Infrastructure (Add New Tags)
+
+When you update any .tf file (like adding tags in c3-locals.tf) and push it to GitHub:
+
+* Terraform Cloud automatically detects the commit.
+* Triggers a new plan.
+* Once reviewed, click Confirm & Apply again to update resources in Azure.
+
+This demonstrates GitOps behavior — infrastructure changes managed via Git commits.
+
+# Step-14: Workspace Locking
+
+Sometimes you or another user may lock a workspace (to prevent simultaneous changes).
+
+If you push changes during this state:
+
+* Terraform Cloud shows: "Workspace locked by user..."
+* You must unlock it before Terraform can queue a new plan.
+
+After unlocking, repeat the plan → apply steps.
+
+# Step-15: Workspace Settings Overview
+
+You can configure:
+
+1. General Settings: Name, working directory, VCS info.
+2. Locking: Manage workspace locks.
+3. Notifications: Slack/email integration for run events.
+4. Run Triggers: Chain multiple workspaces together.
+5. SSH Keys: For private module or repo access.
+6. Version Control: Change GitHub repository link.
+
+# Step-16: Destruction and Deletion
+
+When done testing:
+
+* Go to Settings → Destruction and Deletion
+* Click Queue Destroy Plan
+* Terraform will remove all Azure resources cleanly and update the state file.
+
+# Step-17: Comment Out Demo Tags
+
+To reset your project for future demos, comment out the tag lines in `c3-locals.tf`:
+
+common_tags =
+{
+  Service = local.service_name
+  Owner   = local.owner
+  #Tag1 = "Terraform-Cloud-Demo1"
+  #Tag2 = "Terraform-Cloud-Demo1-Workspace-Locked"
+}
+
+## Summary of Key Learnings
+
+|        Concept            |                  Purpose                              |
+| ------------------------- | ------------------------------------------------------- |
+|     GitHub Repo           |     Source of truth for Terraform code                |
+|     Terraform Cloud       |     Automates plans, applies, and manages state       |
+|     Service Principal     |     Secure Azure authentication                       |
+|     Environment Variables |     Pass secrets to Terraform Cloud safely            |
+|     Workspace             |     Terraform execution and state management unit     |
+|     Locking               |     Prevents parallel conflicting runs                |
+|     Remote State          |     Centralized and secure state management           |
+|     VCS Integration       |     Enables GitOps workflow (auto-trigger on commits) |
+
