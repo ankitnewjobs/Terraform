@@ -34,3 +34,122 @@ az logout
 ----------------------------------------------------------------------------------------------------------------------------------------
 
 # Explanation: - 
+
+# 1. JSON Block — Azure Service Principal Output
+
+{
+  "appId": "ca208598-cae9-4b70-9ce6-a306e5e94d4a",
+  "displayName": "azure-cli-2021-07-10-05-04-55",
+  "name": "ca208598-cae9-4b70-9ce6-a306e5e94d4a",
+  "password": "DY7WICGyz~rOZxm3tm6cQ.5qiMu.I7GyLU",
+  "tenant": "c81f465b-99f9-42d3-a169-8082d61c677a"
+}
+
+# What This Is:
+
+This JSON is the output from creating an Azure Service Principal (SP) using the Azure CLI command:
+
+az ad sp create-for-rbac --name <your-sp-name> --role="Contributor" --scopes="/subscriptions/<subscription_id>"
+
+When you run this command, Azure generates:
+
+* An App ID (like a username)
+* A Password (like a secret key)
+* A Tenant ID (the Azure AD directory this SP belongs to)
+
+# Breakdown of Each Field:
+
+|     Field       |                         Meaning                                       |     Used As           |
+| --------------- | --------------------------------------------------------------------- | --------------------- |
+|   "appId"       |   Unique identifier for the Service Principal (acts as the username)  |   ARM_CLIENT_ID       |
+|   "displayName" |   Friendly name automatically assigned (can be renamed later)         |   —                   |
+|   "name"        |   Usually the same as the appId, used internally                      |   —                   |
+|   "password"    |   Secret key for the service principal (like a password)              |   ARM_CLIENT_SECRET   |
+|   "tenant"      |   Directory ID (tenant in which the SP is registered)                 |   ARM_TENANT_ID       |
+
+#  2. Mapping to Terraform Environment Variables
+
+Terraform uses environment variables to authenticate with Azure when you’re deploying infrastructure.
+
+appId = ARM_CLIENT_ID
+password = ARM_CLIENT_SECRET
+tenant = ARM_TENANT_ID
+
+These mappings tell Terraform which Azure credentials to use.
+
+Then, you also need the Subscription ID, which identifies which Azure subscription Terraform should deploy resources to.
+
+You can get it using:
+
+az account list -o table
+
+And then assign: SubscriptionId = ARM_SUBSCRIPTION_ID
+
+# 3. Set Terraform Environment Variables
+
+ARM_CLIENT_ID=ca208598-cae9-4b70-9ce6-a306e5e94d4a
+ARM_CLIENT_SECRET=DY7WICGyz~rOZxm3tm6cQ.5qiMu.I7GyLU
+ARM_TENANT_ID=c81f465b-99f9-42d3-a169-8082d61c677a
+ARM_SUBSCRIPTION_ID=82808767-144c-4c66-a320-b30791668b0a
+
+# Why These Are Needed:
+
+Terraform’s Azure Provider automatically reads these environment variables to authenticate with Azure.
+
+So when you run commands like:
+
+terraform init
+terraform plan
+terraform apply
+
+Terraform connects securely to Azure using this Service Principal’s credentials instead of your personal login.
+
+This ensures non-interactive authentication, which is ideal for:
+
+* CI/CD pipelines
+* Terraform Cloud
+* Automated provisioning
+
+#  4. Verification via Azure CLI
+
+The next steps test whether the credentials work properly.
+
+az logout
+az account list-locations -o table
+
+* Logs you out of any existing Azure session.
+* az account list-locations should fail if not logged in.
+
+Then, log in using the Service Principal:
+
+az login --service-principal \
+  -u CLIENT_ID \
+  -p CLIENT_SECRET \
+  --tenant TENANT_ID
+
+For example:
+
+az login --service-principal \
+  -u ca208598-cae9-4b70-9ce6-a306e5e94d4a \
+  -p DY7WICGyz~rOZxm3tm6cQ.5qiMu.I7GyLU \
+  --tenant c81f465b-99f9-42d3-a169-8082d61c677a
+
+If this works, Azure CLI confirms authentication and lists your subscriptions.
+
+You can then verify available Azure regions:
+
+az account list-locations -o table
+
+Finally, log out again to clear the  session: az logout
+
+# Summary — Full Authentication Flow
+
+|          Command/Action              |               Purpose                            |
+| ------------------------------------ | ------------------------------------------------ |
+|   az ad sp create-for-rbac           |   Create Service Principal for Terraform         |
+|   Copy JSON output                   |   Capture credentials (App ID, Password, Tenant) |
+|   az account list                    |   Get subscription ID                            |
+|   Export environment variables       |   Let Terraform use these credentials            |
+|   az login --service-principal ...   |   Verify credentials work                        |
+|   terraform init/plan/apply          |   Deploy infrastructure to Azure securely        |
+
