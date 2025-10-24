@@ -29,7 +29,7 @@ variable "resoure_group_name"
 
 # 4. Resource Group Location
 
-variable "resoure_group_location" 
+variable "resource_group_location" 
 {
   description = "Resource Group Location"
   type = string
@@ -77,10 +77,6 @@ variable "virtual_machine_name"
   type = string 
 }
 
+----------------------------------------------------------------------------------------------------------------------------------------
 
-
-
-
-
-
-
+# Explanation: - 
