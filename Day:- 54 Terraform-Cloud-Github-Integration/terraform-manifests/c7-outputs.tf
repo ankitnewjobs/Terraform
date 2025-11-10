@@ -124,3 +124,40 @@ output "resource_group_name"
 After running terraform apply, you can see the outputs using: terraform output
 
 Or view a specific one: terraform output vm_public_ip_address
+
+# Example Folder Structure
+
+terraform-project/
+├── network/
+│   ├── main.tf
+│   ├── outputs.tf
+│   ├── backend.tf
+│   └── variables.tf
+└── vm/
+    ├── main.tf
+    ├── backend.tf
+    └── variables.tf
+
+* network/ creates foundational infrastructure and exposes outputs.
+
+* vm/ consumes those outputs using terraform_remote_state.
+
+cd network/
+terraform init
+terraform apply
+
+# Apply Order
+
+* You must apply in this sequence:
+
+cd network/
+
+terraform init
+terraform apply
+
+cd ../vm/
+
+terraform init
+terraform apply
+
+Terraform in vm/ will automatically read the outputs from the remote state in network/.
