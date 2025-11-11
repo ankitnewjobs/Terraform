@@ -22,3 +22,105 @@ runcmd:
 ----------------------------------------------------------------------------------------------------------------------------------------
 
 # Explanation: - 
+
+# 1. package_upgrade: false
+
+This tells the cloud-init process not to upgrade any existing packages during the initialization process.
+
+* By default, cloud-init can update all packages to their latest versions, but that can slow down boot time or even cause version mismatches.
+
+* Setting this to false ensures stability and faster provisioning.
+
+# 2. packages:
+
+packages: 
+  - httpd
+
+This section lists the software packages to install on the instance.
+
+* httpd is the Apache web server package.
+
+* When cloud-init runs, it will automatically install Apache using the OS’s package manager (like yum on RHEL/CentOS or apt on Ubuntu).
+
+After this, you’ll have a working Apache server on your VM.
+
+# 3. write_files:
+
+This section creates or modifies files on the VM with specified content, owner, and path.
+
+It has two file entries:
+
+# File 1:
+
+- owner: root:root 
+  path: /var/www/html/index.html
+  content: |
+    <h1>Welcome to StackSimplify - APP-1</h1>
+
+* Owner: root:root means the file belongs to the root user and group.
+
+* Path: /var/www/html/index.html is the default Apache web root.
+
+* Content: A simple HTML heading that will be shown when someone visits the default Apache homepage (http://<server-ip>/).
+
+So this creates the main homepage.
+
+# File 2:
+
+- owner: root:root 
+  path: /var/www/html/app1/index.html
+  content: |
+    <!DOCTYPE html> 
+    <html> 
+      <body style="background-color:rgb(250, 210, 210);"> 
+        <h1>Welcome to Stack Simplify - APP-1</h1> 
+        <p>Terraform Demo</p> 
+        <p>Application Version: V1</p> 
+      </body>
+    </html>      
+
+* Creates a subdirectory webpage at /var/www/html/app1/.
+
+* The HTML content is a styled webpage (light pink background) displaying:
+
+  * Title: “Welcome to Stack Simplify - APP-1”
+
+  * Paragraphs for “Terraform Demo” and “Application Version: V1”.
+
+This is often used to verify versioned deployments in DevOps demos (like showing app version V1 or V2).
+
+# 4. runcmd:
+
+This section runs shell commands after all previous steps (package installation, file writes) are complete.
+
+It’s similar to a script that runs once at boot.
+
+runcmd:
+  - sudo systemctl start httpd  
+  - sudo systemctl enable httpd
+  - sudo systemctl stop firewalld
+  - sudo mkdir /var/www/html/app1 
+  - [sudo, curl, -H, "Metadata:true", --noproxy, "*", "http://169.254.169.254/metadata/instance?api-version=2020-09-01", -o, /var/www/html/app1/metadata.html]
+
+Let’s break each command down:
+
+"C:\Users\Hp\OneDrive\Desktop\11.jpg"
+
+# Final Outcome
+
+After the VM boots and cloud-init completes:
+
+* Apache (httpd) will be installed and running.
+
+* The firewall will be disabled (so the website is accessible).
+
+* You can access:
+
+  * http://<vm-ip>/ → shows Welcome to StackSimplify - APP-1
+  * http://<vm-ip>/app1/ → shows styled versioned app page
+  * http://<vm-ip>/app1/metadata.html → shows instance metadata (JSON data).
+
+# Tip:
+
+This type of script is commonly passed as user data in Terraform using: custom_data = filebase64("app1-cloud-init.yaml")
+
