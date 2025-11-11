@@ -87,7 +87,7 @@ So this creates the main homepage.
 
   * Paragraphs for “Terraform Demo” and “Application Version: V1”.
 
-This is often used to verify versioned deployments in DevOps demos (like showing app version V1 or V2).
+This is often used to verify versioned deployments in DevOps demonstrations (such as showing app versions V1 or V2).
 
 # 4. runcmd:
 
@@ -103,8 +103,6 @@ runcmd:
   - [sudo, curl, -H, "Metadata:true", --noproxy, "*", "http://169.254.169.254/metadata/instance?api-version=2020-09-01", -o, /var/www/html/app1/metadata.html]
 
 Let’s break each command down:
-
-"C:\Users\Hp\OneDrive\Desktop\11.jpg"
 
 # Final Outcome
 
