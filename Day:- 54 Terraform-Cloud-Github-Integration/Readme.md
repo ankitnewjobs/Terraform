@@ -223,7 +223,7 @@ Uncomment tag named `Tag2 = "Terraform-Cloud-Demo1-Workspace-Locked"`
 git status
 
 # Git Local Commit
-git add .
+git add.
 git commit -am "Tag Added - Workspace Locked"
 
 # Push to Remote Repository
