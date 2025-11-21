@@ -41,3 +41,7 @@ resource "azurerm_storage_account" "storage_account"
     error_404_document = var.static_website_error_404_document  
   }
 }
+
+----------------------------------------------------------------------------------------------------------------------------------------
+
+# Explanation: -
