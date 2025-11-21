@@ -473,6 +473,3 @@ root-folder/
 |  outputs.tf             |   Defines what outputs to return              |   Static website endpoint, storage name |
 |  c3-static-website.tf   |   Calls the module and passes variable values |   Source = GitHub, location = "eastus"  |
 
-
-<img width="1536" height="1024" alt="image" src="https://github.com/user-attachments/assets/649c6aba-0a25-48a0-9a6e-3a82e7a1d301" />
-
