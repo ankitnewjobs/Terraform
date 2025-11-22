@@ -233,7 +233,7 @@ To handle this:
 * The use of random_string also creates an implicit dependency:
   Terraform will always generate the random string before creating the storage account.
 
-⬆️ Note: "${ ... }" is legacy interpolation syntax. In newer Terraform versions, you can write:
+Note: "${ ... }" is legacy interpolation syntax. In newer Terraform versions, you can write:
 
 name = "${var.storage_account_name}${random_string.myrandom.id}"
 # or better:
