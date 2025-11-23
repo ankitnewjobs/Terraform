@@ -36,8 +36,6 @@ module "azure_static_website" {
 
 # Explanation: - 
 
-# Overall Concept
-
 In Terraform, a module is a container for multiple resources that are used together.
 
 Instead of writing all Azure resource definitions (like azurerm_storage_account, azurerm_resource_group, etc.) directly in your .tf file, you call a module that already has those resources defined.
