@@ -1,6 +1,7 @@
 # Call our Custom Terraform Module, which we built earlier
 
-module "azure_static_website" {
+module "azure_static_website" 
+{
   #source = "./modules/azure-static-website"  
   #source  = "stacksimplify/staticwebsitepb/azurerm"
   source  = "app.terraform.io/hcta-azure-demo1/staticwebsiteprivate/azurerm"
