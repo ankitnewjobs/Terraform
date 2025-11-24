@@ -25,9 +25,7 @@ description: Learn about sharing Modules in Private Modules Registry
 - **Select License:** Apache 2.0 License  (Optional)
 - Click on **Create repository**
 
-
-
-## Step-03: Clone Github Repository to Local Desktop
+## Step-03: Clone GitHub Repository to Local Desktop
 ```t
 # Clone Github Repo
 git clone https://github.com/<YOUR_GITHUB_ID>/<YOUR_REPO>.git
@@ -247,126 +245,108 @@ You can think of it as:
 
 # Step-02: Create a private GitHub repo for the module
 
-They ask you to create a repo with a **module naming convention**:
+They ask you to create a repo with a module naming convention:
 
-* Pattern: `terraform-PROVIDER-MODULE_NAME`
-* Example: `terraform-azurerm-staticwebsiteprivate`
+* Pattern: terraform-PROVIDER-MODULE_NAME
+* Example: terraform-azurerm-staticwebsiteprivate
 
 Why?
 
-* Terraform Cloud’s module registry expects repos to follow **this pattern** to auto-detect modules.
-* `terraform-azurerm-staticwebsiteprivate` means:
+* Terraform Cloud’s module registry expects repos to follow this pattern to auto-detect modules.
+* terraform-azurerm-staticwebsiteprivate means:
 
-  * `terraform` → repo contains Terraform code
-  * `azurerm` → provider used by this module
-  * `staticwebsiteprivate` → module name
+  * terraform → repo contains Terraform code
+  * azurerm → provider used by this module
+  * staticwebsiteprivate` → module name
 
 Other important repo options:
 
-* **Private repo** → since it's for a **private module registry**
-* `.gitignore: Terraform` → automatically ignores `.terraform/`, state files, etc.
-* Optional **Apache 2.0 license** → common OSS-style license, but here it's optional.
+* Private repo → since it's for a private module registry
+* .gitignore: Terraform → automatically ignores .terraform/, state files, etc.
+* Optional Apache 2.0 license → common OSS-style license, but here it's optional.
 
-You do **not** initialize with a README so you can push your own files later.
+You do not initialize with a README, so you can push your own files later.
 
----
+# Step-03: Clone the GitHub repo to your machine
 
-## 💻 Step-03: Clone the GitHub repo to your machine
-
-```bash
 git clone https://github.com/<YOUR_GITHUB_ID>/<YOUR_REPO>.git
 git clone https://github.com/stacksimplify/terraform-azurerm-staticwebsiteprivate.git
-```
 
-* First command is the general pattern.
-* Second command is a sample using `stacksimplify`’s repo.
+* The first command is the general pattern.
+* Second command is a sample using stacksimplify’s repo.
 
-After this, you have the **empty module repo** on your local system.
+After this, you have the empty module repo on your local system.
 
----
+# Step-04: Copy module files and push them
 
-## 📁 Step-04: Copy module files and push them
+You copy the Terraform module code from:
 
-You copy Terraform module code from:
-
-* **Source:** `terraform-azure-static-website-module-manifests`
-* **Destination:** your cloned repo `terraform-azurerm-staticwebsiteprivate`
+* Source: `terraform-azure-static-website-module-manifests`
+* Destination: your cloned repo terraform-azurerm-staticwebsiteprivate`
 
 Then run:
 
-```bash
 git status
-git add .
+git add.
 git commit -am "TF Module Files First Commit"
 git push
-```
 
-* `git status` → shows tracked/untracked files
-* `git add .` → stages all changes
-* `git commit -am "..."` → commits with message
-* `git push` → sends everything to GitHub
+* git status → shows tracked/untracked files
+* git add. → stages all changes
+* git commit -am "..." → commits with message
+* git push` → sends everything to GitHub
 
-At this point, your module’s Terraform code is **in GitHub**, ready to be connected to Terraform Cloud.
+At this point, your module’s Terraform code is in GitHub, ready to be connected to Terraform Cloud.
 
----
-
-## 🏷 Step-05: Create a Release Tag `1.0.0` in GitHub
+# Step-05: Create a Release Tag 1.0.0 in GitHub
 
 This is crucial.
 
-* Terraform’s module registry uses **Git tags** as **module versions**.
-* You create a **Release** with:
+* Terraform’s module registry uses Git tags as module versions.
+* You create a Release with:
 
-  * **Tag Version:** `1.0.0`
-  * **Release Title/Description:** just informational
+  * Tag Version: 1.0.0
+  * Release Title/Description: just informational
 
 Why this matters:
 
-* When you later do:
-
-  ```hcl
-  version = "1.0.0"
-  ```
-
-  in your module block, Terraform Cloud maps that to this **Git tag** in your repo.
+* When you later do: version = "1.0.0"
+  
+  In your module block, Terraform Cloud maps that to this Git tag in your repo.
 
 No tag → no version → registry can’t publish or version the module correctly.
 
----
+# Step-06: Connect Terraform Cloud to GitHub via OAuth (VCS Provider)
 
-## 🔐 Step-06: Connect Terraform Cloud to GitHub via OAuth (VCS Provider)
+Terraform Cloud needs permission to read your module’s repo from GitHub, so you configure it as a VCS (Version Control System) provider.
 
-Terraform Cloud needs permission to read your module’s repo from GitHub, so you configure it as a **VCS (Version Control System) provider**.
-
-### Step-06-01: Create an OAuth app in GitHub
+# Step-06-01: Create an OAuth app in GitHub
 
 You go to:
 
-* Terraform Cloud → Organization → **Registry** → **Publish Private Module** → choose GitHub
-* Terraform Cloud sends you to GitHub’s **OAuth app creation** page.
+* Terraform Cloud → Organization → Registry → Publish Private Module → choose GitHub
+* Terraform Cloud sends you to GitHub’s OAuth app creation page.
 
 You fill:
 
-* **Application Name:** something like `Terraform Cloud (hctaazuredemo1)`
-* **Homepage URL:** `https://app.terraform.io`
-* **Authorization callback URL:** something like
-  `https://app.terraform.io/auth/<UUID>/callback`
-  (this URL is given by Terraform Cloud)
+* Application Name: something like Terraform Cloud (hctaazuredemo1)
+* Homepage URL: https://app.terraform.io
+* Authorization callback URL: something like   https://app.terraform.io/auth/<UUID>/callback   (This URL is given by Terraform Cloud)
 
 Then you get:
 
-* **Client ID**
-* **Client Secret**
+* Client ID
+* Client Secret
 
-> ⚠️ The values shown in the text (Client ID, Secret) are just **examples**.
-> In real life, these are **sensitive** and must be kept secret.
+> ⚠️ The values shown in the text (Client ID, Secret) are just examples.
+> In real life, these are sensitive and must be kept secret.
 
-### Step-06-02: Register that OAuth App in Terraform Cloud
+# Step-06-02: Register that OAuth App in Terraform Cloud
 
 Back in Terraform Cloud, you configure:
 
-* **Name:** `github-terraform-modules-for-azure`
-* **Client ID/Secret:** the ones GitHub gave you
+* Name: github-terraform-modules-for-azure
+* Client ID/Secret: the ones GitHub gave you
 
 Terraform Cloud stores this and uses it to:
 
@@ -374,55 +354,48 @@ Terraform Cloud stores this and uses it to:
 * Read your repo
 * Detect module structure & tags for the registry
 
-You then **authorize** this in GitHub (consent screen) so Terraform Cloud can access your repos.
+You then authorize this in GitHub (consent screen) so Terraform Cloud can access your repos.
 
----
-
-## 📥 Step-06 (second part): Import the Terraform Module from GitHub
+# Step-06 (second part): Import the Terraform Module from GitHub
 
 Now the VCS connection works, so you:
 
-* Go to Terraform Cloud → Organization `hcta-azure-demo1` → **Registry**
-* Click **Publish Private Module**
-* Select **GitHub (github-terraform-modules-for-azure)** VCS provider
-* Choose the repo: `terraform-azurerm-staticwebsiteprivate`
-* Click **Publish Module**
+* Go to Terraform Cloud → Organization hcta-azure-demo1 → Registry
+* Click Publish Private Module
+* Select GitHub (github-terraform-modules-for-azure) VCS provider
+* Choose the repo: terraform-azurerm-staticwebsiteprivate
+* Click Publish Module
 
 Terraform Cloud then:
 
 1. Clones the repo
-2. Looks for Terraform module structure (usually code under root or `modules/`)
-3. Detects tags → interprets them as versions (e.g., `1.0.0`)
-4. Creates an entry in the **Private Module Registry**
+2. Looks for Terraform module structure (usually code under root or modules/)
+3. Detects tags → interprets them as versions (e.g., 1.0.0)
+4. Creates an entry in the Private Module Registry
 
----
+# Step-07: Review the newly imported module in Terraform Cloud
 
-## 🔍 Step-07: Review the newly imported module in Terraform Cloud
+In Modules tab, you’ll see your module with:
 
-In **Modules** tab, you’ll see your module with:
-
-* **Readme** → rendered from `README.md`
-* **Inputs** → derived from `variable` blocks
-* **Outputs** → from `output` blocks
-* **Dependencies** → required providers, etc.
-* **Resources** → resources inside that module
+* Readme → rendered from README.md
+* Inputs → derived from variable blocks
+* Outputs → from output blocks
+* Dependencies → required providers, etc.
+* Resources → resources inside that module
 
 Also:
 
-* **Versions** → tags like `1.0.0`
-* **Provision Instructions** → how to use the module (example `module` blocks)
+* Versions → tags like 1.0.0
+* Provision Instructions → how to use the module (example module blocks)
 
-This confirms everything is wired correctly.
-
----
-
-## 🧱 Step-08: Use the Private Registry module in a Root Configuration (CLI)
+# Step-08: Use the Private Registry module in a Root Configuration (CLI)
 
 This is the main Terraform code snippet:
 
-```hcl
-# Call our Custom Terraform Module which we built earlier
-module "azure_static_website" {
+# Call our Custom Terraform Module, which we built earlier
+
+module "azure_static_website" 
+{
   #source = "./modules/azure-static-website"  
   #source  = "stacksimplify/staticwebsitepb/azurerm"
   source  = "app.terraform.io/hcta-azure-demo1-internal/staticwebsiteprivate/azurerm"
@@ -440,127 +413,97 @@ module "azure_static_website" {
   static_website_index_document     = "index.html"
   static_website_error_404_document = "error.html"
 }
-```
 
-### What’s happening here?
+# What’s happening here?
 
-* `module "azure_static_website"`
+* module "azure_static_website"
 
-  * Defines a **module block** in the root configuration.
-  * The name `azure_static_website` is local to this root module.
+  * Defines a module block in the root configuration.
+  * The name azure_static_website is local to this root module.
 
-* `source  = "app.terraform.io/hcta-azure-demo1-internal/staticwebsiteprivate/azurerm"`
+* source  = "app.terraform.io/hcta-azure-demo1-internal/staticwebsiteprivate/azurerm"
 
-  * This is a **Terraform Cloud private registry source address**:
+  * This is a Terraform Cloud private registry source address:
 
-    * `app.terraform.io` → hostname (Terraform Cloud)
-    * `hcta-azure-demo1-internal` → org name
-    * `staticwebsiteprivate` → module name
-    * `azurerm` → provider
+    * app.terraform.io → hostname (Terraform Cloud)
+    * hcta-azure-demo1-internal → org name
+    * staticwebsiteprivate → module name
+    * azurerm → provider
 
-* `version = "1.0.0"`
+* version = "1.0.0"
 
-  * Tells Terraform to use **tag 1.0.0** of that module.
+  * Tells Terraform to use tag 1.0.0 of that module.
 
-* The rest are **input variables** passed to that module:
+* The rest are input variables passed to that module:
 
-  * `location` → Azure region
-  * `resource_group_name` → RG name
-  * `storage_account_*` → storage account settings
-  * `static_website_index_document` / `static_website_error_404_document` → static website config
+  * location → Azure region
+  * resource_group_name → RG name
+  * storage_account_ → storage account settings
+  * static_website_index_document / static_website_error_404_document → static website config
 
-These match exactly the `variable` blocks you showed me earlier like:
+These match exactly the variable blocks you showed me earlier, like:
 
-```hcl
 variable "location" { ... }
 variable "resource_group_name" { ... }
-...
-```
 
-So the **root module** provides values; the **child module** (in the registry) uses them.
+So the root module provides values; the child module (in the registry) uses them.
 
----
+# Step-09 (CLI): Run Terraform commands and login to Terraform Cloud
 
-## 🏃 Step-09 (CLI): Run Terraform commands and login to Terraform Cloud
-
-You run:
-
-```bash
-cd 55-Share-Modules-in-Private-Module-Registry/terraform-manifests
+You run: cd 55-Share-Modules-in-Private-Module-Registry/terraform-manifests
 
 terraform init
-```
 
-### First `terraform init` – it fails
+# First terraform init – it fails
 
-Because your CLI is **not authenticated** to Terraform Cloud, it cannot pull:
+Because your CLI is not authenticated to Terraform Cloud, it cannot pull: source = "app.terraform.io/hcta-azure-demo1-internal/staticwebsiteprivate/azurerm"
 
-```hcl
-source = "app.terraform.io/hcta-azure-demo1-internal/staticwebsiteprivate/azurerm"
-```
 
-Error:
+Error: error looking up module versions: 401 Unauthorized ( This is expected. )
 
-> `error looking up module versions: 401 Unauthorized`
+# terraform login
 
-This is expected.
+Now you run: terraform login
 
-### `terraform login`
+* Terraform opens a browser window or gives a URL to generate a User API Token from Terraform Cloud.
+* You paste the token back into the CLI.
 
-Now you run:
-
-```bash
-terraform login
-```
-
-* Terraform opens a browser window or gives a URL to generate a **User API Token** from Terraform Cloud.
-* You paste the token back into CLI.
-
-That token (like the sample shown) is saved in:
-
-```bash
-~/.terraform.d/credentials.tfrc.json
-```
+That token (like the sample shown) is saved in: ~/.terraform.d/credentials.tfrc.json
 
 Example:
 
-```json
 {
-  "credentials": {
-    "app.terraform.io": {
+  "credentials": 
+  {
+    "app.terraform.io": 
+    {
       "token": "YOUR_LONG_TOKEN_HERE"
     }
   }
 }
-```
 
 From now on, your CLI is authenticated to Terraform Cloud as your user.
 
-> ⚠ Again, that token is **sensitive** and should be treated like a password.
+> ⚠ Again, that token is sensitive and should be treated like a password.
 
-### Second `terraform init` – now it works
+# Second terraform init – now it works
 
-Run again:
-
-```bash
-terraform init
-```
+Run again: terraform init
 
 Now:
 
-1. Terraform contacts `app.terraform.io`
-2. Uses your **token** from `credentials.tfrc.json`
-3. Fetches the module `staticwebsiteprivate/azurerm` version `1.0.0`
-4. Also downloads necessary providers (`azurerm`, etc.)
+1. Terraform contacts app.terraform.io
+2. Uses your token from credentials.tfrc.json
+3. Fetches the module staticwebsiteprivate/azurerm version 1.0.0
+4. Also downloads necessary providers (azurerm, etc.)
 
 Then you run:
 
-```bash
-terraform validate   # syntax and internal consistency
-terraform fmt        # format .tf files
-terraform plan       # shows what will be created
-terraform apply -auto-approve  # actually creates resources
-```
+
+terraform validate               # syntax and internal consistency
+terraform fmt                    # format .tf files
+terraform plan                   # shows what will be created
+terraform apply -auto-approve    # actually creates resources
 
 The module will:
 
@@ -571,39 +514,32 @@ The module will:
 
 Then you manually:
 
-* Go to Azure Portal → Storage Account → Container `$web`
-* Upload static files from `static-content` folder
-* Access your static site using the `web.core.windows.net` URL
+* Go to Azure Portal → Storage Account → Container $web
+* Upload static files from the static-content folder
+* Access your static site using the web.core.windows.net URL
 
----
+# Step-10: Destroy and Clean Up
 
-## 🧹 Step-10: Destroy and Clean Up
-
-```bash
 terraform destroy -auto-approve
 rm -rf .terraform*
 rm -rf terraform.tfstate*
-```
 
-* `terraform destroy` → removes all resources created by this root configuration
-* `rm -rf .terraform*` → removes local cache and module downloads
-* `rm -rf terraform.tfstate*` → removes the state files from disk
-  (only do this if you’re sure you don’t need them!)
+* terraform destroy → removes all resources created by this root configuration
+* rm -rf .terraform* → removes local cache and module downloads
+* rm -rf terraform.tfstate → removes the state files from disk   (only do this if you’re sure you don’t need them!)
 
----
+# Final Step-09 (Assignment): Do the same using Terraform Cloud + GitHub workspace
 
-## 📌 Final Step-09 (Assignment): Do the same using Terraform Cloud + GitHub workspace
+Now they want you to repeat the same idea, but with Terraform Cloud running the plan/apply, not your local CLI:
 
-Now they want you to repeat the same idea, but with **Terraform Cloud running the plan/apply**, not your local CLI:
-
-1. Create a **GitHub repo** for the root configuration (the files in `terraform-manifests`).
+1. Create a GitHub repo for the root configuration (the files in terraform-manifests).
 2. Push code to GitHub.
 3. In Terraform Cloud:
 
-   * Create a **Workspace**
-   * Use **VCS workflow**
+   * Create a Workspace
+   * Use VCS workflow
    * Connect that workspace to your GitHub repo
-4. Trigger **Queue Plan** in Terraform Cloud UI
+4. Trigger Queue Plan in Terraform Cloud UI
 
    * Terraform Cloud pulls your code
    * It uses the same private module from its own registry
@@ -611,18 +547,13 @@ Now they want you to repeat the same idea, but with **Terraform Cloud running th
 
 So the difference:
 
-* Earlier: **Local CLI** runs Terraform, but pulls the module from Terraform Cloud.
-* Now: **Terraform Cloud** runs Terraform, and also pulls the module from its private registry.
+* Earlier: Local CLI runs Terraform, but pulls the module from Terraform Cloud.
+* Now: Terraform Cloud runs Terraform, and also pulls the module from its private registry.
 
-Great! I'll create **both** things for you:
-
----
-
-# ✅ **1. Architecture / Workflow Diagram (Text-Based)**
+# 1. Architecture / Workflow Diagram (Text-Based)
 
 This diagram will show how everything connects:
 
-```
                    ┌──────────────────────────┐
                    │      GitHub (Module)      │
                    │  Repo: terraform-azurerm- │
@@ -646,15 +577,15 @@ This diagram will show how everything connects:
    │  Local Terraform CLI    │            │ Terraform Cloud Workspace│
    │ (Root Module Consumer)  │            │       (VCS Driven)       │
    └──────────────┬──────────┘            └──────────────┬──────────┘
-                  │ Terraform Init                        │ Auto Plan/Apply
-                  │ requires module                        │ requires module
-                  ▼                                        ▼
+                  │ Terraform Init                       │ Auto Plan/Apply
+                  │ requires module                      │ requires module
+                  ▼                                      ▼
          ┌─────────────────────┐                 ┌──────────────────────┐
          │ terraform login     │                 │ Reads module directly │
-         │ creates token file  │                 │ because it's internal │
+         │ creates a token file│                 │ because it's internal │
          └─────────┬───────────┘                 └──────────┬───────────┘
-                   │                                          │
-                   ▼                                          ▼
+                   │                                        │
+                   ▼                                        ▼
       ┌─────────────────────────┐                 ┌────────────────────────┐
       │ CLI pulls module from   │                 │ TFC pulls module from  │
       │ Terraform Cloud Registry│                 │ Terraform Cloud Registry│
@@ -666,54 +597,50 @@ This diagram will show how everything connects:
             │ (RG, SA, Static  │                         │ (Same module)    │
             │ Website)         │                         │                  │
             └─────────────────┘                         └──────────────────┘
-```
 
----
+# 2. A Custom Azure Module Template + Instructions on How to Publish
 
-# ✅ **2. A Custom Azure Module Template + Instructions on How to Publish**
+# Custom Module Folder Structure
 
-Below is a **complete custom Azure module** structure that you can use as a base for your own modules and publish into Terraform Cloud.
-
----
-
-# 📁 **Custom Module Folder Structure**
-
-```
 terraform-azurerm-customrg/
 │
 ├── main.tf
 ├── variables.tf
 ├── outputs.tf
 └── README.md
-```
 
----
+# main.tf — Module Logic
 
-# 📌 **main.tf — Module Logic**
-
-```hcl
-terraform {
+terraform 
+{
   required_version = ">= 1.0"
-  required_providers {
-    azurerm = {
+  required_providers 
+  {
+    azurerm = 
+    {
       source  = "hashicorp/azurerm"
       version = ">= 3.0"
     }
   }
 }
 
-provider "azurerm" {
+provider "azurerm"
+{
   features {}
 }
 
 # Create Resource Group
-resource "azurerm_resource_group" "rg" {
+
+resource "azurerm_resource_group" "rg"
+{
   name     = var.resource_group_name
   location = var.location
 }
 
 # Create Storage Account Inside RG
-resource "azurerm_storage_account" "sa" {
+
+resource "azurerm_storage_account" "sa"
+{
   name                     = var.storage_account_name
   resource_group_name      = azurerm_resource_group.rg.name
   location                 = azurerm_resource_group.rg.location
@@ -721,65 +648,61 @@ resource "azurerm_storage_account" "sa" {
   account_replication_type = var.storage_account_replication_type
   account_kind             = var.storage_account_kind
 }
-```
 
----
+# variables.tf — Module Inputs
 
-# 📌 **variables.tf — Module Inputs**
-
-```hcl
-variable "location" {
+variable "location" 
+{
   description = "Azure region"
   type        = string
 }
 
-variable "resource_group_name" {
+variable "resource_group_name" 
+{
   description = "Name of the Resource Group"
   type        = string
 }
 
-variable "storage_account_name" {
+variable "storage_account_name"
+{
   description = "Storage Account Name"
   type        = string
 }
 
-variable "storage_account_tier" {
+variable "storage_account_tier" 
+{
   description = "Performance tier"
   type        = string
 }
 
-variable "storage_account_replication_type" {
+variable "storage_account_replication_type" 
+{
   description = "Replication type"
   type        = string
 }
 
-variable "storage_account_kind" {
+variable "storage_account_kind"
+{
   description = "Account kind"
   type        = string
 }
-```
 
----
+# outputs.tf — Useful Outputs
 
-# 📌 **outputs.tf — Useful Outputs**
-
-```hcl
-output "resource_group_id" {
+output "resource_group_id"
+{
   value       = azurerm_resource_group.rg.id
   description = "Resource group ID"
 }
 
-output "storage_account_primary_endpoint" {
+output "storage_account_primary_endpoint"
+{
   value       = azurerm_storage_account.sa.primary_web_endpoint
   description = "Primary web endpoint of the storage account"
 }
-```
 
----
+# README.md — Module Documentation
 
-# 📌 **README.md — Module Documentation**
-
-```md
 # Azure Custom RG + Storage Account Module
 
 This module creates:
@@ -789,95 +712,74 @@ This module creates:
 
 ## Inputs
 
-| Name | Description | Type |
-|------|-------------|------|
-| location | Azure Region | string |
-| resource_group_name | Resource Group Name | string |
-| storage_account_name | Storage Account Name | string |
-| storage_account_tier | Standard or Premium | string |
-| storage_account_replication_type | LRS, GRS, RAGRS, etc | string |
-| storage_account_kind | StorageV2, BlobStorage, etc | string |
+|                Name                  |           Description           |   Type     |
+|--------------------------------------|---------------------------------|------------|
+|   location                           |   Azure Region                  |   string   |
+|   resource_group_name                |   Resource Group Name           |   string   |
+|   storage_account_name               |   Storage Account Name          |   string   |
+|   storage_account_tier               |   Standard or Premium           |   string   |
+|   storage_account_replication_type   |   LRS, GRS, RAGRS, etc          |   string   |
+|   storage_account_kind               |   StorageV2, BlobStorage, etc   |   string   |
 
 ## Outputs
 
-| Name | Description |
-|------|-------------|
-| resource_group_id | ID of the Resource Group |
-| storage_account_primary_endpoint | Static website endpoint |
-```
+|              Name                    |         Description         |
+|--------------------------------------|-----------------------------|
+|   resource_group_id                  |   ID of the Resource Group  |
+|   storage_account_primary_endpoint   |   Static website endpoint   |
 
----
-
-# 🎯 **Publishing This Custom Module**
+# Publishing This Custom Module
 
 Follow these exact steps:
 
----
+# Step 1 — Create GitHub Repo
 
-## **Step 1 — Create GitHub Repo**
-
-Name must follow:
-
-```
-terraform-azurerm-customrg
-```
+Name must follow: terraform-azurerm-customrg
 
 Actions:
 
 * Private repo
-* Select `.gitignore: Terraform`
+* Select .gitignore: Terraform
 * Add license (optional)
 
----
+# Step 2 — Clone and Push Code
 
-## **Step 2 — Clone and Push Code**
-
-```bash
 git clone https://github.com/<YOUR-ID>/terraform-azurerm-customrg.git
 cp -R module-files/* terraform-azurerm-customrg/
 cd terraform-azurerm-customrg
 
-git add .
+git add.
 git commit -m "Initial module commit"
 git push
-```
 
----
-
-## **Step 3 — Create Release Tag**
+# Step 3 — Create Release Tag
 
 Go to GitHub → Releases → "Create a new release"
 
-* **Tag version:** `v1.0.0`
-* Title: `Release 1.0.0`
+* Tag version: v1.0.0
+* Title: Release 1.0.0
 * Publish
 
 Terraform Cloud automatically uses these tags as versions.
 
----
+# Step 4 — Publish to Terraform Cloud Private Registry
 
-## **Step 4 — Publish to Terraform Cloud Private Registry**
-
-Terraform Cloud → Organization → **Registry** → Publish module → GitHub
+Terraform Cloud → Organization → Registry → Publish module → GitHub
 
 Terraform Cloud will:
 
 * Detect module automatically
-* Detect tag `1.0.0`
+* Detect tag 1.0.0
 * Publish it as:
 
-```
 app.terraform.io/<ORG>/customrg/azurerm
-```
 
----
-
-## **Step 5 — Consume in a Root Module**
+# Step 5 — Consume in a Root Module
 
 Anywhere you want to use it:
 
-```hcl
-module "rg_sa" {
+module "rg_sa"
+{
   source  = "app.terraform.io/<ORG>/customrg/azurerm"
   version = "1.0.0"
 
@@ -888,25 +790,24 @@ module "rg_sa" {
   storage_account_replication_type = "LRS"
   storage_account_kind           = "StorageV2"
 }
-Nice, this is a fun combo. I’ll give you:
 
-1. A **GitHub Actions CI/CD setup** for a *module repo* that:
+1. A GitHub Actions CI/CD setup for a module repo that:
 
    * Runs Terraform checks on PRs and main
-   * Automatically **creates a GitHub Release** when you push a version tag (this is the “publish tags” part – Terraform Cloud will pick those up automatically).
-2. A **multi-module monorepo structure** with a sample workflow.
+     
+   * Automatically creates a GitHub Release when you push a version tag (this is the “publish tags” part – Terraform Cloud will pick those up automatically).
+     
+2. A multi-module monorepo structure with a sample workflow.
 
----
+# GitHub Actions CI/CD for a Terraform Module Repo
 
-## 1️⃣ GitHub Actions CI/CD for a Terraform Module Repo
+Assume a single-module repo like:
 
-Assume a **single-module repo** like:
+> terraform-azurerm-staticwebsiteprivate
 
-> `terraform-azurerm-staticwebsiteprivate`
+# 1.1 Basic CI for PRs and main
 
-### 1.1 Basic CI for PRs and main
-
-Create: **`.github/workflows/terraform-ci.yml`**
+Create: .github/workflows/terraform-ci.yml
 
 ```yaml
 name: Terraform Module CI
@@ -915,11 +816,11 @@ on:
   push:
     branches: [ main ]
     paths:
-      - '**.tf'
+      - **.tf
   pull_request:
     branches: [ main ]
     paths:
-      - '**.tf'
+      - **.tf
 
 jobs:
   terraform-ci:
@@ -942,28 +843,27 @@ jobs:
 
       - name: Terraform Validate
         run: terraform validate
-```
 
 What this does:
 
-* Runs on **PRs** and **pushes to main**.
+* Runs on PRs and pushes to main.
 * Checks:
 
   * Formatting
   * Initialization (without backend, perfect for modules)
   * Validation
 
----
+# 1.2 Auto “publish” tags as GitHub Releases
 
-### 1.2 Auto “publish” tags as GitHub Releases
+Terraform Cloud’s private module registry discovers versions based on Git tags.
 
-Terraform Cloud’s **private module registry** discovers versions based on **Git tags**.
 You can:
 
-* Create and push a tag: `git tag v1.0.1 && git push origin v1.0.1`
-* Let Actions automatically turn that into a **GitHub Release**.
+* Create and push a tag: git tag v1.0.1 && git push origin v1.0.1
 
-Create: **`.github/workflows/release-on-tag.yml`**
+* Let Actions automatically turn that into a GitHub Release.
+
+Create: .github/workflows/release-on-tag.yml
 
 ```yaml
 name: Terraform Module Release
@@ -971,7 +871,7 @@ name: Terraform Module Release
 on:
   push:
     tags:
-      - 'v*.*.*'
+      - v*.*.*
 
 jobs:
   release:
@@ -1004,33 +904,32 @@ jobs:
             - See commit history for details.
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-```
 
 Flow:
 
-1. You push a tag `v1.0.0`
+1. You push a tag v1.0.0
+
 2. Workflow runs:
 
    * Validates the module
-   * Creates a **GitHub Release** for that tag
-3. Terraform Cloud **automatically** sees the new tag and exposes it as a **new module version** in the private registry.
+   * Creates a GitHub Release for that tag
 
-> ✅ You don’t need to call Terraform Cloud APIs – the **tag itself is the “publish”**.
+3. Terraform Cloud automatically sees the new tag and exposes it as a new module version in the private registry.
 
----
+> You don’t need to call Terraform Cloud APIs – the tag itself is the “publish”.
 
-## 2️⃣ Multi-Module Monorepo Structure
+# Multi-Module Monorepo Structure
 
-This is for when you want a **single repo managing many modules** (for internal use or via `source = "github.com/org/repo//modules/module-a"` style).
+This is for when you want a single repo managing many modules (for internal use or via source = "github.com/org/repo//modules/module-a" style).
 
-> ⚠️ Note: Terraform Cloud’s registry expects **one module per repo** for auto-registry publishing.
-> A monorepo is still great for **internal modules**, or direct Git source references.
+> Note: Terraform Cloud’s registry expects one module per repo for auto-registry publishing.
+
+> A monorepo is still great for internal modules, or direct Git source references.
 
 ### 2.1 Suggested directory layout
 
-Example repo: `terraform-azure-modules-mono`
+Example repo: terraform-azure-modules-mono
 
-```text
 terraform-azure-modules-mono/
 │
 ├── modules/
@@ -1077,19 +976,19 @@ terraform-azure-modules-mono/
 ├── .gitignore
 ├── README.md
 └── LICENSE
-```
 
-**Usage example** from an `envs/dev/main.tf`:
+Usage example from an envs/dev/main.tf:
 
-```hcl
-module "network" {
+module "network"
+ {
   source              = "../../modules/network"
   vnet_name           = "dev-vnet"
   resource_group_name = "rg-dev"
   address_space       = ["10.10.0.0/16"]
 }
 
-module "static_website" {
+module "static_website"
+ {
   source                       = "../../modules/static-website"
   location                      = "eastus"
   resource_group_name           = module.network.resource_group_name
@@ -1100,31 +999,28 @@ module "static_website" {
   static_website_index_document = "index.html"
   static_website_error_404_document = "error.html"
 }
-```
 
----
-
-### 2.2 CI for a Terraform monorepo
+# 2.2 CI for a Terraform monorepo
 
 You likely want:
 
-* **Global checks** for all `.tf` files
-* Optional **per-example** or per-env plan checks
+* Global checks for all .tf files
+* Optional per-example or per-env plan checks
 
-Minimal version: **`.github/workflows/terraform-ci.yml`**
+Minimal version: .github/workflows/terraform-ci.yml
 
-```yaml
+yaml
 name: Terraform Monorepo CI
 
 on:
   pull_request:
     branches: [ main ]
     paths:
-      - '**.tf'
+      - **.tf
   push:
     branches: [ main ]
     paths:
-      - '**.tf'
+      - .tf
 
 jobs:
   terraform-fmt-validate:
@@ -1172,25 +1068,20 @@ jobs:
               cd - > /dev/null
             fi
           done
-```
 
 What this does:
 
-* On every PR / push touching `.tf`:
+* On every PR / push touching .tf:
 
-  * Runs `fmt -check` over the whole repo.
-  * Iterates over **examples** and **envs**, and:
+  * Runs fmt -check over the whole repo.
 
-    * `terraform init -backend=false`
-    * `terraform validate`
+  * Iterates over examples and envs, and:
+
+    * terraform init -backend=false
+    * terraform validate
 
 You can extend this later with:
 
-* `tflint`
-* `checkov` / `tfsec`
-* Separate jobs for `envs/prod` etc.
-
----
-
-
-
+* tflint
+* checkov / tfsec
+* Separate jobs for envs/prod, etc.
