@@ -257,13 +257,13 @@ Why?
 
   * terraform → repo contains Terraform code
   * azurerm → provider used by this module
-  * staticwebsiteprivate` → module name
+  * staticwebsiteprivate → module name
 
 Other important repo options:
 
-* Private repo → since it's for a private module registry
+*  Private repo → since it's for a private module registry
 * .gitignore: Terraform → automatically ignores .terraform/, state files, etc.
-* Optional Apache 2.0 license → common OSS-style license, but here it's optional.
+*  Optional Apache 2.0 license → common OSS-style license, but here it's optional.
 
 You do not initialize with a README, so you can push your own files later.
 
@@ -281,8 +281,8 @@ After this, you have the empty module repo on your local system.
 
 You copy the Terraform module code from:
 
-* Source: `terraform-azure-static-website-module-manifests`
-* Destination: your cloned repo terraform-azurerm-staticwebsiteprivate`
+* Source: terraform-azure-static-website-module-manifests
+* Destination: your cloned repo terraform-azurerm-staticwebsiteprivate
 
 Then run:
 
@@ -294,7 +294,7 @@ git push
 * git status → shows tracked/untracked files
 * git add. → stages all changes
 * git commit -am "..." → commits with message
-* git push` → sends everything to GitHub
+* git push → sends everything to GitHub
 
 At this point, your module’s Terraform code is in GitHub, ready to be connected to Terraform Cloud.
 
@@ -303,6 +303,7 @@ At this point, your module’s Terraform code is in GitHub, ready to be connecte
 This is crucial.
 
 * Terraform’s module registry uses Git tags as module versions.
+  
 * You create a Release with:
 
   * Tag Version: 1.0.0
@@ -338,7 +339,7 @@ Then you get:
 * Client ID
 * Client Secret
 
-> ⚠️ The values shown in the text (Client ID, Secret) are just examples.
+> The values shown in the text (Client ID, Secret) are just examples.
 > In real life, these are sensitive and must be kept secret.
 
 # Step-06-02: Register that OAuth App in Terraform Cloud
@@ -375,7 +376,7 @@ Terraform Cloud then:
 
 # Step-07: Review the newly imported module in Terraform Cloud
 
-In Modules tab, you’ll see your module with:
+In the Modules tab, you’ll see your module with:
 
 * Readme → rendered from README.md
 * Inputs → derived from variable blocks
@@ -466,9 +467,8 @@ Error: error looking up module versions: 401 Unauthorized ( This is expected. )
 Now you run: terraform login
 
 * Terraform opens a browser window or gives a URL to generate a User API Token from Terraform Cloud.
-* You paste the token back into the CLI.
-
-That token (like the sample shown) is saved in: ~/.terraform.d/credentials.tfrc.json
+  
+* You paste the token back into the CLI. That token (like the sample shown) is saved in: ~/.terraform.d/credentials.tfrc.json
 
 Example:
 
@@ -484,7 +484,7 @@ Example:
 
 From now on, your CLI is authenticated to Terraform Cloud as your user.
 
-> ⚠ Again, that token is sensitive and should be treated like a password.
+> Again, that token is sensitive and should be treated like a password.
 
 # Second terraform init – now it works
 
@@ -580,10 +580,10 @@ This diagram will show how everything connects:
                   │ Terraform Init                       │ Auto Plan/Apply
                   │ requires module                      │ requires module
                   ▼                                      ▼
-         ┌─────────────────────┐                 ┌──────────────────────┐
-         │ terraform login     │                 │ Reads module directly │
-         │ creates a token file│                 │ because it's internal │
-         └─────────┬───────────┘                 └──────────┬───────────┘
+         ┌─────────────────────┐                 ┌──────────────────────     ┐
+         │ Terraform login     │                 │ reads the module directly │
+         │ creates a token file│                 │ because it's internal     │
+         └─────────┬───────────┘                 └──────────┬───────────     ┘
                    │                                        │
                    ▼                                        ▼
       ┌─────────────────────────┐                 ┌────────────────────────┐
@@ -593,10 +593,10 @@ This diagram will show how everything connects:
                      │                                           │
                      ▼                                           ▼
             ┌─────────────────┐                         ┌──────────────────┐
-            │ Azure Resources  │                         │ Azure Resources  │
-            │ (RG, SA, Static  │                         │ (Same module)    │
-            │ Website)         │                         │                  │
-            └─────────────────┘                         └──────────────────┘
+            │ Azure Resources │                        │ Azure Resources  │
+            │ (RG, SA, Static │                        │ (Same module)    │
+            │ Website)        │                        │                  │
+            └─────────────────┘                        └──────────────────┘
 
 # 2. A Custom Azure Module Template + Instructions on How to Publish
 
@@ -749,12 +749,12 @@ cp -R module-files/* terraform-azurerm-customrg/
 cd terraform-azurerm-customrg
 
 git add.
-git commit -m "Initial module commit"
+git commit -m "Initial module commit."
 git push
 
 # Step 3 — Create Release Tag
 
-Go to GitHub → Releases → "Create a new release"
+Go to GitHub → Releases → "Create a new release."
 
 * Tag version: v1.0.0
 * Title: Release 1.0.0
@@ -809,7 +809,6 @@ Assume a single-module repo like:
 
 Create: .github/workflows/terraform-ci.yml
 
-```yaml
 name: Terraform Module CI
 
 on:
@@ -865,7 +864,6 @@ You can:
 
 Create: .github/workflows/release-on-tag.yml
 
-```yaml
 name: Terraform Module Release
 
 on:
@@ -924,7 +922,7 @@ This is for when you want a single repo managing many modules (for internal use 
 
 > Note: Terraform Cloud’s registry expects one module per repo for auto-registry publishing.
 
-> A monorepo is still great for internal modules, or direct Git source references.
+> A monorepo is still great for internal modules or direct Git source references.
 
 ### 2.1 Suggested directory layout
 
