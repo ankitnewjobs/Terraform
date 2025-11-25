@@ -196,3 +196,224 @@ rm -rf .terraform*
 ----------------------------------------------------------------------------------------------------------------------------------------
 
 # Explanation: -
+
+You are:
+
+1. Writing Terraform code locally.
+2. Storing state and running plans/applies via Terraform Cloud (remote backend).
+3. Letting Terraform Cloud authenticate to Azure using a Service Principal (client ID/secret).
+4. Using a private module from the Terraform Cloud private registry to deploy a static website on Azure.
+
+Now, let’s go through the steps.
+
+# Step-02: Terraform Configuration Files
+
+You have 4 main .tf files:
+
+* c1-versions.tf – Terraform & provider versions, backend, etc.
+* c2-variables.tf – Input variables (e.g., resource names, locations).
+* c3-static-website.tf – Actual resources/module for the static website.
+* c4-outputs.tf – Outputs (like website URL).
+
+# Step-03: Creating the Workspace (CLI-Driven)
+
+You create a Terraform Cloud Workspace:
+
+* Org: hcta-azure-demo1
+* Workspace name: cli-driven-azure-demo
+* Workflow type: CLI-Driven
+
+> CLI-driven means: You run terraform plan/apply from your terminal, but state & runs are still stored/visible in Terraform Cloud.
+
+# Step-04: Backend Block in c1-versions.tf
+
+* What this does:
+
+* terraform { backend "remote" { ... } }
+  Configures Terraform to use the Terraform Cloud/Enterprise backend called remote.
+
+* organization = "hcta-azure-demo1"
+  This is your Terraform Cloud org.
+
+* workspaces { name = "cli-driven-azure-demo" }
+  This ties your local code to that specific workspace.
+
+Result:
+
+* When you run terraform init, Terraform:
+
+  * Connects to Terraform Cloud.
+  * Uses the workspace cli-driven-azure-demo.
+  * Stores state in that workspace instead of a local terraform.tfstate.
+
+# Step-05: Module Source – Private Registry
+
+# Before
+  source  = "app.terraform.io/hcta-azure-demo1/staticwebsiteprivate/azurerm"
+
+# After
+  source  = "app.terraform.io/<YOUR_ORGANIZATION>/<YOUR_MODULE_NAME_IF_DIFFERENT>/azurerm"
+  source  = "app.terraform.io/<YOUR_ORGANIZATION>/staticwebsitepr/azurerm"   
+
+This is inside c3-static-website.tf, where you use a Terraform module, something like:
+
+module "azure_static_website" 
+{
+  source = "app.terraform.io/hcta-azure-demo1/staticwebsiteprivate/azurerm"
+  # ... other inputs
+}
+
+What source mean here:
+
+* app.terraform.io → You’re using a module from Terraform Cloud Private Registry.
+* hcta-azure-demo1 → The organization where the module is hosted.
+* staticwebsiteprivate or staticwebsitepr → The module name in that org’s private registry.
+* azurerm → The provider for which this module is written (this is part of the registry naming convention).
+
+The “After” section generalizes it so you can adapt it for your org/module name.
+
+So this line tells Terraform:
+
+> “Download and use the module hosted in Terraform Cloud Private Registry under this org and module name, which is built for the azurerm provider.”
+
+# Step-06: Terraform CLI Commands (Initial Flow)
+
+# 1. terraform login: terraform login
+
+* Opens a browser (or asks for a token).
+* You create a Terraform Cloud token (e.g., clidemoapitoken1) and paste it.
+* Terraform saves this token to a local config file:
+
+  * ~/.terraform.d/credentials.tfrc.json
+
+Example checks: cat /Users/<YOUR_USER>/.terraform.d/credentials.tfrc.json
+
+> The long token string in your snippet is just a demo example.
+> In real life: never share or commit real tokens.
+
+This step ensures your CLI can talk to Terraform Cloud (for backend and private registry).
+
+# 2. terraform init: terraform init
+
+What happens:
+
+* Reads terraform { ... } block:
+
+  * Sets up the remote backend (Terraform Cloud workspace).
+    
+* Downloads:
+
+  * Providers (e.g., azurerm).
+  * Modules (including private registry modules specified with source = "app.terraform.io/...).
+
+You should see:
+
+1. Successful backend initialization.
+2. Private registry module downloaded into .terraform/modules.
+
+# 3. terraform validate: terraform validate
+
+* Checks that your Terraform configuration is syntactically valid and internally consistent (variable types, missing arguments, etc.).
+* It does not talk to Azure or actually plan changes. Just a code sanity check.
+
+# 4. terraform fmt: terraform fmt
+
+* Formats all .tf files to standard Terraform style (indentation, spacing, etc.).
+* Helps keep your code readable and consistent.
+
+# 5. terraform plan – first attempt: terraform plan
+
+Here you get an error:
+
+Error building AzureRM Client: obtain subscription() from Azure CLI:
+ERROR: Please run az login to set up your account.
+
+Why?
+
+* The azurerm provider tries to authenticate using Azure CLI (because no explicit ARM_* env vars are set yet).
+* Terraform Cloud (remote runs / remote backend context) does not have your Azure CLI session.
+* So it fails: “Please run az login”.
+
+This is expected before you configure proper Azure credentials for Terraform Cloud.
+
+# Step-08: Create Service Principal for Azure (Client Secret Auth)
+
+To let Terraform Cloud authenticate to Azure, you use a Service Principal (SPN) with a client secret.
+
+# 1. Log in to Azure CLI: az login
+
+* Opens browser or device code login.
+* Authenticates your local CLI as you (a user).
+
+# 2. List subscriptions: az account list
+
+* Shows your subscriptions and IDs.
+* You note the "id" of the subscription you want Terraform to use → SUBSCRIPTION_ID.
+
+# 3. Set active subscription: az account set --subscription="SUBSCRIPTION_ID."
+
+Ensures subsequent az commands run under that subscription.
+
+# 4. Create Service Principal: az ad sp create-for-rbac --role="Contributor" --scopes="/subscriptions/SUBSCRIPTION_ID"
+
+This creates:
+
+* An Azure AD Service Principal with the Contributor role on that subscription.
+  
+* Output:
+
+{
+  "appId": "99a2bb50-e5a1-4d72-acd3-e4697ecb5308",
+  "displayName": "azure-cli-2021-06-15-15-41-54",
+  "name": "http://azure-cli-2021-06-15-15-41-54",
+  "password": "0ed3ZeK0DijKvhat~a5NnaQ_bpG_uv_-Xh",
+  "tenant": "c81f465b-99f9-42d3-a169-8082d61c677a"
+}
+
+Mapping:
+
+* appId → ARM_CLIENT_ID
+* password → ARM_CLIENT_SECRET
+* tenant → ARM_TENANT_ID
+* SUBSCRIPTION_ID you noted earlier → ARM_SUBSCRIPTION_ID
+
+So you now have the 4 values Terraform needs.
+
+# 5. Verify SP works
+
+az login --service-principal -u CLIENT_ID -p CLIENT_SECRET --tenant TENANT_ID
+az account list-locations -o table
+az logout
+
+* This proves that the service principal can log in and query Azure.
+
+# Step-09: Configure Environment Variables in Terraform Cloud
+
+In Terraform Cloud UI for your workspace (cli-driven-azure-demo), you add environment variables:
+
+ARM_CLIENT_ID="00000000-0000-0000-0000-000000000000"
+ARM_CLIENT_SECRET="00000000-0000-0000-0000-000000000000"
+ARM_SUBSCRIPTION_ID="00000000-0000-0000-0000-000000000000"
+ARM_TENANT_ID="00000000-0000-0000-0000-000000000000"
+
+(Replace with your real values.)
+
+Why?
+
+* The azurerm provider can automatically pick up these ARM_ environment vars.
+* When Terraform Cloud runs a plan/apply:
+
+  * It reads these env vars.
+  * It authenticates using the Service Principal instead of Azure CLI login.
+
+These should be marked as sensitive in Terraform Cloud, so they’re not shown in plain text.
+
+# Step-10: Terraform Plan & Apply (after credentials)
+
+# 1. terraform plan again: terraform plan
+
+# 2. terraform apply: terraform apply
+
+# Step-11: Verify Runs & State in Terraform Cloud
+
+# Step-12: Destroy & Clean-Up: terraform destroy
