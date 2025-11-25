@@ -24,8 +24,6 @@ module "azure_static_website"
 
 ----------------------------------------------------------------------------------------------------------------------------------------
 
-# Explanation: -
-
 # Explanation: - 
 
 In Terraform, a module is a container for multiple resources that are used together.
