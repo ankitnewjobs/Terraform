@@ -230,3 +230,7 @@ rm -rf terraform.tfstate*
 # Change-2: c3-static-website.tf
 - Comment "new Resource Group Resource" block which will be enabled during step-09
 ```
+
+----------------------------------------------------------------------------------------------------------------------------------------
+
+# Explanation: -
