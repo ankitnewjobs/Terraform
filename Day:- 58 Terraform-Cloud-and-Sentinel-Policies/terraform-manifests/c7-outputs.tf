@@ -39,5 +39,6 @@ output "vm_admin_user"
   value = azurerm_linux_virtual_machine.mylinuxvm.admin_username
 }
 
+----------------------------------------------------------------------------------------------------------------------------------------
 
-
+# Explanation: -
