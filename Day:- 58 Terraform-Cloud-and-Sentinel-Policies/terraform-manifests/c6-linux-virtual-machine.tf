@@ -30,6 +30,7 @@ resource "azurerm_linux_virtual_machine" "mylinuxvm"
   tags = local.common_tags
 }
 
+----------------------------------------------------------------------------------------------------------------------------------------
 
-
+# Explanation: -
 
