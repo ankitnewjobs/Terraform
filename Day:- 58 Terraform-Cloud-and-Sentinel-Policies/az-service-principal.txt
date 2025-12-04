@@ -207,3 +207,7 @@ If you like, next I can:
 
 * Show a mini azurerm provider block and explain how it implicitly uses these ARM_ env vars, or
 * Help you turn this into an “interview-style” explanation you can give if someone asks, “How does Terraform Cloud authenticate to Azure in your setup?”
+
+----------------------------------------------------------------------------------------------------------------------------------------
+
+# Explanation: -
