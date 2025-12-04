@@ -78,3 +78,7 @@ violations = prohibitedProvidersCount + prohibitedResourcesCount +
 main = rule {
   violations is 0
 }
+
+----------------------------------------------------------------------------------------------------------------------------------------
+
+# Explanation: -
