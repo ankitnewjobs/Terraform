@@ -38,3 +38,7 @@ violatingAzureResources =
 main = rule {
   length(violatingAzureResources["messages"]) is 0
 }
+
+----------------------------------------------------------------------------------------------------------------------------------------
+
+# Explanation: -
