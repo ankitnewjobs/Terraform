@@ -807,7 +807,3 @@ So the next time you (or students) run the demo:
 
 * The cost policy only warns.
 * They don’t get blocked or confused by soft/hard mandatory fences.
-
-----------------------------------------------------------------------------------------------------------------------------------------
-
-# Explanation: -
