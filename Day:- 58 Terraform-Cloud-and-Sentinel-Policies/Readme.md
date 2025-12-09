@@ -473,15 +473,15 @@ terraform apply
 
 These are Azure CLI commands to create a Service Principal and get credentials for Terraform:
 
-# Login interactively: az login
+Login interactively: az login
 
-# List all subscriptions: az account list
+List all subscriptions: az account list
 
-# Set the correct subscription: az account set --subscription="SUBSCRIPTION_ID"
+Set the correct subscription: az account set --subscription="SUBSCRIPTION_ID"
 
-# Example: az account set --subscription="82808767-144c-4c66-a320-b30791668b0a"
+Example: az account set --subscription="82808767-144c-4c66-a320-b30791668b0a"
 
-# Create Service Principal + Client Secret: az ad sp create-for-rbac --role="Contributor" --scopes="/subscriptions/SUBSCRIPTION_ID"
+Create Service Principal + Client Secret: az ad sp create-for-rbac --role="Contributor" --scopes="/subscriptions/SUBSCRIPTION_ID"
 
 Output:
 
