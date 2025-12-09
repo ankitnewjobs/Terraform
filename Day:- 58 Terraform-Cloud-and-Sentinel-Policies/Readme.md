@@ -319,3 +319,409 @@ policy "limit-proposed-monthly-cost" {
 ----------------------------------------------------------------------------------------------------------------------------------------
 
 # Explanation: -
+
+# 1. What this whole script is doing
+
+This “code” is really a full workflow:
+
+1. Use Terraform Cloud in CLI-driven mode (you run terraform apply locally, but the plan/apply actually happens in Terraform Cloud).
+
+2. Deploy some Azure resources (RG, VNet, Linux VM, NIC, Public IP).
+
+3. Enforce Sentinel policies around:
+
+   * Which providers can you use
+   * Mandatory tags
+   * Cost limits
+   * Allowed VM image publishers
+   * Allowed VM sizes
+     
+4. Learn how enforcement levels work:
+
+   * advisory → warning only
+   * soft-mandatory → can fail, but you may override
+   * hard-mandatory → fail with no override possible
+
+# 2. Terraform code files (Step-02)
+
+You don’t see the full contents here, but the filenames tell us the structure:
+
+1. c1-versions.tf
+
+   * Typically contains:
+
+     * terraform { required_version = "..."}
+     * required_providers { azurerm = { ... } }
+     * Also, the backend "remote config (Terraform Cloud backend) is added here.
+       
+   * It tells Terraform:
+
+     * which Terraform version to use,
+     * which providers (like azurerm),
+     * and where to store the state (Terraform Cloud).
+
+2. c2-variables.tf
+
+   * Declares input variables like:
+
+     * location
+     * resource_group_name
+     * vm_size
+     * tags
+       
+   * Example:
+
+       variable "location"
+      {
+       type    = string
+       default = "eastus"
+     }
+     
+3. c3-locals.tf
+
+   * Defines locals (derived values) to simplify the main config.
+     
+   * Example:
+
+       locals
+     {
+       name_prefix = "sentinel-demo"
+     }
+     
+4. c4-resource-group.tf
+
+   * Defines the Azure Resource Group:
+
+       resource "azurerm_resource_group" "rg"
+      {
+       name     = local.name_prefix
+       location = var.location
+       tags     = var.tags
+     }
+     
+   * Sentinel’s mandatory tags policy will probably validate this resource.
+
+5. c5-virtual-network.tf
+
+   * Defines VNet and subnet:
+
+     resource "azurerm_virtual_network" "vnet" { ... }
+     resource "azurerm_subnet" "subnet" { ... }
+     
+6. c6-linux-virtual-machine.tf
+
+   * Defines Linux VM:
+
+     * Uses azurerm_linux_virtual_machine
+     * Refers to NIC, image, size, etc.
+     * Sentinel policies like restrict-vm-publisher and restrict-vm-size will evaluate these values.
+
+7. c7-outputs.tf
+
+   * Outputs key info, e.g.:
+
+     output "public_ip"
+      {
+       value = azurerm_public_ip.vm_pip.ip_address
+     }
+     
+8. dev.auto.tfvars
+
+   * Contains variable values for the dev environment.
+   * .auto.tfvars files are loaded automatically by Terraform.
+     
+   * Example:
+
+     location          = "eastus"
+     vm_size           = "Standard_B2s"
+     environment       = "dev"
+     mandatory_tags    = { environment = "dev", owner = "ankit" }
+     
+These files describe what will be created on Azure and its corresponding configuration.
+
+# 3. Terraform backend code (Step-03-03)
+
+# Terraform Backend pointed to TF Cloud
+
+backend "remote" 
+{
+  organization = "hcta-azure-demo1-internal"
+
+  workspaces
+  {
+    name = "sentinel-azure-demo1"
+  }
+}
+
+What this does:
+
+* Inside terraform { backend "remote" { ... } }, this tells Terraform:
+
+  * Use the remote backend → Terraform Cloud.
+  * Use organization: hcta-azure-demo1-internal.
+  * Use workspace: sentinel-azure-demo1.
+
+So when you run:
+
+terraform init
+terraform apply
+
+* Your state is stored in Terraform Cloud.
+* The plan/apply execution is done by Terraform Cloud, but driven from your local CLI (CLI-driven workflow).
+
+# 4. Azure authentication code (Step-04)
+
+These are Azure CLI commands to create a Service Principal and get credentials for Terraform:
+
+# Login interactively: az login
+
+# List all subscriptions: az account list
+
+# Set the correct subscription: az account set --subscription="SUBSCRIPTION_ID"
+
+# Example: az account set --subscription="82808767-144c-4c66-a320-b30791668b0a"
+
+# Create Service Principal + Client Secret: az ad sp create-for-rbac --role="Contributor" --scopes="/subscriptions/SUBSCRIPTION_ID"
+
+Output:
+
+{
+  "appId": "99a2bb50-e5a1-4d72-acd3-e4697ecb5308",
+  "displayName": "azure-cli-2021-06-15-15-41-54",
+  "name": "http://azure-cli-2021-06-15-15-41-54",
+  "password": "0ed3ZeK0DijKvhat~a5NnaQ_bpG_uv_-Xh",
+  "tenant": "c81f465b-99f9-42d3-a169-8082d61c677a"
+}
+
+Mapping:
+
+* appId → ARM_CLIENT_ID
+* password → ARM_CLIENT_SECRET
+* tenant → ARM_TENANT_ID
+* subscription id from earlier → ARM_SUBSCRIPTION_ID
+
+# Verification:
+
+az login --service-principal -u CLIENT_ID -p CLIENT_SECRET --tenant TENANT_ID
+az account list-locations -o table
+
+This confirms that the Service Principal has correct access.
+
+# 5. Environment variables in Terraform Cloud (Step-05)
+
+In the Terraform Cloud workspace, you set:
+
+ARM_CLIENT_ID="00000000-0000-0000-0000-000000000000"
+ARM_CLIENT_SECRET="00000000-0000-0000-0000-000000000000"
+ARM_SUBSCRIPTION_ID="00000000-0000-0000-0000-000000000000"
+ARM_TENANT_ID="00000000-0000-0000-0000-000000000000"
+
+(Replace with real values, obviously.)
+
+Why?
+
+* The azurerm provider can automatically pick these env vars for authentication.
+* Since Terraform Cloud is running the plan/apply, the credentials must exist in the TFC workspace, not only on your local machine.
+
+Now, Terraform Cloud can talk to Azure on behalf of that Service Principal.
+
+# 6. Sentinel policies & sentinel.hcl (Steps 03–04 & 06–07)
+
+You have these policy files:
+
+1. allowed-providers.sentinel
+2. enforce-mandatory-tags.sentinel
+3. limit-proposed-monthly-cost.sentinel
+4. restrict-vm-publisher.sentinel
+5. restrict-vm-size.sentinel
+6. sentinel.hcl
+
+# What each policy conceptually does
+
+1. allowed-providers.sentinel
+
+* Ensures only a predefined set of Terraform providers is used.
+  
+* Example logic:
+
+  * Plan must contain only azurerm (and maybe random, null, etc.)
+  * If someone tries to add AWS or Google, the policy fails.
+
+2. enforce-mandatory-tags.sentinel
+
+* Checks resources (typically Azure resources) have certain tags:
+
+  * e.g., environment, owner, cost_center.
+    
+* Uses helper functions from:
+
+  * common-functions
+  * azure-functions
+    
+* If required tags are missing on a resource, the policy fails.
+
+3. limit-proposed-monthly-cost.sentinel
+
+* Uses Terraform’s cost estimation from the plan.
+* If the plan’s estimated monthly cost > some threshold (e.g. $100), the policy fails.
+* This is the one we play with using different enforcement levels (advisory / soft/hard).
+
+4. restrict-vm-publisher.sentinel
+
+* Looks at the Azure VM image used in azurerm_linux_virtual_machine.
+* Only allows certain publishers (e.g., "Canonical").
+* If someone uses an image from a non-approved publisher, the policy fails.
+
+5. restrict-vm-size.sentinel
+
+* Restricts VM sizes to an allowed list (e.g. Standard_B2s, Standard_D2s_v3, etc.).
+* If vm_size is not in the list, policy fails.
+
+# sentinel.hcl
+
+This file tells Terraform Cloud:
+
+* Which policies to load.
+* Their source paths.
+* Their enforcement_level.
+
+You see examples like:
+
+policy "limit-proposed-monthly-cost"
+{
+  source = "./limit-proposed-monthly-cost.sentinel"
+  enforcement_level = "advisory"
+}
+
+Later, you change the enforcement_level to soft-mandatory and hard-mandatory.
+
+Enforcement levels:
+
+1. advisory
+
+   * Policy can fail, but:
+
+     * Run still passes.
+     * You see warnings in UI.
+       
+   * Good for “informational / best-practice” checks during experimentation.
+
+2. soft-mandatory
+
+   * Policy failing will block the run by default, BUT:
+
+     * In UI, you can override and continue.
+       
+   * Good balance between governance and flexibility.
+
+3. hard-mandatory
+
+   * If policy fails:
+
+     * Run stops.
+     * No override option.
+       
+   * For non-negotiable rules: security, compliance, strict budget caps.
+
+# 7. GitHub repo for policies (Step-06)
+
+You:
+
+1. Create repo (e.g., terraform-sentinel-policies-azure).
+
+2. Clone it locally:    git clone https://github.com/<YOUR_GITHUB_ID>/<YOUR_REPO>.git
+   
+3. Copy all policy code (Git-Repo-Files-Sentinel) into this repo.
+
+4. Commit & push:
+
+   git status
+   git add.
+   git commit -am "Sentinel Policies First Commit"
+   git push
+   
+# 8. Policy sets in Terraform Cloud (Step-07)
+
+In Terraform Cloud:
+
+* Go to Policy Sets.
+* Connect the new policy set to your GitHub repo.
+* Set Policies Path to terraform-generic-sentinel-policies (folder inside repo).
+* Scope: Selected workspaces.
+
+  * Choose sentinel-azure-demo1 workspace.
+
+Result:
+
+* Whenever that workspace runs a plan/apply:
+
+  * Terraform Cloud pulls the latest policy code from GitHub.
+  * Evaluates the policies against the new plan.
+
+# 9. Running Terraform with Sentinel (Steps 08–10)
+
+# Step-08: First run (advisory)
+
+terraform login    # Authenticate Terraform CLI with Terraform Cloud
+terraform init     # Initialize and download providers, configure backend
+terraform apply    # Plan + apply
+
+* sentinel.hcl has limit-proposed-monthly-cost as advisory.
+* Even if the cost is too high: Run does not fail, but Terraform Cloud shows a warning.
+    
+* Other policies (like tags, provider restriction) may be hard or soft, not shown here, but typically they’re stricter.
+
+# Step-09: Change to soft-mandatory
+
+policy "limit-proposed-monthly-cost" 
+{
+  source = "./limit-proposed-monthly-cost.sentinel"
+  enforcement_level = "soft-mandatory"
+}
+
+* Commit & push the change.
+* Run Terraform apply again.
+
+Now:
+
+* If estimated cost exceeds threshold:
+
+  * Sentinel check fails.
+  * Terraform Cloud UI shows failure but gives an option to override and continue.
+  * This trains users in governance but gives them a way out with justification.
+
+# Step-10: Change to hard-mandatory
+
+policy "limit-proposed-monthly-cost"
+{
+  source = "./limit-proposed-monthly-cost.sentinel"
+  enforcement_level = "hard-mandatory"
+}
+
+* Commit & push.
+* Run terraform apply.
+
+Now:
+
+* If cost is above threshold:
+
+  * Sentinel fails.
+  * Run stops immediately.
+  * No override possible.
+
+This demonstrates strict governance: nobody can deploy infrastructure that exceeds your cost guardrail.
+
+# 10. Clean-up (Step-11 & 12)
+
+terraform destroy -auto-approve   # Delete all Azure resources
+rm -rf .terraform*                # Clean local cache & state fragments
+
+Then you roll back sentinel.hcl:
+
+policy "limit-proposed-monthly-cost" 
+{
+  source = "./limit-proposed-monthly-cost.sentinel"
+  enforcement_level = "advisory"
+}
+
+* Commit & push.
