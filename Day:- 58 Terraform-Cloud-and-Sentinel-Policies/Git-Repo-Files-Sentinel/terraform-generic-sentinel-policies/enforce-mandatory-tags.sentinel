@@ -42,3 +42,250 @@ main = rule {
 ----------------------------------------------------------------------------------------------------------------------------------------
 
 # Explanation: -
+
+# What this policy actually inspects (the data model)
+
+* Sentinel is executed against a Terraform plan (the tfplan/v2 import). That plan is a JSON-like structure representing the changes Terraform intends to apply.
+
+* The policy doesn’t run against live Azure; it inspects the plan object that Terraform produces. So it’s limited to what’s present in the plan (planned attributes, known computed values, and resource addresses).
+
+* The plan contains resource_changes keyed by Terraform addresses like module.foo.azurerm_virtual_machine.vm[0]. Each resource entry includes:
+
+  * type (e.g., azurerm_virtual_machine)
+  * address (Terraform address)
+  * change object with before/after attributes (or only after for creates)
+  * actions list (e.g., ["create"], ["update"], ["delete"], ["no-op"])
+
+# What azure.find_resources_with_standard_tags(resource_types) likely does
+
+This is an Azure-specific helper provided by azure-functions. Typical behaviour:
+
+1. Scan tfplan.resource_changes: iterate every resource change in the plan.
+
+2. Filter by resource type: keep only resources whose Terraform type matches one of resource_types (e.g., azurerm_virtual_machine).
+
+3. Ignore deletions: skip resources that are being destroyed (actions contain only delete or the after is null).
+
+4. Normalize instances: handle count/indexed instances and module addresses, producing a flat map keyed by resource address (e.g., module.app.azurerm_virtual_machine.web[0]).
+
+5. Return only the attributes needed: often returns a map where each value includes tags (if present), address, type, and a human-meaningful message template field for violations.
+
+Example return structure (simplified):
+
+{
+  "module.app.azurerm_virtual_machine.web[0]": 
+{
+    "address": "module.app.azurerm_virtual_machine.web[0]",
+    "type": "azurerm_virtual_machine",
+    "tags": {
+      "owner": "alice"
+    }
+  },
+  "azurerm_resource_group.rg": 
+{
+    "address": "azurerm_resource_group.rg",
+    "type": "azurerm_resource_group",
+    "tags": {
+      "environment": "dev"
+    }   }  }
+
+# What plan.filter_attribute_not_contains_list(resources, "tags", mandatory_tags, true) likely uses tfplan-functions, which provides generic filtering helpers. 
+
+This specific function:
+
+* Iterates the resources map produced above.
+* For each resource, check the attribute named "tags":
+
+  * If the resource has no tags attribute → it’s a violation.
+  * If tags exist but any of the mandatory_tag is are missing as a key → violation.
+  * It does not necessarily check tag values (unless implemented to do so).
+
+* The final parameter (true) typically toggles whether the helper emits warnings/messages containing context (resource address, missing keys). 
+* In some helper implementations, true may mean "warn only", but in this policy, it’s only driving message content; the main rule still fails the run because it asserts length(messages) is 0.
+
+* Returns an object like:
+
+{
+  "matches": ["module.app.azurerm_virtual_machine.web[0]"],
+  "messages":
+[
+    "module.app.azurerm_virtual_machine.web[0] is missing tags: environment"
+  ]
+}
+
+# Line-by-line deeper behaviour & implications
+
+# param resource_types default [...]
+
+* This parameter controls scope. If a resource type is missing here, the policy ignores it entirely.
+
+* Watch out: Azure provider has multiple resource forms (e.g., azurerm_linux_virtual_machine vs older azurerm_virtual_machine)
+* So you may need to keep the list updated when provider versions or resource names change.
+
+# param mandatory_tags default ["environment"]
+
+* Only key presence is checked. If you need to validate allowed values (e.g., "environment" in ["dev", "stage", "prod"]), the policy must be extended.
+* Adding more keys makes the check stricter (every key must be present).
+
+# allAzureResourcesWithStandardTags = azure.find_resources_with_standard_tags(resource_types)
+
+* Because it skips deletions, replacements may show up depending on change semantics:
+
+  * If a resource is being replaced (create + delete), the helper must decide whether to check the after attributes (new resource) or ignore because deletion is planned. Most helpers inspect after it is present.
+  * Computed tags / dynamic tags: If tags are produced by interpolation from data sources or remote state, the after might have null or partial values, the helper must handle unknowns. Sentinel can check is null or unknown, depending on support.
+
+# violatingAzureResources = plan.filter_attribute_not_contains_list(..., true)
+
+* If true toggles verbosity only, the helper will still return failing matches deterministically. If true makes it "warn-only", the policy still fails because the main asserts zero messages. So the last truth here is mostly for better messages.
+* Behavior for tags with null values: Many helpers treat a key with a null value as present (key exists) but empty; others treat it as missing. Decide which semantics you need.
+
+# main = rule { length(violatingAzureResources["messages"]) is 0 }
+
+* The final gate: if there is any message, the rule fails.
+* Using enforces exact numeric equality; if messages is null or missing, the policy will error, but filter helpers return consistent structures, so this is safe.
+
+# Concrete tfplan examples and expected outcomes
+
+# Example 1 — PASS
+
+Terraform plan excerpt (conceptual):
+
+{
+  "resource_changes": 
+[
+    {
+      "address": "azurerm_resource_group.rg",
+      "type": "azurerm_resource_group",
+      "change": {
+        "before": null,
+        "after": 
+{
+          "tags":
+{
+            "environment": "prod",
+            "owner": "ops"
+          }         }       }     }   ]  }
+
+* find_resources_with_standard_tags returns the resource with tags.environment.
+* filter_attribute_not_contains_list finds no missing tags.
+* main passes.
+
+# Example 2 — FAIL (no tags)
+
+{
+  "resource_changes": 
+[
+    {
+      "address": "azurerm_virtual_machine.vm",
+      "type": "azurerm_virtual_machine",
+      "change": 
+{
+        "before": null,
+        "after": 
+{
+          // tags missing entirely
+        }       }     }   ]  }
+
+* Violation message: "azurerm_virtual_machine.vm is missing tags: environment"
+* main fails because message length > 0.
+
+# Example 3 — FAIL (tag key exists but is null)
+
+"after": 
+{
+  "tags": 
+{
+    "environment": null
+  }
+}
+
+* Depending on helper semantics, this may be considered present (key exists) or missing (null treated as missing). 
+
+* If you want to treat null as missing, enhance the check to verify tags.environment is a string and not null/empty.
+
+# Edge cases & pitfalls to watch for
+
+* Module addresses / counts / for_each: Helpers must expand each instance. If they only look at top-level resources, resource instances inside lists/maps could be missed.
+
+* Tags added by provider or upstream: If tags are set by a later pipeline step or by provider defaults (not in the plan), Sentinel can’t see those and will report false positives.
+
+* Provider version/resource renames: New resource types introduced in newer providers will not be checked unless you update resource_types.
+
+* Computed values/unknowns: If tags are computed from other resources and are unknown at plan time, the helper must detect unknown values, and you must decide whether the unknown should pass or fail.
+
+* Patch vs Replace: If an update only touches non-tag attributes, the policy still checks tags. That’s usually OK, but be aware.
+
+* Large plans: For plans with thousands of resources, these helper functions must be efficient — they should short-circuit where possible.
+
+# How to extend/tighten the policy
+
+1. Require tag values to match the allowed set
+
+   sentinel
+
+   param allowed_environments default ["dev", "staging", "prod"]
+
+   # then check tags.environment in allowed_environments
+   
+2. Treat null/empty values as missing: After finding resources, filter where tags are missing, OR tags["environment"] is null OR trim(tags["environment"]) is "".
+
+3. Whitelist certain addresses or modules: Add a param allowlist_addresses default [] and skip those addresses.
+
+4. Make it non-blocking (warn-only)
+
+   * Change main to always pass but emit warnings (useful for rolling out policies):
+
+     ```sentinel
+     main = rule
+{
+       true
+     }
+     
+     and then separately produce an informative message or use the violation API if your environment supports it.
+
+5. Check only for create actions
+
+   * Modify find_resources_with_standard_tags usage or filter resource_changes to only include actions that contain "create" (or "create", "update" for replacements).
+
+# How to test the policy locally
+
+* Generate sample tfplan JSON with terraform plan -out=tfplan.binary and terraform show -json tfplan.binary > plan.json.
+
+* Use Sentinel CLI: sentinel test -run <policy> pointing to the plan.json as tfplan/v2 import fixture.
+
+* Build tests for passing, failing, and unknown-tag-value cases.
+
+# Sample enhanced Sentinel snippet (checks non-empty value): Here’s a short example to treat null/empty values as violations:
+
+```sentinel
+
+# after you have all Azure Resources with Standard Tags
+
+missing_or_empty = func(resource)
+{
+  tags = resource["tags"]
+
+  # if tags missing entirely
+
+  If tags are null
+{
+    return true
+  }
+ 
+  # check each mandatory tag exists and is non-empty   for tag in mandatory_tags 
+
+{
+    if not tags[tag] or tags[tag] is ""
+{
+      return true
+    }
+  }
+  return false
+}
+
+violations = [addr for addr, r in allAzureResourcesWithStandardTags if missing_or_empty(r)]
+
+main = rule
+{
+  length(violations) is 0
+}
