@@ -82,3 +82,231 @@ main = rule {
 ----------------------------------------------------------------------------------------------------------------------------------------
 
 # Explanation: -
+
+# Top-of-file comments: This policy uses the tfconfig/v2 import to restrict providers to those in an allowed list.
+
+# It used to only use the providers collection of the tfconfig/v2 import, but that did not process resources and data sources from allowed. providers
+
+# when no provider block was included in the Terraform configuration. So, it now also explicitly allows resources and data sources from allowed providers using the resources collection of the tfconfig/v2 import.
+
+* Explains intent and a historical bug/behavior: reading only the providers collection missed resources/data sources when no explicit provider block existed in the HCL; therefore, the policy checks both provider declarations and actual resource/data source types.
+
+# Imports
+
+# Import common-functions/tfconfig-functions/tfconfig-functions.sentinel
+
+# with alias "config" import "tfconfig-functions" as config
+
+# Standard strings import: import "strings"
+
+* tfconfig-functions (aliased config) is a helper package (not built-in Terraform) that provides convenience functions such as find_all_providers(), find_all_resources(), find_all_datasources(), filter_attribute_not_in_list(), and print_violations(...). These functions wrap the tfconfig/v2 import to make scanning the configuration easier.
+
+* strings is imported for string utilities (used later for `strings.split`).
+
+# Allowed providers list
+
+# List of allowed providers allowed_list = ["azurerm", "aws", "local", "null", "random", "terraform", "tfe", "time"]
+
+* A whitelist of provider short names that are permitted.
+
+* Examples: azurerm (Azure), aws (Amazon), local/null/random (utility providers), etc.
+
+# Get all providers and filter violations
+
+# Get all providers allProviders = config.find_all_providers()
+
+# Filter to providers with violations
+
+# Warnings will not be printed for violations since the last parameter is false
+
+violatingProviders = config.filter_attribute_not_in_list(allProviders, "name", allowed_list, false)
+
+* config.find_all_providers() returns provider blocks parsed from the Terraform configuration (the providers collection from tfconfig/v2), probably as a map/array of provider objects that include a name attribute.
+
+* config.filter_attribute_not_in_list(allProviders, "name", allowed_list, false):
+
+  * Looks through allProviders and finds those whose name attribute is not in allowed_list.
+
+* The final false argument appears to control whether the helper should emit warnings as it filters; the comment says warnings will not be printed because false is passed.
+
+# Print any provider violations
+
+# Print any violations
+
+prohibitedProvidersCount = length(violatingProviders["messages"])
+if prohibitedProvidersCount > 0
+{
+  config.print_violations(violatingProviders["messages"], "Provider")
+}
+
+* violatingProviders["messages"] probably holds user-friendly messages created by filter_attribute_not_in_list.
+
+* Count violations and, if > 0, call `config.print_violations(...)` to display them in the Sentinel run output with the label "Provider".
+
+# Initialize counters for resources/data sources
+
+# Initialize resource and data source counts
+
+prohibitedResourcesCount = 0
+prohibitedDataSourcesCount = 0
+
+* Prepare counters to accumulate disallowed resources and data-source counts. These will be used later to compute the total violations.
+
+# Find and inspect all resources
+
+# Find all resources
+
+allResources = config.find_all_resources()
+
+# Filter to disallowed resources
+
+prohibitedResources = filter allResources as address, r 
+{
+  strings.split(r.type, "_")[0] not in allowed_list
+}
+
+* config.find_all_resources() reads the parsed Terraform configuration resources (from tfconfig/v2 resources collection). Each resource r has properties, and importantly r.type — the resource type string like aws_instance, azurerm_storage_account, null_resource, etc.
+* strings.split(r.type, "_")[0] splits the resource type at the first underscore and takes the first token.
+
+Examples:
+
+  * "aws_instance" → ["aws", "instance"] → provider prefix "aws"
+  * "azurerm_storage_account" → ["azurerm", "storage", "account"] → "azurerm"
+
+* The filter keeps only resources whose provider prefix is not in the allowed_list. Those are prohibited resources.
+
+> Note: this code assumes the provider prefix is the substring before the first underscore, which is the usual convention for Terraform resource types.
+
+# Report resource violations
+
+# Print violations and increment counts for resources
+
+if length(prohibitedResources) > 0 
+{
+  print("Resources from providers are not allowed unless they are in", allowed_list)
+  prohibitedResourcesCount += length(prohibitedResources)
+  for prohibitedResources as address, r 
+{
+    print("Resource", address, "from provider", strings.split(r.type, "_")[0],
+          "is not allowed.")
+  } // end for prohibitedResources
+} // 
+end if
+
+* If any prohibited resources exist:
+
+  * Print a short header message showing allowed_list (so operator sees allowed providers).
+  * Increment prohibitedResourcesCount by the number of offending resources.
+  * Loop and print each offending resource address and its provider prefix to help with debugging.
+
+# Find and inspect all data sources
+
+# Find all data sources
+
+allDataSources = config.find_all_datasources()
+
+# Filter to disallowed data sources
+
+prohibitedDataSources = filter allDataSources as address, r 
+{
+  strings.split(r.type, "_")[0] not in allowed_list
+}
+
+* Same logic as resources, but for data sources (HCL data blocks).
+
+* r.type for data sources also generally follows the provider_resource pattern, e.g., aws_ami, azurerm_client_config, etc.
+
+# Report data source violations
+
+# Print violations and increment counts for data sources
+
+if length(prohibitedDataSources) > 0
+{
+  print("Data sources from providers are not allowed unless they are in", allowed_list)
+  prohibitedDataSourcesCount += length(prohibitedDataSources)
+  for prohibitedDataSources as address, r
+{
+    print("Data source", address, "from provider", strings.split(r.type, "_")[0],
+          "is not allowed.")
+  } // end for prohibitedDataSources
+} // end if
+
+* Same reporting pattern as for resources.
+
+# Main rule: fail when any violations exist
+
+# Main rule
+
+violations = prohibitedProvidersCount + prohibitedResourcesCount + prohibitedDataSourcesCount
+main = rule 
+{
+  violations are 0
+}
+
+* violations sums up provider-block violations + resource violations + data-source violations.
+
+* main is the Sentinel rule that returns true only if violations is 0. If violations > 0, the policy fails (Sentinel returns a policy failure), indicating disallowed providers/resources/data sources are used.
+
+# High-level behavior summary
+
+* The policy enforces a provider whitelist in three ways:
+
+  1. Explicit provider blocks declared in configuration (providers collection).
+  2. Resource types present in configuration (so resources from disallowed providers are blocked even if the provider block is absent).
+  3. Data source types present in the configuration.
+
+* It prints helpful messages listing offending providers/resources/data sources and then fails if any exist.
+
+# Important assumptions and edge cases
+
+1. Provider prefix parsing
+
+   * The code assumes resource/data-source types always use the format provider_something and obtains the provider name by split(..., "_")[0]. 
+   * That works for the vast majority of Terraform providers (e.g., aws_instance, azurerm_storage_account), but be aware of:
+
+     * Custom provider namespaces or types that might not follow the exact pattern.
+     * Providers that use multi-part prefixes like azurerm_key_vault still work (prefix azurerm).
+
+2. Namespaced provider addresses
+
+   * The providers collection (from tfconfig/v2) may include provider name values that are fully-qualified (e.g., registry.terraform.io/hashicorp/aws). filter_attribute_not_in_list must match these in your allowed_list. 
+   * The helper probably handles this — if not, you might need to normalize provider names before comparing.
+
+3. Implicit provider usage (no provider block)
+
+   * The policy addresses this by checking resource and data-source types as well as provider blocks; this prevents resources from disallowed providers slipping through when no provider block exists.
+
+4. Ignored provider aliases
+
+   * If a config uses provider aliases (e.g., provider "aws" { alias = "east" }), the providers collection may show aws as the provider name or a different structure — the helper functions should be expected to return a name that works with the filter.
+
+5. False positives for some meta providers
+
+   * There are providers like Terraform (provider meta) and tooling providers — ensure they’re intentionally allowed in allowed_list if needed.
+
+# Suggested improvements/hardening
+
+* Normalize provider names when comparing provider entries to allowed_list:
+
+  * Strip a registry prefix like registry.terraform.io/hashicorp/aws down to aws before comparison. That makes provider block checks robust.
+  * Example normalization: take the last path segment after/if present.
+
+* Use regex or safer parse instead of only split("_") if you expect nonstandard names.
+
+* Make allowed_list configurable (e.g., via Sentinel policy parameters) so the same policy file can be reused across orgs/environments.
+
+* Return richer output: include offending resource line numbers or file paths (if available via tfconfig/v2) to make remediation easier.
+
+* Unit tests: create a small set of sample configs and run the policy locally to ensure your helper functions behave as expected.
+
+# Example — how a violation looks conceptually
+
+Given a Terraform file that contains:
+
+resource "google_compute_instance" "vm" { ... }
+
+* r.type → "google_compute_instance"
+
+* strings.split(r.type, "_")[0] → "google"
+
+* If "Google" is not in the allowed_list, this resource will be listed under prohibitedResources, and the policy will fail.
