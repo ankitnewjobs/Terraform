@@ -21,3 +21,167 @@ find_resources_with_standard_tags = func(resource_types) {
 ----------------------------------------------------------------------------------------------------------------------------------------
 
 # Explanation: -
+
+# Imports Section
+
+# Imports #
+import "tfplan/v2" as tfplan
+
+# What this means:
+
+* Sentinel policies can import data from Terraform runs.
+* "tfplan/v2" is the Terraform plan import for version 2 of the Terraform/Sentinel integration.
+* As tfplan means you can now refer to this import using the shorter variable name tfplan.
+
+# What the import contains: tfplan now gives you access to:
+
+* tfplan.resource_changes
+* tfplan.output_changes
+* tfplan.variables
+* tfplan.module_calls
+* Etc.
+
+The most important here is: tfplan.resource_changes
+
+A map of all resources in the Terraform plan, keyed by their Terraform address.
+
+Example structure:
+
+"azurerm_storage_account.example" = 
+{
+    "provider_name": "registry.terraform.io/hashicorp/azurerm",
+    "type": "azurerm_storage_account",
+    "mode": "managed",
+    "change":
+{
+        "actions": ["create"],
+        ...
+    }
+}
+
+# Function Definition
+
+# find_resources_with_standard_tags: find_resources_with_standard_tags = func(resource_types) {
+
+# What does the function do?
+
+* Defines a reusable function called find_resources_with_standard_tags.
+* It accepts one argument: resource_types, which must be a list of Azure resource types you want to filter for.
+
+Example input: ["azurerm_storage_account", "azurerm_app_service"]
+
+# Filtering Resources: resources = filter tfplan.resource_changes as address, rc 
+
+# What this does:
+
+* Loops through all resources in the Terraform plan.
+* address = Terraform resource address key
+* rc = resource change object for that address
+
+The filter block ensures only matching resources are kept.
+
+Now let’s break down each filter condition inside the block:
+
+# 1. Provider Name Filter
+
+rc.provider_name matches "(.*)azurerm$"
+
+# Meaning:
+
+* Keeps only resources whose provider name ends with azurerm.
+* It supports:
+
+  * The short name: "azurerm"
+  * The full provider registry name: "registry.terraform.io/hashicorp/azurerm"
+
+# Why use regex?
+
+Terraform sometimes uses these variations:
+
+* azurerm
+* registry.terraform.io/hashicorp/azurerm
+* example.com/custom/azurerm
+
+The regex (.*)azurerm$ matches anything ending with “azurerm”.
+
+# 2. Resource Type Filter: rc.type in resource_types
+
+# Meaning:
+
+* Only include resources whose type appears in the list passed to the function.
+* Example: if resource_types = ["azurerm_storage_account"], then only storage accounts are returned.
+
+# 3. Resource Mode Filter: rc.mode is "managed"
+
+# Meaning:
+
+Terraform has two resource modes:
+
+* managed → created and controlled by Terraform
+* data → data sources
+
+This filter ensures:
+
+✔ Only Terraform-managed Azure resources are checked
+✘ Data sources are ignored
+
+# 4. Action Filter (important!)
+
+(rc.change.actions contain "create" or 
+ rc.change.actions contain "update" or
+ rc.change.actions contains "read" or 
+ rc.change.actions contains "no-op")
+
+# Meaning: A resource must be present in the plan with one of these actions:
+
+|    Terraform Action   |               Meaning                |
+| --------------------- | ------------------------------------ |
+|   "create"            |   a new resource will be created     |
+|   "update"            |   existing resource will be modified |
+|   "read"              |   object is imported/read            |
+|   "no-op"             |   no change, but exists in plan      |
+
+The goal is to include any resource that will exist after applying the plan, even if unchanged.
+
+### Why include "no-op"?
+
+Because many validation policies (like tagging policies) still need to check resources that are not changing in the current plan.
+
+# Returning the Filtered Resource List
+
+return resources
+}
+
+* The function returns a map of all resource instances that meet all filters.
+
+# What the Function Actually Does
+
+It returns a filtered list of Azure resources (matching the types you care about) that:
+
+✔ Are managed by Terraform
+✔ Use the AzureRM provider
+✔ Are being created, updated, read, or unchanged
+✔ Match one of the target resource types
+
+This function is used in Sentinel policies to enforce rules like:
+
+* Mandatory tags on Azure resources
+* Naming conventions
+* Cost center tagging
+* Resource group compliance
+* Security policy validations
+
+# Example Usage
+
+A Sentinel policy might use it like:
+
+required_types = ["azurerm_storage_account", "azurerm_linux_virtual_machine"]
+
+resources = find_resources_with_standard_tags(required_types)
+
+print(resources)
+
+This returns a map like:
+
+"azurerm_storage_account.example": {...}
+"azurerm_linux_virtual_machine.vm1": {...}
