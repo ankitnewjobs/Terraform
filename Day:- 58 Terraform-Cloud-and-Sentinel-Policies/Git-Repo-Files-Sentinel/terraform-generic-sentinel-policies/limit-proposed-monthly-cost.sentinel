@@ -24,14 +24,6 @@ main = rule {
 
 # Explanation: -
 
-# Full Detailed Explanation of the Sentinel Code
-
-![Image](https://www.datocms-assets.com/2885/1509638432-image1.png?utm_source=chatgpt.com)
-
-![Image](https://kodekloud.com/kk-media/image/upload/v1752878771/notes-assets/images/HashiCorp-Terraform-Cloud-Lab-Solution-Terraform-Cloud-Sentinel-Policy/pricing-feature-comparison-software-plans.jpg?utm_source=chatgpt.com)
-
-![Image](https://embed-ssl.wistia.com/deliveries/216ddeea6ec491c1c79d593a0ddc9d01b27a4eba.webp?image_crop_resized=960x612\&utm_source=chatgpt.com)
-
 # 1. File Header Comments
 
 # This policy uses the Sentinel tfrun import to restrict the
