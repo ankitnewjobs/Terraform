@@ -23,3 +23,118 @@ main = rule {
 ----------------------------------------------------------------------------------------------------------------------------------------
 
 # Explanation: -
+
+# Full Detailed Explanation of the Sentinel Code
+
+![Image](https://www.datocms-assets.com/2885/1509638432-image1.png?utm_source=chatgpt.com)
+
+![Image](https://kodekloud.com/kk-media/image/upload/v1752878771/notes-assets/images/HashiCorp-Terraform-Cloud-Lab-Solution-Terraform-Cloud-Sentinel-Policy/pricing-feature-comparison-software-plans.jpg?utm_source=chatgpt.com)
+
+![Image](https://embed-ssl.wistia.com/deliveries/216ddeea6ec491c1c79d593a0ddc9d01b27a4eba.webp?image_crop_resized=960x612\&utm_source=chatgpt.com)
+
+# 1. File Header Comments
+
+# This policy uses the Sentinel tfrun import to restrict the
+# proposed monthly cost that would be incurred if the current
+# plan was applied
+
+* These comments explain the purpose of the policy.
+* Sentinel policies can analyze Terraform Cloud’s cost estimation data.
+* This policy ensures that a Terraform plan does not exceed a defined monthly cost limit.
+
+# 2. Importing Required Libraries
+
+# Import common-functions/tfrun-functions/tfrun-functions.sentinel
+# with alias "run"
+import "tfrun-functions" as run
+
+# Purpose:
+
+* Sentinel allows importing prebuilt libraries/modules.
+* tfrun-functions is a common module provided by HashiCorp or organisations.
+* Using as run creates a namespace: You will call functions like run.some_function().
+
+# What this module usually contains:
+
+* Functions for reading:
+
+  * Cost estimation (limit_proposed_monthly_cost)
+  * Policy checks
+  * Terraform Cloud run metadata
+
+* You usually don’t write these functions; they already exist.
+
+# The standard decimal import
+import "decimal"
+
+Why?
+
+* Terraform’s cost estimates use decimal numbers.
+* Sentinel needs exact decimal precision for financial calculations.
+* decimal import provides functions to work with decimals:
+
+  * decimal.new()
+  * arithmetic operations
+
+# 3. Setting the Monthly Cost Limit
+
+# Monthly Limit
+limit = decimal.new(10)
+
+# What this does:
+
+* Creates a decimal number representing the allowed maximum monthly cost.
+* In this example, the limit = $10 / month.
+
+You can change the number based on your organization’s budget.
+
+# 4. Calling the Cost Validation Function
+
+# Call the validation function
+# Warnings will be printed for violations
+cost_validated = run.limit_proposed_monthly_cost(limit)
+
+# What this means:
+
+* This calls a prebuilt function from the imported module.
+* The function checks:
+
+✔️ What is the proposed cost from the Terraform plan?
+✔️ Does it exceed the limit?
+✔️ If yes → return false
+✔️ If no → return true
+
+It likely evaluates something like:
+
+proposed_cost ≤ limit?
+
+# Result: cost_validated becomes true or false.
+
+For example:
+
+|   Proposed Cost   |   Limit   |   Result (cost_validated)   |
+| ----------------- | --------- | --------------------------- |
+|        $5         |   $10     |          true               |
+|        $15        |   $10     |          false              |
+
+If false → Sentinel policy fails → Terraform plan is blocked.
+
+# 5. The Main Rule
+
+main = rule {
+  cost_validated
+}
+
+# Explanation:
+
+* Sentinel policies must define a main rule.
+* This is the rule Terraform Cloud evaluates to allow or deny the run.
+* The rule passes only if cost_validated is true.
+
+# Equivalent logic:
+
+main = rule
+{ 
+    cost_validated == true 
+}
+
