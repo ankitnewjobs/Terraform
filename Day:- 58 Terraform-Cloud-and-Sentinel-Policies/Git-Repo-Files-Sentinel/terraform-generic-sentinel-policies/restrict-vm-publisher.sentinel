@@ -45,3 +45,193 @@ main = rule {
 ----------------------------------------------------------------------------------------------------------------------------------------
 
 # Explanation: -
+
+# Purpose of This Sentinel Policy
+
+![Image](https://miro.medium.com/v2/resize%3Afit%3A934/1%2AlC4AXLZAFDuIuDPJc0OL6w.png?utm_source=chatgpt.com)
+
+![Image](https://media2.dev.to/dynamic/image/width%3D1000%2Cheight%3D420%2Cfit%3Dcover%2Cgravity%3Dauto%2Cformat%3Dauto/https%3A%2F%2Fdev-to-uploads.s3.amazonaws.com%2Fuploads%2Farticles%2Fnc9cdrlq301bl54d0gqw.png?utm_source=chatgpt.com)
+
+![Image](https://learn.microsoft.com/en-us/azure/architecture/reference-architectures/n-tier/images/single-vm-diagram.svg?utm_source=chatgpt.com)
+
+This policy checks all VM resource types:
+
+* azurerm_virtual_machine (legacy)
+* azurerm_windows_virtual_machine
+* azurerm_linux_virtual_machine
+
+and ensures their publisher field matches an approved list (e.g., Canonical for Ubuntu, RedHat, or Microsoft).
+
+This protects your environment from:
+
+* Unknown or unsafe VM images
+* Marketplace images from untrusted vendors
+* Misconfigurations when developers specify random publishers
+
+# 1. Policy Header
+
+# This policy uses the Sentinel tfplan/v2 import to require that
+# all Azure VMs have publishers from a specified list
+
+This comment describes the rule:
+
+* It examines the Terraform plan (using tfplan/v2 APIs indirectly via helper functions).
+* It checks VM image publisher attributes.
+
+# 2. Import Functions Module
+
+import "tfplan-functions" as plan
+
+# What this does:
+
+* Imports a helper module named tfplan-functions.
+* These helpers wrap complex Sentinel logic and provide easy-to-use functions:
+
+  * find_resources()
+  * filter_attribute_not_in_list()
+  * get_attribute()
+
+You will call everything using the alias plan:
+
+plan.find_resources()
+plan.filter_attribute_not_in_list()
+
+This keeps the code clean.
+
+# 3. Define Allowed Publishers
+
+allowed_publishers = ["RedHat", "Canonical", "MicrosoftWindowsServer"]
+
+# Meaning:
+
+* Only these publishers are permitted for VM images:
+
+  * RedHat → RHEL
+  * Canonical → Ubuntu
+  * MicrosoftWindowsServer → Windows Server
+
+# Could you tell me why this is done?
+
+* Ensures OS image consistency
+* Prevents unapproved OS distributions
+* Enforces compliance and security
+
+# 4. Find All Legacy Azure VMs
+
+allAzureVMs = plan.find_resources("azurerm_virtual_machine")
+
+# Explanation:
+
+* Searches the Terraform plan for any resource of type: azurerm_virtual_machine
+  
+* The function returns a map of VMs that exist in the plan.
+
+# 5. Identify Violating Legacy VMs
+
+violatingAzureVMs = plan.filter_attribute_not_in_list
+(
+  allAzureVMs,
+  "storage_image_reference.0.publisher",
+  allowed_publishers,
+  true
+)
+
+# What this does:
+
+* Reads each VM’s publisher value from:
+
+    storage_image_reference.0.publisher
+  
+* Checks if it's NOT in the allowed list.
+
+# Parameter explanation:
+
+|          Parameter                          |          Meaning                   |
+| ------------------------------------------- | ---------------------------------- |
+|      allAzureVMs                            |    Input list of VMs               |
+|      "storage_image_reference.0.publisher"  |    Attribute to check              |
+|      allowed_publishers                     |    List of approved publishers     |
+|      true                                   |    Print warnings for violations   |
+
+### Example violation:
+
+If someone uses: publisher = "OpenLogic"
+
+→ This VM is not allowed
+→ It appears to violate Azure VMs.
+
+# 6. Find All Azure Windows VMs
+
+allAzureWindowsVMs = plan.find_resources("azurerm_windows_virtual_machine")
+
+* Terraform’s newer Windows VM resource type.
+* Again returns a list/map of matching resources.
+
+# 7. Identify Violations for Windows VMs
+
+violatingAzureWindowsVMs = plan.filter_attribute_not_in_list
+(
+  allAzureWindowsVMs,
+  "source_image_reference.0.publisher",
+  allowed_publishers,
+  true
+)
+
+# Why a different attribute?
+
+Windows & Linux VM resources use: source_image_reference
+
+instead of: storage_image_reference
+
+So the attribute path changes.
+
+# 8. Find All Azure Linux VMs
+
+allAzureLinuxVMs = plan.find_resources("azurerm_linux_virtual_machine")
+
+Same logic as above, but for Linux VMs.
+
+# 9. Identify Violations for Linux VMs
+
+violatingAzureLinuxVMs = plan.filter_attribute_not_in_list
+(
+  allAzureLinuxVMs,
+  "source_image_reference.0.publisher",
+  allowed_publishers,
+  true
+)
+
+Any Linux VM whose publisher is not Canonical or Red Hat gets flagged.
+
+# 10. Count All Violations
+
+violations = length(violatingAzureVMs["messages"]) + length(violatingAzureWindowsVMs["messages"]) + length(violatingAzureLinuxVMs["messages"])
+
+### Why use .messages?
+
+Sentinel helper functions return a structure like:
+
+{
+  "matches": [...],
+  "messages": [...]
+}
+
+* matches → actual resources that violated policy
+* messages → human-readable warnings for UI output
+
+We sum the lengths of all messages.
+
+If zero, policy passes.
+If > 0, policy fails.
+
+# 11. Main Rule (Pass/Fail Logic)
+
+main = rule 
+{
+  violations are 0
+}
+
+# Interpretation:
+
+* If there are 0 violations → Allow Terraform plan.
+* If any VM uses an unapproved publisher → Deny the plan.
