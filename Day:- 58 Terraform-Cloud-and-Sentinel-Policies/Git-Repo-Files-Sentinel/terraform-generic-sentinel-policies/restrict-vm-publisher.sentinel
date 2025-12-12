@@ -46,14 +46,6 @@ main = rule {
 
 # Explanation: -
 
-# Purpose of This Sentinel Policy
-
-![Image](https://miro.medium.com/v2/resize%3Afit%3A934/1%2AlC4AXLZAFDuIuDPJc0OL6w.png?utm_source=chatgpt.com)
-
-![Image](https://media2.dev.to/dynamic/image/width%3D1000%2Cheight%3D420%2Cfit%3Dcover%2Cgravity%3Dauto%2Cformat%3Dauto/https%3A%2F%2Fdev-to-uploads.s3.amazonaws.com%2Fuploads%2Farticles%2Fnc9cdrlq301bl54d0gqw.png?utm_source=chatgpt.com)
-
-![Image](https://learn.microsoft.com/en-us/azure/architecture/reference-architectures/n-tier/images/single-vm-diagram.svg?utm_source=chatgpt.com)
-
 This policy checks all VM resource types:
 
 * azurerm_virtual_machine (legacy)
