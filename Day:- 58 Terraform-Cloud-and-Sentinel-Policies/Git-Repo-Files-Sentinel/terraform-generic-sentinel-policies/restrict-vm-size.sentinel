@@ -45,3 +45,259 @@ main = rule {
 ----------------------------------------------------------------------------------------------------------------------------------------
 
 # Explanation: -
+
+# 1. Where This Code Runs: This Sentinel policy runs at Terraform plan enforcement time, typically in:
+
+* Terraform Cloud / Terraform Enterprise
+* CI pipelines using Sentinel apply
+* Policy-as-Code gates in regulated environments
+
+# Important
+
+* Sentinel never touches Azure directly
+* It only inspects Terraform’s execution plan
+* If the plan violates policy, → the application is blocked
+
+# 2. What is tfplan/v2: Terraform produces a JSON plan internally.
+
+The tfplan/v2 import exposes this structure:
+
+tfplan.resource_changes
+{
+  address
+  type
+  name
+  mode
+  change {
+    actions   (create/update/delete/no-op)
+    before
+    after
+    after_unknown
+  }
+}
+
+Every resource in your .tf files becomes one or more entries in resource_changes.
+
+# 3. Why tfplan-functions Exists
+
+Working directly with tfplan.resource_changes is:
+
+* Verbose
+* Error-prone
+* Repetitive
+
+So HashiCorp provides helper libraries, such as:
+
+common-functions/
+tfplan-functions/
+
+These libraries:
+
+* Normalize plan data
+* Handle computed values
+* Generate consistent messages
+* Reduce boilerplate
+
+Your policy imports it like this: import "tfplan-functions" as plan
+
+Now plan. Functions act as high-level query APIs over the plan.
+
+# 4. find_resources() – Deep Dive
+
+### Code: allAzureVMs = plan.find_resources("azurerm_virtual_machine")
+
+# What it REALLY does
+
+Internally:
+
+1. Iterates over tfplan.resource_changes
+
+2. Filters:
+
+   * resource.type == "azurerm_virtual_machine"
+   * Ignores pure deletes (unless configured otherwise)
+
+3. Builds a map keyed by resource address
+
+# Example Output (Simplified)
+
+{
+  "azurerm_virtual_machine.vm1" = 
+{
+    "address" = "azurerm_virtual_machine.vm1"
+    "change" =
+{
+      "after" = 
+{
+        "vm_size" = "Standard_B2s"
+      }
+    }
+  }
+}
+
+# This abstraction:
+
+* Hides before/after/after_unknown
+* Gives you just what you need
+
+# 5. filter_attribute_not_in_list()
+
+### Code
+
+violatingAzureVMs = plan.filter_attribute_not_in_list
+(
+  allAzureVMs,
+  "vm_size",
+  allowed_sizes,
+  true
+)
+
+# What It Does Step-by-Step
+
+For each resource in allAzureVMs:
+
+1. Look inside: resource.change.after["vm_size"]
+   
+2. If attribute:
+
+   * Is missing
+   * Is computed
+   * Is NOT in allowed_sizes
+
+3. Mark as a violation
+
+4. Generate a message (because true is passed)
+
+# Why the true Parameter Matters
+
+true  → print warnings
+false → silent violation tracking
+
+With true, Sentinel prints output like:
+
+WARNING: azurerm_virtual_machine.vm1 has vm_size "Standard_B2s" which is not in the allowed list
+
+This is extremely important in CI/CD: Engineers immediately see why the plan failed
+
+# 6. Why Different Attributes (vm_size vs size)?
+
+# Legacy VM Resource
+
+resource "azurerm_virtual_machine" "vm" 
+{
+  vm_size = "Standard_D2_v2"
+}
+
+# Modern VM Resources
+
+resource "azurerm_linux_virtual_machine" "vm"
+{
+  size = "Standard_D2_v2"
+}
+
+HashiCorp split the VM resource into:
+
+* Improve schema clarity
+* Reduce conditional blocks
+* Improve provider validation
+
+# 7. Violation Object Structure
+
+Each filter_attribute_not_in_list() returns:
+
+{
+  "resources" = { ... },
+  "messages"  = [
+    "Resource azurerm_linux_virtual_machine.vm1 has size Standard_B4ms which is not allowed"
+  ]
+}
+
+# Why messages are used: length(violatingAzureVMs["messages"])
+
+Because:
+
+* messages exist only for violations
+* Clean way to count failures
+* Human-readable output
+
+# 8. Aggregating Violations
+
+violations = length(violatingAzureVMs["messages"]) +   length(violatingAzureWindowsVMs["messages"]) +   length(violatingAzureLinuxVMs["messages"])
+
+# Why Not Stop at First Failure?
+
+Sentinel:
+
+* Evaluates entire policy
+* Reports all violations
+* Improves developer experience
+
+This prevents: Fix one VM → re-run → discover another violation
+
+# 9. main Rule – How Sentinel Decides Pass / Fail
+
+main = rule
+{
+  violations are 0
+}
+
+# Sentinel Rule Semantics
+
+* rule must evaluate to true or false
+* is a strict comparison operator
+* If main == false:
+
+  * Policy fails
+  * Terraform apply is blocked
+
+ No exceptions, no soft-fail here.
+
+# 10. Edge Cases & Pitfalls (Very Important)
+
+# Computed VM Sizes
+
+If VM size is: size = var.vm_size
+
+and var.vm_size is unknown at plan time → violation.
+
+allowed_sizes =
+[
+  "Standard_D2_v2",
+  null
+]
+
+# Updates vs Creates
+
+This policy applies to:
+
+* New VMs
+* Updated VMs
+* Existing VMs changing size
+
+Because it inspects resource_changes.
+
+# Deletes Are Ignored
+
+Deleted VMs:
+
+* Do not violate
+* Good behavior
+
+# 11. Real Pipeline Behavior (Terraform Cloud)
+
+terraform plan
+      ↓
+sentinel policy check
+      ↓
+Policy Failed: azurerm_linux_virtual_machine.vm1 uses size Standard_E4s_v3
+
+Apply never runs.
+
+# 12. Why This Is a Strong Platform Policy
+
+ Enforces cost governance
+ Enforces standardization
+ Cloud-provider aware
+ Resource-schema aware
+ Developer-friendly error messages
+ Scales across teams
