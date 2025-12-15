@@ -26,3 +26,6 @@ allRootModuleResources = config.find_resources_in_module("")
 
 allNetworkResources = config.find_resources_in_module("module.network")
 ```
+----------------------------------------------------------------------------------------------------------------------------------------
+
+# Explanation: -
