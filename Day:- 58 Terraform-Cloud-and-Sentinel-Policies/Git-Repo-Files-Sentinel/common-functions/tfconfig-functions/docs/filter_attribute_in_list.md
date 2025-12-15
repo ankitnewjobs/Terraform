@@ -32,11 +32,11 @@ violatingProviders = config.filter_attribute_in_list(allProviders,
 
 violatingResources = config.filter_attribute_in_list(allResources,
                      "type", prohibited_list, false)
-----------------------------------------------------------------------------------------------------------------------------------------
-
-# Explanation: -
 violatingProvisioners = config.filter_attribute_in_list(allProvisioners,
                      "type", prohibited_list, false)
 ```
 
 This function is used by several cloud-agnostic policies that prohibit certain types of items including [prohibited-datasources.sentinel](../../../cloud-agnostic/prohibited-datasources.sentinel), [prohibited-providers.sentinel](../../../cloud-agnostic/prohibited-providers.sentinel), [prohibited-provisioners.sentinel](../../../cloud-agnostic/prohibited-provisioners.sentinel), [require-all-providers-have-version-constrain.sentinel (Cloud Agnostic)](../../../cloud-agnostic/require-all-providers-have-version-constrain.sentinel) and [prohibited-resources.sentinel](../../../cloud-agnostic/prohibited-resources.sentinel).
+----------------------------------------------------------------------------------------------------------------------------------------
+
+# Explanation: -
