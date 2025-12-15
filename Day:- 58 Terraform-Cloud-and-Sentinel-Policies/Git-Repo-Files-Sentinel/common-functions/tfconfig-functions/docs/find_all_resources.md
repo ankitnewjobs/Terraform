@@ -28,3 +28,6 @@ allResources = config.find_all_resources()
 ```
 
 This function is used by the [prohibited-resources.sentinel (Cloud Agnostic)](../../../cloud-agnostic/prohibited-resources.sentinel) and [allowed-resources.sentinel (Cloud Agnostic)](../../../cloud-agnostic/allowed-resources.sentinel) policies.
+----------------------------------------------------------------------------------------------------------------------------------------
+
+# Explanation: -
