@@ -30,3 +30,6 @@ allGoogleResources = config.find_resources_by_provider("google")
 
 allVMwareResources = config.find_resources_by_provider("vsphere")
 ```
+----------------------------------------------------------------------------------------------------------------------------------------
+
+# Explanation: -
