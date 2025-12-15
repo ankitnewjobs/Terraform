@@ -32,7 +32,9 @@ violatingProviders = config.filter_attribute_in_list(allProviders,
 
 violatingResources = config.filter_attribute_in_list(allResources,
                      "type", prohibited_list, false)
+----------------------------------------------------------------------------------------------------------------------------------------
 
+# Explanation: -
 violatingProvisioners = config.filter_attribute_in_list(allProvisioners,
                      "type", prohibited_list, false)
 ```
