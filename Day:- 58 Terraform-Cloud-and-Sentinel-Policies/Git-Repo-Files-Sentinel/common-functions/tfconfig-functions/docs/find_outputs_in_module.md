@@ -26,3 +26,6 @@ allRootModuleOutputs = config.find_outputs_in_module("")
 
 allNetworkOutputs = config.find_outputs_in_module("module.network")
 ```
+----------------------------------------------------------------------------------------------------------------------------------------
+
+# Explanation: -
