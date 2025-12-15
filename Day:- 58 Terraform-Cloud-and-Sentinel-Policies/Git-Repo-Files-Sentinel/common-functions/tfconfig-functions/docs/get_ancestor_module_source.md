@@ -31,3 +31,6 @@ module_source = config.get_ancestor_module_source(module_address)
 ```
 
 It is used by the [restrict-resources-by-module-source.sentinel](../../../cloud-agnostic/restrict-resources-by-module-source.sentinel) policy.
+----------------------------------------------------------------------------------------------------------------------------------------
+
+# Explanation: -
