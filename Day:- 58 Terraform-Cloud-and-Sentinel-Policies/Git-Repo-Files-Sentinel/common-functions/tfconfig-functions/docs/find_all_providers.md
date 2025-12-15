@@ -28,3 +28,6 @@ allProviders = config.find_all_providers()
 ```
 
 This function is used by the [require-all-providers-have-version-constrain.sentinel (Cloud Agnostic)](../../../cloud-agnostic/require-all-providers-have-version-constrain.sentinel), [prohibited-providers.sentinel (Cloud Agnostic)](../../../cloud-agnostic/prohibited-providers.sentinel) and [allowed-providers.sentinel (Cloud Agnostic)](../../../cloud-agnostic/allowed-providers.sentinel) policies.
+----------------------------------------------------------------------------------------------------------------------------------------
+
+# Explanation: -
