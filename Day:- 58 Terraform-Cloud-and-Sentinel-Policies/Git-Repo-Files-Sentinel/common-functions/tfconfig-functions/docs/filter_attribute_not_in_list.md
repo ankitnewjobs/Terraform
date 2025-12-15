@@ -38,3 +38,6 @@ violatingProvisioners = config.filter_attribute_not_in_list(allProvisioners,
 ```
 
 This function is used by several cloud-agnostic policies that allow certain types of items including [allowed-datasources.sentinel](../../../cloud-agnostic/allowed-datasources.sentinel), [allowed-providers.sentinel](../../../cloud-agnostic/allowed-providers.sentinel), [allowed-provisioners.sentinel](../../../cloud-agnostic/allowed-provisioners.sentinel), and [allowed-resources.sentinel](../../../cloud-agnostic/allowed-resources.sentinel).
+----------------------------------------------------------------------------------------------------------------------------------------
+
+# Explanation: -
