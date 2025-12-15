@@ -28,3 +28,6 @@ allProvisioners = config.find_all_provisioners()
 ```
 
 This function is used by the [prohibited-provisioners.sentinel (Cloud Agnostic)](../../../cloud-agnostic/prohibited-provisioners.sentinel) and [allowed-provisioners.sentinel (Cloud Agnostic)](../../../cloud-agnostic/allowed-provisioners.sentinel) policies.
+----------------------------------------------------------------------------------------------------------------------------------------
+
+# Explanation: -
