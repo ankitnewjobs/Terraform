@@ -20,9 +20,7 @@ This function returns a single flat map of data sources indexed by the complete 
 
 ## What It Prints
 This function does not print anything.
-----------------------------------------------------------------------------------------------------------------------------------------
 
-# Explanation: -
 ## Examples
 Here is an example of calling this function, assuming that the tfconfig-functions.sentinel file that contains it has been imported with the alias `config`:
 ```
@@ -30,3 +28,6 @@ allDatasources = config.find_all_datasources()
 ```
 
 This function is used by the [prohibited-datasources.sentinel (Cloud Agnostic)](../../../cloud-agnostic/prohibited-datasources.sentinel) and [allowed-datasources.sentinel (Cloud Agnostic)](../../../cloud-agnostic/allowed-datasources.sentinel) policies.
+----------------------------------------------------------------------------------------------------------------------------------------
+
+# Explanation: -
