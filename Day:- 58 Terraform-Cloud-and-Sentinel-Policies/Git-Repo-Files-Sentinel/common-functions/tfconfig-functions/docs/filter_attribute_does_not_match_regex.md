@@ -31,3 +31,6 @@ violatingEC2Instances = config.filter_attribute_does_not_match_regex(allEC2Insta
                         "config.ami", "^data\\.aws_ami\\.(.*)$", true)
 ```
 This is from the [require-most-recent-AMI-version.sentinel](../../../aws/require-most-recent-AMI-version.sentinel) policy.
+----------------------------------------------------------------------------------------------------------------------------------------
+
+# Explanation: -
