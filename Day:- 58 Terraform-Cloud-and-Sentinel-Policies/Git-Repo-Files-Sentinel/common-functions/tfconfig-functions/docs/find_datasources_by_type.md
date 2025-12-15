@@ -18,7 +18,9 @@ This function returns a single flat map of data sources indexed by the complete 
 
 ## What It Prints
 This function does not print anything.
+----------------------------------------------------------------------------------------------------------------------------------------
 
+# Explanation: -
 ## Examples
 Here are some examples of calling this function, assuming that the tfconfig-functions.sentinel file that contains it has been imported with the alias `config`:
 ```
