@@ -28,3 +28,6 @@ localExecProvisioners = config.find_provisioners_by_type("local-exec")
 ```
 
 This function is used by the cloud-agnostic [prevent-remote-exec-provisioners-on-null-resources.sentinel](../../../cloud-agnostic/prevent-remote-exec-provisioners-on-null-resources.sentinel) policy.
+----------------------------------------------------------------------------------------------------------------------------------------
+
+# Explanation: -
