@@ -26,3 +26,6 @@ allRootModuleVariables = config.find_variables_in_module("")
 
 allNetworkVariables = config.find_variables_in_module("module.network")
 ```
+----------------------------------------------------------------------------------------------------------------------------------------
+
+# Explanation: -
