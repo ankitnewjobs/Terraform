@@ -30,3 +30,6 @@ allGCEInstances = config.find_resources_by_type("google_compute_instance")
 
 allVMs = config.find_resources_by_type("vsphere_virtual_machine")
 ```
+----------------------------------------------------------------------------------------------------------------------------------------
+
+# Explanation: -
