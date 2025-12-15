@@ -32,3 +32,6 @@ vmwareProviders = config.find_providers_by_type("vsphere")
 ```
 
 This function is used by the function `get_assumed_roles` in the  [aws-functions](../../../aws/aws-functions/aws-functions.sentinel) module.
+----------------------------------------------------------------------------------------------------------------------------------------
+
+# Explanation: -
