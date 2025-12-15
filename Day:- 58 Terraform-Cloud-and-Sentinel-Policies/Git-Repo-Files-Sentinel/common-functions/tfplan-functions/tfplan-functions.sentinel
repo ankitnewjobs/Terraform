@@ -996,3 +996,6 @@ filter_attribute_has_suffix = func(resources, attr, suffix, prtmsg) {
   }
   return {"resources":violators,"messages":messages}
 }
+----------------------------------------------------------------------------------------------------------------------------------------
+
+# Explanation: -
