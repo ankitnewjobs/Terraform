@@ -600,3 +600,304 @@ get_parent_module_address = func(module_address) {
 ----------------------------------------------------------------------------------------------------------------------------------------
 
 # Explanation: -
+
+* This is Sentinel policy helper code (HashiCorp Sentinel language) that works with tfconfig/v2, which represents Terraform configuration (not plan or state).
+
+* It’s a utility library used to find, filter, and evaluate Terraform resources, providers, modules, variables, outputs, and attributes in a clean and reusable way.
+
+# Imports & Context
+
+import "tfconfig/v2" as tfconfig
+import "strings"
+import "types"
+
+# What do these give you
+
+|     Import      |                                    Purpose                                             |
+| --------------- | -------------------------------------------------------------------------------------- |
+|   tfconfig/v2   |    Read Terraform configuration (resources, providers, modules, variables, outputs)    |
+|   strings       |    String utilities (split, join, has_prefix)                                          |
+|   types         |    Type inspection (type_of)                                                           |
+
+> tfconfig ≠ tfplan
+
+> tfconfig tells you what is defined, not what will change.
+
+# Resource Finder Functions
+
+These functions query the Terraform configuration and return maps of objects.
+
+# find_all_resources
+
+find_all_resources = func()
+{
+  resources = filter tfconfig.resources as address, r 
+{
+    r.mode is "managed"
+  }
+  return resources
+}
+
+* Returns all managed resources
+* Excludes data sources
+
+Example:
+
+aws_instance.web
+azurerm_storage_account.sa
+
+# find_resources_by_type(type)
+
+r.type is type and r.mode is "managed"
+
+Example: find_resources_by_type("aws_instance")
+
+*  Only resources of that type
+*  Ignores data blocks
+
+# find_resources_in_module(module_address)
+
+Filters by: r.module_address is module_address
+
+Example: find_resources_in_module("module.network")
+
+* Useful for module-scoped policies
+
+# find_resources_by_provider(provider)
+
+r.provider_config_key matches "(.*:)?" + provider + "(\\..*)?"
+
+# Why regex: Terraform provider keys can look like:
+
+* aws
+* aws.us_east
+* registry.terraform.io/hashicorp/aws
+
+This regex catches all of them.
+
+# Data Source Finders: Same logic as resources, but: d.mode is "data"
+
+# Examples
+
+|              Function                        |      Purpose            |
+| -------------------------------------------- | ----------------------- |
+|   find_all_datasources()                     |   All data sources      |
+|   find_datasources_by_type("aws_ami")        |   Specific data type    |
+|   find_datasources_in_module("module.vpc")   |   Module-scoped         |
+|   find_datasources_by_provider("aws")        |   Provider-scoped       |
+
+# Provisioners: tfconfig.provisioners
+
+* Provisioners are rare but dangerous, so Sentinel often restricts them.
+
+# Functions
+
+|                  Function                   |        Purpose          |
+| ------------------------------------------- | ----------------------- |
+| find_all_provisioners()                     |    All provisioners     |
+| find_provisioners_by_type("local_exec")     |    Filter by type       |
+
+Typical use:
+
+deny local-exec
+allow file
+
+# Providers: tfconfig.providers
+
+# Provider helpers
+
+|              Function                     | Purpose              |
+| ----------------------------------------- | -------------------- |
+|   find_all_providers()                    |    All providers     |
+|   find_providers_by_type("aws")           |   Specific provider  |
+|   find_providers_in_module("module.db")   |   Module-scoped      |
+
+# Variables & Outputs
+
+# Variables: tfconfig.variables
+
+Used to enforce:
+
+* Naming standards
+* Defaults
+* Module boundaries
+
+# Outputs: tfconfig.outputs
+
+Special function: find_outputs_by_sensitivity(true)
+
+* Enforce sensitive outputs only
+* Prevent secret leakage
+
+# Module Calls & Module Graph Traversal
+
+# find_all_module_calls
+
+Returns:
+
+module "vpc" 
+{
+  source = "terraform-aws-modules/vpc/aws"
+}
+
+# find_module_calls_in_module(module_address)
+
+* Finds direct children of a module.
+
+# find_descendant_modules: This is recursive traversal: find_descendant_modules("")
+
+Returns:
+
+[
+  "",
+  "module.A",
+  "module.A.module.B",
+  "module.A.module.C"
+]
+
+* Used for deep module policy enforcement
+
+# Violation Printing: print_violations(messages, prefix)
+
+Used when:
+
+* Violations were collected silently
+* You want to print them later
+
+Example: print_violations(violations["messages"], "ERROR:")
+
+# Type-Safe String Conversion
+
+# to_string(obj): Sentinel doesn’t auto-stringify complex objects.
+
+This function handles:
+
+* primitives
+* lists
+* maps
+* null/undefined
+
+Example:
+
+to_string(["a", 1, true])
+→ "[a, 1, true]"
+
+# Attribute Evaluation (VERY IMPORTANT)
+
+# evaluate_attribute(item, attribute)
+
+Supports:
+
+* "name"
+* "config.tags"
+* "config.location"
+
+Terraform config attributes are often stored as:
+
+config = 
+{
+  tags = 
+{
+    constant_value = {...}
+  }
+}
+
+This function:
+
+* Detects constant_value
+* Falls back to references
+* Safely returns null
+
+* Essential for tag policies
+
+# Generic Attribute Filters
+
+These are policy building blocks.
+
+#  filter_attribute_not_in_list
+
+> Enforce allowed values
+
+Example:
+
+allowed = ["eastus", "westus"]
+filter_attribute_not_in_list(resources, "config.location", allowed, true)
+
+# filter_attribute_in_list
+
+> Block forbidden values
+
+Example:
+
+forbidden = ["latest"]
+filter_attribute_in_list(resources, "config.image", forbidden, true)
+
+# Regex Filters
+
+# filter_attribute_does_not_match_regex
+
+* Naming standards
+* Tag format
+* Environment naming
+
+# filter_attribute_matches_regex
+
+* Detect forbidden patterns
+* Match secrets
+* Flag bad naming
+
+#  Module Source Resolution (Advanced)
+
+* Problem: module_address only shows labels, not source.
+
+#  get_module_source
+
+Resolves:
+
+module "vpc" 
+{
+  source = "terraform-aws-modules/vpc/aws"
+}
+
+From: module_address = "module.vpc"
+
+# get_ancestor_module_source
+
+Skips local modules: source = "./modules/network"
+
+Finds first remote module: terraform-aws-modules/vpc/aws
+
+* Used for module allowlists
+
+#  Parent Module Helper
+
+get_parent_module_address("module.A.module.B") → "module.A"
+
+* Navigation helper
+
+# Why This Code Exists
+
+This file is a Sentinel standard library that allows you to:
+
+✔ Write short, clean policies
+✔ Avoid duplicate logic
+✔ Handle Terraform config complexity safely
+✔ Build enterprise-grade guardrails
+
+# Example Real Policy Usage
+
+aws_resources = find_resources_by_provider("aws")
+
+violations = filter_attribute_not_in_list
+(
+  aws_resources,
+  "config.tags.Environment",
+  ["dev", "stage", "prod"],
+  true
+)
+
+main = rule
+{
+  length(violations["items"]) is 0
+}
+
