@@ -27,3 +27,6 @@ This function is called by the `filter_attribute_does_not_match_regex` and `filt
 ```
 val = evaluate_attribute(item, attr) else null
 ```
+----------------------------------------------------------------------------------------------------------------------------------------
+
+# Explanation: -
