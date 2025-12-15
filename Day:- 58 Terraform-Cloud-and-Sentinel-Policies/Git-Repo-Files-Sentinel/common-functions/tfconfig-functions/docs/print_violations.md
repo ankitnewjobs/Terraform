@@ -29,3 +29,6 @@ config.print_violations(violatingProviders["messages"], "Blacklisted provider:")
 ```
 
 This function is used by many of the cloud agnostic policies including [prohibited-datasources.sentinel](../../../cloud-agnostic/prohibited-datasources.sentinel) and [prohibited-providers.sentinel](../../../cloud-agnostic/prohibited-providers.sentinel).
+----------------------------------------------------------------------------------------------------------------------------------------
+
+# Explanation: -
