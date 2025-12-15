@@ -26,3 +26,6 @@ Here is an example of calling this function, assuming that the tfconfig-function
 ```
 allOutputs = config.find_all_outputs()
 ```
+----------------------------------------------------------------------------------------------------------------------------------------
+
+# Explanation: -
