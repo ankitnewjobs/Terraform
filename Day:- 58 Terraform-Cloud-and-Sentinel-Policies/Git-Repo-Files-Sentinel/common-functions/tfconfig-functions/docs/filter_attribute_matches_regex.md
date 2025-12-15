@@ -30,3 +30,6 @@ Here is an example of calling this function, assuming that the tfconfig-function
 violatingEC2Instances = config.filter_attribute_matches_regex(allEC2Instances,
                         "config.ami", "^data\\.aws_ami\\.(.*)$", true)
 ```
+----------------------------------------------------------------------------------------------------------------------------------------
+
+# Explanation: -
