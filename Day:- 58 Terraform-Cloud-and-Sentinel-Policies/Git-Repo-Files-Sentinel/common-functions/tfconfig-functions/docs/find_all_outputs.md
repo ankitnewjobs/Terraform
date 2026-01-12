@@ -28,6 +28,8 @@ allOutputs = config.find_all_outputs()
 ```
 ----------------------------------------------------------------------------------------------------------------------------------------
 
+Explanation: -
+
 # 1. What is an “output” in Terraform
 
 In Terraform, an output is:
