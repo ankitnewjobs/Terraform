@@ -220,13 +220,3 @@ Meaning:
   * Functions are in local scope
   * You only use config. when calling from outside
   * This avoids circular imports and is standard Sentinel behavior
-
-# Important takeaway (DevOps insight)
-
-This function is essentially doing a depth-first traversal of Terraform’s module graph.
-
-It’s commonly used to:
-
-* Enforce policies across all modules
-* Validate tags, providers, or resources everywhere
-* Avoid missing nested modules (a very common Sentinel mistake)
