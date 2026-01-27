@@ -41,7 +41,7 @@ It is also called by the [use-lastest-module-versions.sentinel](../../../cloud-a
 - This is the name of the function being documented.
 - It tells you that the function is about finding module calls inside another module.
 
-# This function finds all direct module calls in a specific module in the Terraform configuration of the current plan's workspace using the tfconfig/v2 import.
+* This function finds all direct module calls in a specific module in the Terraform configuration of the current plan's workspace using the tfconfig/v2 import.
 
 # Sentinel Module
 
@@ -64,7 +64,7 @@ This line shows:
 
 # Arguments:- This header introduces the function parameters.
 
-# module_address: the address of the module containing module_calls to find, given as a string.
+* module_address: the address of the module containing module_calls to find, given as a string.
 
 This line explains the parameter:
 
@@ -117,7 +117,7 @@ This line says:
 
 # What It Returns:- This header introduces the return value.
 
-# This function returns a single flat map of module calls indexed by the address of the module call's parent module and the module call's name.
+* This function returns a single flat map of module calls indexed by the address of the module call's parent module and the module call's name.
 
 This line explains the output structure:
 
