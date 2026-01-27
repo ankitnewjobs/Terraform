@@ -108,13 +108,13 @@ Meaning:
 
 * This is how Terraform internally represents the root
 
-> A module with label `network` called by the root module is represented by "module.network".
+> A module with label network called by the root module is represented by "module.network".
 
 Meaning:
 
 * Terraform module addresses:
 
-  * Always start with module.
+  * Always start with the module.
   * Use the module block label
 
 * Example:
@@ -213,10 +213,10 @@ Meaning (very important):
 
 * This is how deep module trees are fully traversed
 
-> It does not use config. before calling itself since that is not necessary when calling a function from inside the module that contains it.
+> It does not use config. before calling itself, since that is not necessary when calling a function from inside the module that contains it.
 
 Meaning:
 
-  * Functions are in local scope
+  * Functions are in the local scope
   * You only use config. when calling from outside
   * This avoids circular imports and is standard Sentinel behavior
